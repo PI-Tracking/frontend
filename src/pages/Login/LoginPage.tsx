@@ -1,7 +1,7 @@
-import "../styles/login.css";
-import logo from "../images/logo.png"; 
+import "./login.css";
+import logo from "@assets/logo.png";
 
-function LoginPage () {
+function LoginPage() {
   return (
     <div className="login-container">
       <img src={logo} alt="Logo" className="login-logo" />
@@ -12,13 +12,16 @@ function LoginPage () {
             <input type="text" placeholder="Username" required />
             <input type="password" placeholder="Password" required />
           </div>
-          <button type="submit" className="login-btn">Login</button>
+          <button type="submit" className="login-btn">
+            Login
+          </button>
         </form>
-        <a href="#" className="forgot-password">Forgot password?</a> 
+        <a href="#" className="forgot-password">
+          Forgot password?
+        </a>
       </div>
     </div>
   );
-};
-
+}
 
 export default LoginPage;
