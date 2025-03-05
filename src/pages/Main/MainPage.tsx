@@ -3,7 +3,7 @@ import Navbar from "@components/Navbar.tsx";
 
 function MainPage () {
   return (
-    <div className="min-h-screen bg-gray-100">          
+    <div className="bg-gray-100">          
       <Navbar />
 
       <header className="relative bg-white">

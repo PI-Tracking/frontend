@@ -1,0 +1,129 @@
+.navbar {
+    background-color: rgba(26, 32, 44, 0.9);
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.1rem;
+  }
+  
+  .navbar-logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+
+
+  .bg-svg {
+    background: url('./blob.svg') no-repeat right;
+    background-size: 70%; 
+    position: absolute;
+    top: 0;
+    right: -200px;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    z-index: -10;
+  }
+
+  .bg2-svg {
+    background: url('./Group.svg') no-repeat left;
+    background-size: 40%; 
+    position: absolute;
+    top: 100px;
+    left: 60%;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    z-index: -10;
+    overflow: visible;
+  }                         
+  
+  
+
+/* Test this and see if you like it, it can be altered, but more balls */
+  /* #root::before,
+#root::after {
+  content: "";
+  position: absolute;
+  width: 180%;
+  height: 120%;
+  top: -10%;
+  left: -40%;
+  background: radial-gradient(circle, rgb(88, 88, 88) 100%, rgba(45,45,45,1) 800%);
+  clip-path: ellipse(30% 50% at 90% 40%);
+  animation: wave-animation 8s infinite linear alternate;
+  z-index: -1;
+} 
+
+#root::after {
+  clip-path: circle(40% at 10% 90%);
+  width: 100%;
+  height: 100%;
+  background: rgba(45,45,45,0.7);
+  animation: ripple-animation 8s infinite ease-in-out;
+}
+
+@keyframes wave-animation {
+  0% {
+    transform: translateY(-30px);
+  }
+  100% {
+    transform: translateY(30px);
+  }
+}
+
+@keyframes ripple-animation {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}  */
+   
+  .navbar-menu {
+    display: flex;
+    gap: 16px;
+    list-style: none;
+  }
+  
+  .navbar-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s;
+  }
+  
+  .navbar-menu a:hover {
+    color: #cbd5e0;
+  }
+  
+  .navbar-profile {
+    cursor: pointer;
+    font-size: 1.3rem;
+    transition: color 0.3s;
+  }
+  
+  .navbar-profile:hover {
+    color: #cbd5e0;
+  }
+  
+  .navbar-menu.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background: rgba(26, 32, 44, 0.9);
+    padding: 8px 0;
+  }
+  
+  .navbar-menu a {
+    padding: 8px 16px;
+    display: block;
+  }
+  
