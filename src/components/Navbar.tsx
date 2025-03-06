@@ -4,8 +4,6 @@ import { UserCircle } from "lucide-react";
 function Navbar () {
   return (
     <nav className="navbar">
-      <div className="bg-svg"></div>
-      <div className="bg2-svg"></div>
       <div className="navbar-logo">Tracking</div>
       <ul className="navbar-menu">
         <li><a href="#">Home</a></li>
