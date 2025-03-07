@@ -5,7 +5,7 @@
     position: absolute;
     top: 0;
     right: -200px;
-    width: 90%;
+    width: 60%;
     height: 100%;
     opacity: 1;
     z-index: -10;
@@ -16,55 +16,30 @@
     background-size: 40%; 
     position: absolute;
     top: 100px;
-    left: 60%;
+    left: 70%;
     right: 0px;
-    width: 100%;
+    width: 80%;
     height: 100%;
     opacity: 1;
     z-index: -10;
     overflow: visible;
-  }                         
+  }       
+
+  footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 140px; 
+  }
   
+  section:last-of-type {
+    margin-bottom: 40px;
+  }
+  
+  .test-scroll {
+    height: 1000px;
+  }
   
 
-/* Test this and see if you like it, it can be altered, but more balls */
-  /* #root::before,
-#root::after {
-  content: "";
-  position: absolute;
-  width: 180%;
-  height: 120%;
-  top: -10%;
-  left: -40%;
-  background: radial-gradient(circle, rgb(88, 88, 88) 100%, rgba(45,45,45,1) 800%);
-  clip-path: ellipse(30% 50% at 90% 40%);
-  animation: wave-animation 8s infinite linear alternate;
-  z-index: -1;
-} 
 
-#root::after {
-  clip-path: circle(40% at 10% 90%);
-  width: 100%;
-  height: 100%;
-  background: rgba(45,45,45,0.7);
-  animation: ripple-animation 8s infinite ease-in-out;
-}
-
-@keyframes wave-animation {
-  0% {
-    transform: translateY(-30px);
-  }
-  100% {
-    transform: translateY(30px);
-  }
-}
-
-@keyframes ripple-animation {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.1);
-  }
-}  */
    
