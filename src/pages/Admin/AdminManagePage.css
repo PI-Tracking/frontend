@@ -1,0 +1,77 @@
+.admin-manage-container {
+    background-color: #f3f4f6;
+    min-height: 100vh;
+  }
+  
+  .admin-table-container {
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .admin-row {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+  }
+  
+  .admin-user {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .admin-icon {
+    color: #6b7280;
+    font-size: larger;
+  }
+  
+  .admin-checkbox {
+    text-align: right;
+    padding: 15px;
+  }
+  
+  .admin-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background-color: #8a8a8a;
+    appearance: none;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .admin-checkbox input[type="checkbox"]:checked::before {
+    content: '\2713';
+    font-size: 18px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Altyer the font mayeb idk */
+  .profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #E7E6E6;
+    color: #AFACAC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
