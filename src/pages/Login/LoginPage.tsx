@@ -6,6 +6,8 @@ import Curve from "./assets/Curve.svg";
 import login from "@api/auth";
 import { User } from "@Types/User";
 
+import CameraMenuOptions from "@components/CameraMenuOptions";
+
 const isEmptyString = (string: string) => {
   if (typeof string != "string") {
     return true;
@@ -84,6 +86,9 @@ function LoginPage() {
           </div>
         </div>
       </section>
+
+      {/* REMOVE FROM HERE, ONLY FOR TEST PURPOSES, THEREFORE IT WAS DONE ON ANOTHER BRANCH */}
+        <CameraMenuOptions/>
     </>
   );
 }
