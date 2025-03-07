@@ -10,7 +10,7 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<LoginPage />} /> */}
         {/* <Route path="/" element={<MainPage />} /> */}
-        <Route path="/" element={<AdminManagePage />} />
+        <Route path="/" element={<AdminManagePage />} />  { /* path = admin/manage */ }
       </Routes>
     </Router>
   );
