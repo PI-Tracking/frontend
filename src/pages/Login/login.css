@@ -1,0 +1,128 @@
+html,
+body {
+  font-family: "montserrat";
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-color: #353535;
+}
+
+.visual {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; 
+  overflow: hidden;
+  z-index: -1;
+}
+
+/* #root::before,
+#root::after {
+  content: "";
+  position: absolute;
+  width: 180%;
+  height: 120%;
+  top: -10%;
+  left: -40%;
+  background: radial-gradient(circle, rgba(58,58,58,1) 100%, rgba(45,45,45,1) 800%);
+  clip-path: ellipse(50% 70% at 90% 0%);
+  animation: wave-animation 8s infinite linear alternate;
+} */
+/* 
+#root::after {
+  clip-path: circle(30% at 10% 90%);
+  width: 100%;
+  height: 100%;
+  background: rgba(45,45,45,0.7);
+  animation: ripple-animation 8s infinite ease-in-out;
+} */
+
+/* @keyframes wave-animation {
+  0% {
+    transform: translateY(-30px);
+  }
+  100% {
+    transform: translateY(30px);
+  }
+}
+
+@keyframes ripple-animation {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+} */
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.login-logo {
+  width: 80px;
+  margin-bottom: 80px;
+}
+
+.login-box {
+  background: rgba(58, 58, 58, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+
+.input-group {
+  margin: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-group > input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0px;
+  border: 1px solid white;
+  border-radius: 5px;
+  background-color: transparent;
+  color: white;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+  color: #2d2d2d;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.forgot-password {
+  display: block;
+  margin-top: 10px;
+  color: whitesmoke;
+}
