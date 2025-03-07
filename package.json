@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^22.13.9",
+    "axios": "^1.8.2",
     "kute.js": "^2.2.4",
     "path": "^0.12.7",
     "react": "^19.0.0",
