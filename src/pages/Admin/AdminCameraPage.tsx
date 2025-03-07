@@ -12,25 +12,22 @@ function AdminCameraPage() {
   const [cameras, setCameras] = useState(initialCameras);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isAddingCamera, setIsAddingCamera] = useState(false);
+  const [cameraAdded, setCameraAdded] = useState(false);
   const [newCamera, setNewCamera] = useState({ 
     name: "", 
     description: "", 
     code: "", 
     enabled: true 
   });
-  const [cameraAdded, setCameraAdded] = useState(false);
 
-
-  // Here im working with timeouts but in reality it would just wait for the real camera to be added
   useEffect(() => {
-    if (isAddingCamera) {
-      setTimeout(() => {
-        
-        setCameraAdded(true);
-        setIsAddingCamera(false);
-      }, 5000); 
+    if (cameraAdded) {
+      const timer = setTimeout(() => {
+        setCameraAdded(false);
+      }, 7000);
+      return () => clearTimeout(timer);
     }
-  }, [isAddingCamera]);
+  }, [cameraAdded]);
 
   const toggleCameraStatus = (id) => {
     setCameras(cameras.map((camera) =>
@@ -62,6 +59,11 @@ function AdminCameraPage() {
       setIsFormVisible(false);
       setIsAddingCamera(true);
       setCameraAdded(false);  
+
+      setTimeout(() => {
+        setIsAddingCamera(false);
+        setCameraAdded(true);
+      }, 2000); 
     }
   };
 
@@ -153,19 +155,21 @@ function AdminCameraPage() {
         </div>
       )}
 
-      <div className="camera-preview-area">
-        {isAddingCamera ? (
-          <div className="preview-placeholder">
-            <div className="loading-spinner"></div>
-            <p>Attempting to add camera</p>
-          </div>
-        ) : cameraAdded ? (
-          <div className="preview-placeholder">
-            <div className="success-checkmark">&#10003;</div> 
-            <p>Camera successfully added!</p>
-          </div>
-        ) : null}
-      </div>
+      {(isAddingCamera || cameraAdded) && (
+        <div className="camera-preview-area">
+          {isAddingCamera ? (
+            <div className="preview-placeholder">
+              <div className="loading-spinner"></div>
+              <p>Attempting to add camera</p>
+            </div>
+          ) : (
+            <div className="preview-placeholder">
+              <div className="success-checkmark">&#10003;</div> 
+              <p>Camera successfully added!</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
