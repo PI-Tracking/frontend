@@ -8,7 +8,6 @@ import {
   PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 
-
 const initialCameras = [
   { id: 1, name: "Camera 1", description: "Camera description", code: "CAM001", enabled: true },
   { id: 2, name: "Camera 2", description: "Camera description", code: "CAM002", enabled: false },
@@ -20,12 +19,14 @@ function AdminCameraPage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isAddingCamera, setIsAddingCamera] = useState(false);
   const [cameraAdded, setCameraAdded] = useState(false);
-  const [newCamera, setNewCamera] = useState({ 
-    name: "", 
-    description: "", 
-    code: "", 
-    enabled: true 
+  const [newCamera, setNewCamera] = useState({
+    name: "",
+    description: "",
+    code: "",
+    enabled: true,
   });
+
+  const [editingCamera, setEditingCamera] = useState(null); 
 
   useEffect(() => {
     if (cameraAdded) {
@@ -37,9 +38,11 @@ function AdminCameraPage() {
   }, [cameraAdded]);
 
   const toggleCameraStatus = (id) => {
-    setCameras(cameras.map((camera) =>
-      camera.id === id ? { ...camera, enabled: !camera.enabled } : camera
-    ));
+    setCameras(
+      cameras.map((camera) =>
+        camera.id === id ? { ...camera, enabled: !camera.enabled } : camera
+      )
+    );
   };
 
   const handleInputChange = (e) => {
@@ -54,30 +57,51 @@ function AdminCameraPage() {
     if (newCamera.name && newCamera.code) {
       setCameras([
         ...cameras,
-        { 
-          id: Date.now(), 
-          name: newCamera.name, 
+        {
+          id: Date.now(),
+          name: newCamera.name,
           description: newCamera.description,
           code: newCamera.code,
-          enabled: newCamera.enabled 
+          enabled: newCamera.enabled,
         },
       ]);
       setNewCamera({ name: "", description: "", code: "", enabled: true });
       setIsFormVisible(false);
       setIsAddingCamera(true);
-      setCameraAdded(false);  
+      setCameraAdded(false);
 
       setTimeout(() => {
         setIsAddingCamera(false);
         setCameraAdded(true);
-      }, 2000); 
+      }, 2000);
     }
+  };
+
+  const handleEditCamera = (camera) => {
+    setEditingCamera(camera); 
+    setNewCamera({
+      name: camera.name,
+      description: camera.description,
+      code: camera.code,
+      enabled: camera.enabled,
+    });
+    setIsFormVisible(true); 
+  };
+
+  const handleSaveChanges = () => {
+    setCameras(
+      cameras.map((camera) =>
+        camera.id === editingCamera.id ? { ...camera, ...newCamera } : camera
+      )
+    );
+    setEditingCamera(null); 
+    setIsFormVisible(false); 
   };
 
   return (
     <div className="admin-manage-container">
       <Navbar />
-      
+
       <div className="admin-table-container">
         <table className="admin-table">
           <tbody>
@@ -96,11 +120,10 @@ function AdminCameraPage() {
                   <button>
                     <DocumentTextIcon className="w-6 h-6 text-gray-500 hover:text-gray-800" />
                   </button>
-                  <button>
+                  <button onClick={() => handleEditCamera(camera)}>
                     <PencilSquareIcon className="w-6 h-6 text-gray-500 hover:text-gray-800" />
                   </button>
                 </td>
-
               </tr>
             ))}
           </tbody>
@@ -110,7 +133,11 @@ function AdminCameraPage() {
       <div className="camera-controls">
         <button
           className="add-camera-btn"
-          onClick={() => setIsFormVisible(!isFormVisible)}
+          onClick={() => {
+            setEditingCamera(null); /
+            setNewCamera({ name: "", description: "", code: "", enabled: true });
+            setIsFormVisible(true); 
+          }}
         >
           Add Camera
         </button>
@@ -123,8 +150,8 @@ function AdminCameraPage() {
               &times;
             </button>
             <div className="add-camera-form">
-              <h2>Adding cameras</h2>
-              
+              <h2>{editingCamera ? "Edit Camera" : "Add Camera"}</h2>
+
               <div className="form-group">
                 <label>Camera name</label>
                 <input
@@ -136,7 +163,7 @@ function AdminCameraPage() {
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Camera ID</label>
                 <input
@@ -148,7 +175,7 @@ function AdminCameraPage() {
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Description</label>
                 <textarea
@@ -159,8 +186,13 @@ function AdminCameraPage() {
                   rows={4}
                 />
               </div>
-              
-              <button className="submit-btn" onClick={handleAddCamera}>Submit</button>
+
+              <button
+                className="submit-btn"
+                onClick={editingCamera ? handleSaveChanges : handleAddCamera}
+              >
+                {editingCamera ? "Save Changes" : "Submit"}
+              </button>
             </div>
           </div>
         </div>
@@ -175,7 +207,7 @@ function AdminCameraPage() {
             </div>
           ) : (
             <div className="preview-placeholder">
-              <div className="success-checkmark">&#10003;</div> 
+              <div className="success-checkmark">&#10003;</div>
               <p>Camera successfully added!</p>
             </div>
           )}
