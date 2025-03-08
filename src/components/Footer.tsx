@@ -1,5 +1,9 @@
 import './Footer.css';
-
+import { SiInstagram } from "react-icons/si";
+import { BsTwitterX } from "react-icons/bs";
+import { AiFillLinkedin } from "react-icons/ai";
+import { FaGithub } from "react-icons/fa";
+import { FaFacebookF } from "react-icons/fa6";
 function Footer() {
     return (
       <footer className="footer">
@@ -27,26 +31,21 @@ function Footer() {
               <a href="/contact" className="footer-nav-link">Contact</a>
             </div>
             
-            <div className="footer-pagination">
-              <div className="pagination-item">1</div>
-              <div className="pagination-item">2</div>
-            </div>
-            
             <div className="footer-social">
               <a href="#" className="social-icon">
-                <i className="fab fa-facebook-f"></i>
+                <FaFacebookF />
               </a>
               <a href="#" className="social-icon">
-                <i className="fab fa-linkedin-in"></i>
+                <AiFillLinkedin />
               </a>
               <a href="#" className="social-icon">
-                <i className="fab fa-twitter"></i>
+                <BsTwitterX />
               </a>
               <a href="#" className="social-icon">
-                <i className="fab fa-youtube"></i>
+                <FaGithub />
               </a>
               <a href="#" className="social-icon">
-                <i className="fab fa-instagram"></i>
+              <SiInstagram />
               </a>
             </div>
           </div>
