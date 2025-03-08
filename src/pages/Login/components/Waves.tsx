@@ -14,7 +14,7 @@ export function Waves() {
           duration: 2000,
           yoyo: true,
           repeat: 1000,
-        },
+        }
       );
     });
 
