@@ -134,7 +134,7 @@ function AdminCameraPage() {
         <button
           className="add-camera-btn"
           onClick={() => {
-            setEditingCamera(null); /
+            setEditingCamera(null); 
             setNewCamera({ name: "", description: "", code: "", enabled: true });
             setIsFormVisible(true); 
           }}
