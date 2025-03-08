@@ -2,6 +2,7 @@
 import Footer from "@components/Footer";
 import Navbar from "@components/Navbar.tsx";
 import "./MainPage.css";
+import logo from "../../assets/logo.png";
 
 function MainPage() {
   return (
@@ -16,20 +17,31 @@ function MainPage() {
 
         </section>
         <section className="detect-weapons-section">
-          <h1>Weapon Detection</h1>
+          <h1 >Weapon Detection</h1>
+          <div className="detect-weapons"></div>
         </section>
         <section className="track-subject">
           <h1>Track Subject</h1>
+          <div className="track-subject-image"></div>
         </section>
         <section className="draw-path">
           <h1>Draw Path</h1>
+          <div className="draw-path-image"></div>
         </section>
         <section className="open-pose">
           <h1>Open Pose</h1>
+          {/* No image for open pose yet */}
         </section>
         <section className="symbol-asthetics">
         </section>
       </main>
+      <div className="break">
+      <div className="logo">
+      <img src={logo} className="logo-image" />
+              <h1 style={{ color: "white" }}>Tracking</h1>
+        <button className="link-button">Link</button>
+      </div>
+    </div>
       <Footer />
     </>
   );
