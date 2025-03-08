@@ -101,7 +101,7 @@ body {
   align-items: center;
 }
 
-.input-group>input {
+.input-group > input {
   width: 100%;
   padding: 10px;
   margin: 5px 0px;
@@ -135,14 +135,14 @@ body {
 }
 
 /* Circulo */
-.background>img:nth-child(1) {
+.background > img:nth-child(1) {
   position: absolute;
   left: 0px;
   bottom: 0px;
 }
 
 /* Curva */
-.background>img:nth-child(2) {
+.background > img:nth-child(2) {
   position: absolute;
   right: 0px;
   top: 0px;

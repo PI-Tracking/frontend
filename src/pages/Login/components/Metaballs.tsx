@@ -24,7 +24,7 @@ function Metaballs() {
           y: Math.random() * window.innerHeight,
           vx: (Math.random() - 0.5) * 100,
           vy: (Math.random() - 0.5) * 100,
-        }) as IMetaball,
+        }) as IMetaball
     );
     setMetaballs(array);
   }, []);
