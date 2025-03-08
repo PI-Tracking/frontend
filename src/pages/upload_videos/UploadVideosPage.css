@@ -1,0 +1,86 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* I was getting a border so Im adding this */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #282828;
+}
+
+.menu-options {
+  margin-top: auto;
+}
+
+.navbar {
+}
+
+.menu-options {
+}
+
+.video-uploader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  background-color: #414141;
+  opacity: 0.69;
+  border-radius: 10px;
+  gap: 20px;
+}
+
+.upload-videos-text {
+  text-align: center;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.upload-videos-icon {
+  text-align: center;
+  font-size: 8rem;
+  color: #fff;
+}
+
+.upload-videos-button {
+  background-color: #777;
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 12px 4px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-videos-button svg {
+  margin: 0 18px;
+}
+
+.upload-videos-button:hover {
+  background-color: #5a5a5a;
+  transform: translateY(-2px);
+}
+
+.upload-videos-button:active {
+  background-color: #4a4a4a;
+  transform: translateY(0);
+}

@@ -1,4 +1,4 @@
-import CameraMenuOptions from '@components/CameraMenuOptions';
+import CameraMenuOptions from "@components/CameraMenuOptions";
 
 function TestPage() {
   return (

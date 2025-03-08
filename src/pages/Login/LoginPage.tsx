@@ -86,9 +86,6 @@ function LoginPage() {
           </div>
         </div>
       </section>
-
-      {/* REMOVE FROM HERE, ONLY FOR TEST PURPOSES, THEREFORE IT WAS DONE ON ANOTHER BRANCH */}
-        <CameraMenuOptions/>
     </>
   );
 }

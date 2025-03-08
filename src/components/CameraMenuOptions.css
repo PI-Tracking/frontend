@@ -1,57 +1,61 @@
 .camera-menu-options {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(83, 83, 83, 0.9);
-    border-radius: 24px;
-    padding: 0px 16px;
-    gap: 20px;
-    z-index: 1;
-  }
-  
-  .menu-option {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    background-color: transparent;
-    outline: none;
-    border: none;
-    border-radius: 50%;
-    position: relative;
-    transition: background-color 0.2s ease;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-  }
-  
-  .menu-option:hover {
-    background-color: rgba(60, 60, 60, 0.8) !important;
-  }
-  
-  .menu-option.selected {
-    position: relative;
-  }
-  
-  {/*Created another element to do the circle getting bigger after pressing*/}
-  .menu-option.selected::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 48px;
-    height: 48px;
-    background-color: rgba(150, 150, 150, 0.9);
-    opacity: 1;
-    border-radius: 50%;
-    z-index: 1;
-  }
-  
-  .menu-option svg {
-    width: 24px;
-    height: 24px;
-    color: white;
-    pointer-events: none;
-    z-index: 2;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(83, 83, 83, 0.9);
+  border-radius: 24px;
+  padding: 0px 16px;
+  width: 18%;
+  gap: 20px;
+  z-index: 1;
+  position: absolute;
+  left: 50%;
+  bottom: 5%;
+  transform: translate(-50%, -50%);
+}
+
+.menu-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  border-radius: 50%;
+  position: relative;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+}
+
+.menu-option:hover {
+  background-color: rgba(60, 60, 60, 0.8) !important;
+}
+
+.menu-option.selected {
+  position: relative;
+}
+
+.menu-option.selected::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background-color: rgba(150, 150, 150, 0.9);
+  opacity: 1;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.menu-option svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+  pointer-events: none;
+  z-index: 2;
+}
