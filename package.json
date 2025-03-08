@@ -25,6 +25,7 @@
     ]
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "@types/node": "^22.13.9",
