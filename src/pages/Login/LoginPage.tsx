@@ -6,6 +6,8 @@ import Curve from "./assets/Curve.svg";
 import login from "@api/auth";
 import { User } from "@Types/User";
 
+import CameraMenuOptions from "@components/CameraMenuOptions";
+
 const isEmptyString = (string: string) => {
   if (typeof string != "string") {
     return true;
