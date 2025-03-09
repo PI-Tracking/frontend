@@ -1,0 +1,3 @@
+It is samed as 1, because we're not sure if we're gonna keep it this was for now
+And maybe for example right now, the cameras are distributed in a random way, and when one pressed to not overflow the FOV, it just shows 4 under the main one when chosen
+For this maybe we should do that it shows the cameras with recent activity, meaning if it catches movement
