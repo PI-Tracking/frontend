@@ -1,3 +1,11 @@
 It is samed as 1, because we're not sure if we're gonna keep it this was for now
 And maybe for example right now, the cameras are distributed in a random way, and when one pressed to not overflow the FOV, it just shows 4 under the main one when chosen
 For this maybe we should do that it shows the cameras with recent activity, meaning if it catches movement
+
+
+Lets note this could be done in another way, but for a demonstrator I dont see an issue
+Simple asthetics also, when youre viewing cameras, it isnt recommended to have dsitractions, and black background better for eyes
+
+Problem with caroussel
+Problem with selection
+Dont put too many cameras XD
