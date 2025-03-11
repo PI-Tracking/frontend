@@ -1,35 +1,50 @@
+
+import Footer from "@components/Footer";
 import Navbar from "@components/Navbar.tsx";
 import "./MainPage.css";
+import logo from "../../assets/logo.png";
 
-
-function MainPage () {
+function MainPage() {
   return (
-    <div className="bg-gray-100">          
+    <>
       <Navbar />
+      <main className="page-container">
+        <section className="product-introduction">
+          <div className="bg-svg"></div>
+          <div className="bg2-svg"></div>
 
-      <div 
-        className="bg-svg"
-        ></div>
-      <div className="bg2-svg"
-       ></div>
-      <header className="relative bg-white">
-        <div className="absolute top-0 left-0 w-full h-1/2 bg-gray-900"></div>
-        <div className="relative z-10 max-w-6xl mx-auto py-20 px-6 text-white">
-          <h1 className="text-4xl font-bold text-gray-900">Product Introduction</h1>
-          <p className="mt-4 max-w-2xl text-lg text-gray-700">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor.
-          </p>
-        </div>
-      </header>
+          <h1>Product Introduction</h1>
 
-      <section className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg -mt-10 relative z-10">
-        <p className="text-gray-700 text-lg">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor.
-          Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-        </p>
-      </section>
+        </section>
+        <section className="detect-weapons-section">
+          <h1 >Weapon Detection</h1>
+          <div className="detect-weapons"></div>
+        </section>
+        <section className="track-subject">
+          <h1>Track Subject</h1>
+          <div className="track-subject-image"></div>
+        </section>
+        <section className="draw-path">
+          <h1>Draw Path</h1>
+          <div className="draw-path-image"></div>
+        </section>
+        <section className="open-pose">
+          <h1>Open Pose</h1>
+          {/* No image for open pose yet */}
+        </section>
+        <section className="symbol-asthetics">
+        </section>
+      </main>
+      <div className="break">
+      <div className="logo">
+      <img src={logo} className="logo-image" />
+              <h1 style={{ color: "white" }}>Tracking</h1>
+        <button className="link-button">Link</button>
+      </div>
     </div>
+      <Footer />
+    </>
   );
-};
+}
 
 export default MainPage;
