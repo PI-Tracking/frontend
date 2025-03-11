@@ -1,7 +1,7 @@
 import "./styles/Navbar.css";
 import { UserCircle } from "lucide-react";
 
-function Navbar () {
+function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-logo">Tracking</div>
