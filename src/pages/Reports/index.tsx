@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CameraMenuOptions from "@components/CameraMenuOptions.tsx";
-import Navbar from "../../components/Navbar.tsx";
+import Navbar from "../../components/Navbar/Navbar.tsx";
 import "./ReportsPage.css";
 
 function ReportsPage() {

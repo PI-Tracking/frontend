@@ -1,8 +1,8 @@
 
 import Footer from "@components/Footer";
-import Navbar from "@components/Navbar.tsx";
+import Navbar from "@components/Navbar/Navbar";
 import "./MainPage.css";
-import logo from "../../assets/logo.png";
+import logo from "@assets/logo.png";
 
 function MainPage() {
   return (

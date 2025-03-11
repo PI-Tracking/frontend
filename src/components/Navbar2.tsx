@@ -3,6 +3,9 @@ import "./styles/Navbar.css";
 import { UserCircle } from "lucide-react";
 import logo from "../assets/logo.png";
 
+
+// This navbar is for admin
+
 function Navbar() {
   return (
     <nav className="navbar">

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom"; 
 import {
   DocumentIcon,
   MapIcon,
@@ -16,6 +17,8 @@ type MenuOption = {
 
 function CameraMenuOptions() {
   const [selectedOption, setSelectedOption] = useState<string>("camera");
+  const navigate = useNavigate(); 
+  const location = useLocation(); 
 
   const menuOptions: MenuOption[] = [
     { id: "document", icon: <DocumentIcon />, label: "Document" },
@@ -25,9 +28,41 @@ function CameraMenuOptions() {
     { id: "video", icon: <VideoCameraIcon />, label: "Video" },
   ];
 
+  useEffect(() => {
+    switch (location.pathname) {
+      case "/reports":
+        setSelectedOption("document");
+        break;
+      case "/cameras":
+        setSelectedOption("camera");
+        break;
+      case "/upload-videos":
+        setSelectedOption("share");
+        break;
+      default:
+        break;
+    }
+  }, [location]);
+
   const handleOptionClick = (id: string) => {
-    console.log("Option clicked:", id); // for debuggin purposes but then i found out it was cuz of zindex i couldnt select it
     setSelectedOption(id);
+    switch (id) {
+      case "document":
+        navigate("/reports"); 
+        break;
+      case "map":
+        break;
+      case "camera":
+        navigate("/cameras"); 
+        break;
+      case "share":
+        navigate("/upload-videos"); 
+        break;
+      case "video":
+        break;
+      default:
+        break;
+    }
   };
 
   return (
