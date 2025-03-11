@@ -1,9 +1,9 @@
 import { useState } from "react";
 import CameraMenuOptions from "@components/CameraMenuOptions.tsx";
-import Navbar from "../../components/Navbar/Navbar.tsx";
+import Navbar from "@components/Navbar";
 import "./CamerasPage.css";
 
-const dummyCameras = Array(9).fill(null); 
+const dummyCameras = Array(9).fill(null);
 
 // for some reason the carousel is showing X-1 cameras
 
@@ -11,7 +11,7 @@ function CamerasPage() {
   const [selectedCamera, setSelectedCamera] = useState<number | null>(null);
 
   const handleCameraClick = (index: number) => {
-    setSelectedCamera(index === selectedCamera ? null : index); 
+    setSelectedCamera(index === selectedCamera ? null : index);
   };
 
   return (
@@ -32,7 +32,10 @@ function CamerasPage() {
         </section>
       ) : (
         <>
-          <section className="main-view" onClick={() => setSelectedCamera(null)}>
+          <section
+            className="main-view"
+            onClick={() => setSelectedCamera(null)}
+          >
             <div className="highlighted-camera">
               Camera {selectedCamera + 1}
             </div>

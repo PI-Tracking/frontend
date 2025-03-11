@@ -18,7 +18,7 @@
 .navbar-logo1 {
   font-size: 1.5rem;
   font-weight: bold;
-  color: white; 
+  color: white;
   margin-right: 1rem;
 }
 
@@ -45,7 +45,7 @@
 }
 
 .navbar-menu li a:hover {
-  color: #ff6347; 
+  color: #ff6347;
 }
 
 .navbar-profile {
@@ -55,7 +55,7 @@
 }
 
 .navbar-profile:hover {
-  color: #ff6347; 
+  color: #ff6347;
 }
 
 @media (max-width: 768px) {

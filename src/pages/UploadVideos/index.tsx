@@ -1,5 +1,5 @@
 import CameraMenuOptions from "@components/CameraMenuOptions.tsx";
-import Navbar from "../../components/Navbar/Navbar.tsx";
+import Navbar from "@components/Navbar";
 import "./UploadVideosPage.css";
 import { MdUpload } from "react-icons/md";
 import { AiOutlineFileAdd } from "react-icons/ai";
