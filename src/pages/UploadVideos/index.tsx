@@ -1,4 +1,4 @@
-import CameraMenuOptions from "@components/CameraMenuOptions.tsx";
+import CameraMenuOptions from "@components/CameraMenuOptions";
 import Navbar from "@components/Navbar";
 import "./UploadVideosPage.css";
 import { MdUpload } from "react-icons/md";

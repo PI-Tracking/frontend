@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   DocumentIcon,
   MapIcon,
@@ -7,7 +7,7 @@ import {
   ArrowUpTrayIcon,
   VideoCameraIcon,
 } from "@heroicons/react/24/outline";
-import "./CameraMenuOptions.css";
+import "./cameraMenuOptions.css";
 
 type MenuOption = {
   id: string;
@@ -17,8 +17,8 @@ type MenuOption = {
 
 function CameraMenuOptions() {
   const [selectedOption, setSelectedOption] = useState<string>("camera");
-  const navigate = useNavigate(); 
-  const location = useLocation(); 
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const menuOptions: MenuOption[] = [
     { id: "document", icon: <DocumentIcon />, label: "Document" },
@@ -48,15 +48,15 @@ function CameraMenuOptions() {
     setSelectedOption(id);
     switch (id) {
       case "document":
-        navigate("/reports"); 
+        navigate("/reports");
         break;
       case "map":
         break;
       case "camera":
-        navigate("/cameras"); 
+        navigate("/cameras");
         break;
       case "share":
-        navigate("/upload-videos"); 
+        navigate("/upload-videos");
         break;
       case "video":
         break;

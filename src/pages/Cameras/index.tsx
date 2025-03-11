@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CameraMenuOptions from "@components/CameraMenuOptions.tsx";
+import CameraMenuOptions from "@components/CameraMenuOptions";
 import Navbar from "@components/Navbar";
 import "./CamerasPage.css";
 
