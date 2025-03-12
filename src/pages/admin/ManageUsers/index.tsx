@@ -1,4 +1,4 @@
-import Navbar from "@components/Navbar2.tsx";
+import Navbar from "@components/Navbar2";
 import { useState } from "react";
 import "./AdminManagePage.css";
 
@@ -14,9 +14,11 @@ function AdminManagePage() {
   const [newUser, setNewUser] = useState({ email: "", enabled: true });
 
   const toggleUserStatus = (id) => {
-    setUsers(users.map((user) =>
-      user.id === id ? { ...user, enabled: !user.enabled } : user
-    ));
+    setUsers(
+      users.map((user) =>
+        user.id === id ? { ...user, enabled: !user.enabled } : user
+      )
+    );
   };
 
   const handleInputChange = (e) => {
@@ -34,7 +36,7 @@ function AdminManagePage() {
         { id: Date.now(), email: newUser.email, enabled: newUser.enabled },
       ]);
       setNewUser({ email: "", enabled: true });
-      setIsFormVisible(false); 
+      setIsFormVisible(false);
     }
   };
 
@@ -74,36 +76,38 @@ function AdminManagePage() {
       </button>
 
       {isFormVisible && (
-  <div className="modal-overlay">
-    <div className="modal-content">
-      <button className="modal-close-btn" onClick={() => setIsFormVisible(false)}>
-        &times;
-      </button>
-      <div className="add-user-form">
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter email"
-          value={newUser.email}
-          onChange={handleInputChange}
-          required
-        />
-        {/*  Here it should generate a random passowrd */}
-        <label>
-          <input
-            type="checkbox"
-            name="enabled"
-            checked={newUser.enabled}
-            onChange={handleInputChange}
-          />
-          Enabled
-        </label>
-        <button onClick={handleAddUser}>Add User</button>
-      </div>
-    </div>
-  </div>
-)}
-
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="modal-close-btn"
+              onClick={() => setIsFormVisible(false)}
+            >
+              &times;
+            </button>
+            <div className="add-user-form">
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter email"
+                value={newUser.email}
+                onChange={handleInputChange}
+                required
+              />
+              {/*  Here it should generate a random passowrd */}
+              <label>
+                <input
+                  type="checkbox"
+                  name="enabled"
+                  checked={newUser.enabled}
+                  onChange={handleInputChange}
+                />
+                Enabled
+              </label>
+              <button onClick={handleAddUser}>Add User</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

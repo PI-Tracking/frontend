@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import "./styles/Navbar.css";
-import { UserCircle } from "lucide-react";
-import logo from "../assets/logo.png";
+import "./navbar.css";
+//import { UserCircle } from "lucide-react";
+import logo from "@assets/logo.png";
+
+// This navbar is for admin
 
 function Navbar() {
   return (

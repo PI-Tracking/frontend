@@ -1,12 +1,11 @@
 import logo from "@assets/logo.png";
-import "./login.css";
+import "./LoginPage.css";
 import { useState } from "react";
 import Circles from "./assets/Circles.svg";
 import Curve from "./assets/Curve.svg";
 import login from "@api/auth";
 import { User } from "@Types/User";
 
-import CameraMenuOptions from "@components/CameraMenuOptions";
 
 const isEmptyString = (string: string) => {
   if (typeof string != "string") {
