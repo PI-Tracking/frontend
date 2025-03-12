@@ -2,8 +2,15 @@ import { Link } from "react-router-dom";
 import { UserCircle } from "lucide-react";
 import "./navbar.css";
 import logo from "@assets/logo.png";
+import { useState } from "react";
 
 function Navbar() {
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);  
+
+  const toggleProfileMenu = () => {
+    setIsProfileMenuOpen(prevState => !prevState);
+  };
+
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-logo-container">
@@ -37,7 +44,27 @@ function Navbar() {
         </li>
       </ul>
 
-      <UserCircle className="navbar-profile" />
+      <div className="navbar-profile-container">
+        <UserCircle 
+          className={`navbar-profile ${isProfileMenuOpen ? "active" : ""}`} 
+          onClick={toggleProfileMenu} 
+        />
+        {isProfileMenuOpen && (
+          <div className="navbar-profile-menu">
+            <ul>
+              <li>
+                <Link to="/profile">Profile</Link>
+              </li>
+              <li>
+                <Link to="/settings">Settings</Link>
+              </li>
+              <li>
+                <Link to="/logout">Logout</Link>
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
     </nav>
   );
 }
