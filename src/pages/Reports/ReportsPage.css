@@ -32,12 +32,18 @@
 
 .tab {
   padding: 12px 20px;
-  background-color: transparent;
+  /* Why daheck isnt background color changing */
+  background-color: #444; 
   border: none;
-  color: white;
+  /* color: rgb(0, 0, 0); */
   font-size: 16px;
   cursor: pointer;
   position: relative;
+  color:white;
+}
+
+.tab:hover {
+  background-color: rgb(35, 35, 35);
 }
 
 .tab.active {
@@ -53,6 +59,11 @@
   height: 3px;
   background-color: white;
 }
+
+.tab.active:hover {
+  background-color: rgb(35, 35, 35);
+}
+
 
 .reports-list {
   display: flex;
