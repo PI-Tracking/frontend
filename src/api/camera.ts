@@ -1,11 +1,12 @@
 import apiClient from "./api";
-import { Camera, CameraDTO } from "@Types/Camera";
+import Camera from "@Types/Camera";
+import CameraDTO from "@Types/CameraDTO";
 import { UUID } from "@Types/Base";
 import { AxiosResponse } from "axios";
 
 const baseEndpoint = "/cameras";
 
-async function getAllCameras(): Promise<AxiosResponse<Array<Camera>>> {
+async function getAllCameras(): Promise<AxiosResponse<Camera[]>> {
   /**
    * Return:
    *     { data: Array[Camera]; status: OK }
@@ -73,3 +74,7 @@ export {
   toggleCamera,
   subscribeToCamera,
 };
+export function updateCamera(updatedCamera: Camera) {
+  console.log(updatedCamera);
+  throw new Error("Function not implemented.");
+}
