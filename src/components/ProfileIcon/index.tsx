@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { UserCircle } from "lucide-react";
 import "./ProfileDropdown.css";
@@ -16,10 +16,7 @@ const ProfileDropdown = () => {
   useEffect(() => {
     const clickHandler = ({ target }) => {
       if (!dropdown.current || !trigger.current) return;
-      if (
-        dropdown.current.contains(target) ||
-        trigger.current.contains(target)
-      )
+      if (dropdown.current.contains(target) || trigger.current.contains(target))
         return;
       setIsDropdownOpen(false);
     };
