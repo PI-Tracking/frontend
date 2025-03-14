@@ -6,20 +6,24 @@ import "./ProfileDropdown.css";
 const ProfileDropdown = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const trigger = useRef(null);
-  const dropdown = useRef(null);
+  const trigger = useRef<SVGSVGElement | null>(null);
+  const dropdown = useRef<HTMLDivElement | null>(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
   };
 
   useEffect(() => {
-    const clickHandler = ({ target }) => {
+    const clickHandler = ({ target }: MouseEvent) => {
       if (!dropdown.current || !trigger.current) return;
+      if (!(target instanceof Node)) return; // Necessary to "bypass" typescript type enforcement
+
       if (dropdown.current.contains(target) || trigger.current.contains(target))
         return;
+
       setIsDropdownOpen(false);
     };
+
     document.addEventListener("click", clickHandler);
     return () => document.removeEventListener("click", clickHandler);
   }, []);
