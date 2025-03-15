@@ -26,10 +26,8 @@ function ListCameras({ analysis, changeCamera }: IListCameras) {
         const camera = analise.camera;
 
         return (
-          <div className={styles.camera} key={camera.id}>
-            <div className={styles.frame}>
-              <img src={currentFrame} />
-            </div>
+          <div className={styles.listElement} key={camera.id}>
+            <img src={currentFrame} className={styles.frame} />
             <div
               className={styles.cameraInfo}
               onClick={() => {
@@ -39,11 +37,11 @@ function ListCameras({ analysis, changeCamera }: IListCameras) {
                 changeCamera(camera.id);
               }}
             >
-              <span className={styles.cameraName}>{camera.name}</span>
-              <span className={styles.cameraId}>ID: {camera.id}</span>
-              <span className={styles.cameraDetectionsl}>
+              <p className={styles.cameraName}>{camera.name}</p>
+              <p className={styles.cameraId}>ID: {camera.id}</p>
+              <p className={styles.cameraDetections}>
                 {analise.detections.length} deteções
-              </span>
+              </p>
 
               <div className={styles.accordion}></div>
             </div>

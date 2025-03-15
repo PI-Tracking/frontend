@@ -3,4 +3,43 @@
   justify-content: center;
   align-items: center;
   box-shadow: inset 0px 0px 28px 0px rgba(0, 0, 0, 0.25);
+  width: 100%;
+}
+
+.listElement {
+  display: flex;
+  width: 100%;
+  padding: 0px;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.frame {
+  height: 80px;
+}
+
+.cameraInfo {
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+}
+
+.cameraName {
+  width: 100%;
+  text-align: left;
+  font-weight: bold;
+}
+
+.cameraId {
+  width: 100%;
+  text-align: left;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.cameraDetections {
+  text-align: left;
+}
+
+.accordion {
 }

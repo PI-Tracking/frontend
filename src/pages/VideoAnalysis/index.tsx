@@ -76,13 +76,16 @@ function VideoAnalysisPage() {
       <Navbar />
       <main className={styles.main}>
         <div className={styles.column}>
-          <div className={styles.box}>
-            <h3 style={{ paddingBottom: "10px" }}>Selected Suspect</h3>
+          <div
+            className={styles.box}
+            style={{ paddingLeft: "5px", paddingRight: "5px" }}
+          >
+            <h3 className={styles.boxTitle}>Selected Suspect</h3>
             <img src={suspectImg} className={styles.suspectImage} />
           </div>
 
           <div className={styles.box}>
-            <h3>Detections</h3>
+            <h3 className={styles.boxTitle}>Detections</h3>
             <ListDetections detections={selectedCamera.detections} />
           </div>
         </div>
@@ -92,8 +95,8 @@ function VideoAnalysisPage() {
         </div>
 
         <div className={styles.column}>
-          <div className={styles.box}>
-            <h3>Cameras</h3>
+          <div className={styles.box} style={{ minWidth: "250px" }}>
+            <h3 className={styles.boxTitle}>Cameras</h3>
             <ListCameras
               analysis={report.reportAnalysis}
               changeCamera={changeCamera}
