@@ -11,11 +11,14 @@ import CamerasPage from "@pages/Cameras";
 import AdminCameraPage from "@pages/admin/ManageCameras";
 import AdminManageUsers from "@pages/admin/ManageUsers";
 
+
+import CamerasPageMap from "@pages/Cameras2";
+
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MainPage />} />
+        {/* <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
 
         <Route path="/upload-videos" element={<UploadVideosPage />} />
@@ -23,7 +26,8 @@ function App() {
         <Route path="/reports" element={<ReportsPage />} />
 
         <Route path="/admin/cameras" element={<AdminCameraPage />} />
-        <Route path="/admin/users" element={<AdminManageUsers />} />
+        <Route path="/admin/users" element={<AdminManageUsers />} /> */}
+        <Route path="/" element={<CamerasPageMap />} />
       </Routes>
     </Router>
   );
