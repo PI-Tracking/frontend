@@ -5,7 +5,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-/* I was getting a border so Im adding this */
+/* I was getting a border so I'm adding this */
 
 .container {
   display: flex;
@@ -19,18 +19,12 @@
   margin-top: auto;
 }
 
-.navbar {
-}
-
-.menu-options {
-}
-
 .video-uploader-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
   flex-direction: column;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -40,6 +34,8 @@
   opacity: 0.69;
   border-radius: 10px;
   gap: 20px;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .upload-videos-text {
@@ -83,4 +79,80 @@
 .upload-videos-button:active {
   background-color: #4a4a4a;
   transform: translateY(0);
+}
+
+.uploaded-files-container {
+  margin-top: 20px;
+  width: 90%;
+  background-color: #333;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.uploaded-file {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #444;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.file-name {
+  font-weight: bold;
+}
+
+.file-size {
+  color: #bbb;
+  font-size: 0.9rem;
+}
+
+.remove-file-icon {
+  color: #bbb;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.remove-file-icon:hover {
+  color: #ff5555;
+}
+
+.modal-overlay2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  color: black;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content2 {
+  background-color: #dbdbdb; 
+  padding: 40px;
+  border-radius: 4px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.close-modal-button2 {
+  background-color: #444444;
+  color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border: none;
+  margin-top: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.close-modal-button2:hover {
+  background-color: #303030;
 }
