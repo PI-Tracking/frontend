@@ -67,14 +67,17 @@ async function subscribeToCamera(id: UUID) {
   };
 }
 
+async function updateCamera(updatedCamera: Camera): Promise<AxiosResponse> {
+  const endpoint = baseEndpoint;
+
+  return apiClient.post(endpoint, updatedCamera);
+}
+
 export {
   getAllCameras,
   addNewCamera,
   getCameraInfo,
   toggleCamera,
   subscribeToCamera,
+  updateCamera,
 };
-export function updateCamera(updatedCamera: Camera) {
-  console.log(updatedCamera);
-  throw new Error("Function not implemented.");
-}

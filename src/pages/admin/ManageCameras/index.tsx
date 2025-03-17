@@ -16,11 +16,12 @@ function AdminCameraPage() {
 
       <CamerasList setEditingCamera={setEditingCamera} />
 
-      <AddCameraForm
-        editingCamera={editingCamera}
-        isFormVisible={isFormVisible}
-        setIsFormVisible={setIsFormVisible}
-      />
+      {isFormVisible && (
+        <AddCameraForm
+          editingCamera={editingCamera}
+          setIsFormVisible={setIsFormVisible}
+        />
+      )}
 
       <div className="camera-controls">
         <button

@@ -1,56 +1,70 @@
 import "../AdminCameraPage.css";
 import Camera from "@Types/Camera";
-import { Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import * as Api from "@api/camera";
-import CameraDTO from "@Types/CameraDTO";
+import { v4 as uuid } from "uuid";
 
 interface IAddCameraForm {
   setIsFormVisible: Dispatch<SetStateAction<boolean>>;
-  isFormVisible: boolean;
   editingCamera: Camera;
 }
 
 export default function AddCameraForm({
-  isFormVisible,
   setIsFormVisible,
   editingCamera,
 }: IAddCameraForm) {
-  const [newCamera, setNewCamera] = useState<Camera>(editingCamera);
+  const [newCamera, setNewCamera] = useState<Camera>({
+    ...editingCamera,
+    name: editingCamera.name,
+    latitude: editingCamera.latitude,
+    longitude: editingCamera.longitude,
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState({
+    completed: false,
+    sucess: false,
+  });
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     if (!(newCamera.name && newCamera.latitude && newCamera.longitude)) {
       return;
     }
 
-    if (newCamera.id != "") {
-      /* Updating a camera*/
-      const updatedCamera: Camera = {
-        ...editingCamera,
-        ...newCamera,
-      };
+    const payloadCamera: Camera = {
+      id: editingCamera.id ?? uuid(),
+      name: newCamera.name,
+      latitude: newCamera.latitude,
+      longitude: newCamera.longitude,
+      active: editingCamera.active ?? true,
+      addedAt: editingCamera.addedAt ?? new Date().toISOString(),
+    };
 
-      try {
-        Api.updateCamera(updatedCamera);
-      } catch (error) {
-        console.error(error);
+    let response;
+    try {
+      if (newCamera.id != "") {
+        response = await Api.updateCamera(payloadCamera);
+      } else {
+        response = await Api.addNewCamera(payloadCamera);
       }
-    } else {
-      /* Adding new Camera */
-      const payloadCamera: CameraDTO = {
-        name: newCamera.name,
-        latitude: newCamera.latitude,
-        longitude: newCamera.longitude,
-      };
-
-      try {
-        Api.addNewCamera(payloadCamera);
-      } catch (error) {
-        console.error(error);
-      }
+    } catch (error) {
+      console.error(error);
     }
+
+    setStatus({
+      completed: true,
+      sucess: response?.status === 200,
+    });
+    setTimeout(() => {
+      setStatus({ completed: false, sucess: false });
+      setIsFormVisible(false);
+    }, 5_000);
+
+    setIsLoading(false);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setNewCamera({
       ...newCamera,
@@ -58,78 +72,90 @@ export default function AddCameraForm({
     });
   };
 
-  return (
-    <>
-      {isFormVisible && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button
-              className="modal-close-btn"
-              onClick={() => setIsFormVisible(false)}
-            >
-              &times;
-            </button>
-            <div className="add-camera-form">
-              <h2>{editingCamera ? "Edit Camera" : "Add Camera"}</h2>
-
-              <div className="form-group">
-                <label>Camera name</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Camera Name"
-                  value={newCamera.name}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Camera Latitude</label>
-                <input
-                  type="text"
-                  name="latitude"
-                  placeholder="Camera Latitude"
-                  value={newCamera.latitude}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Longitude</label>
-                <input
-                  name="longitude"
-                  placeholder="Camera Longitude"
-                  value={newCamera.longitude}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <button className="submit-btn" onClick={handleSubmit}>
-                {editingCamera ? "Save Changes" : "Submit"}
-              </button>
-            </div>
+  if (isLoading) {
+    return (
+      <>
+        <div className="camera-preview-area">
+          <div className="preview-placeholder">
+            <div className="loading-spinner"></div>
+            <p>Attempting to add camera</p>
           </div>
         </div>
-      )}
-      {
-        //  {(isAddingCamera || cameraAdded) && (
-        //    <div className="camera-preview-area">
-        //      {isAddingCamera ? (
-        //        <div className="preview-placeholder">
-        //          <div className="loading-spinner"></div>
-        //          <p>Attempting to add camera</p>
-        //        </div>
-        //      ) : (
-        //        <div className="preview-placeholder">
-        //          <div className="success-checkmark">&#10003;</div>
-        //          <p>Camera successfully added!</p>
-        //        </div>
-        //      )}
-        //    </div>
-        //  )}
-      }
+      </>
+    );
+  }
+
+  if (status.completed) {
+    return (
+      <div className="camera-preview-area">
+        {status.sucess ? (
+          <div className="preview-placeholder">
+            <p className="success-checkmark">&#10003;</p>
+            <p>Camera successfully added! :D</p>
+          </div>
+        ) : (
+          <div className="preview-placeholder">
+            <p className="success-checkmark">&#10005;</p>
+            <p>Failure adding/updating Camera :(</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <button
+            className="modal-close-btn"
+            onClick={() => setIsFormVisible(false)}
+          >
+            &times;
+          </button>
+          <div className="add-camera-form">
+            <h2>{editingCamera ? "Edit Camera" : "Add Camera"}</h2>
+
+            <div className="form-group">
+              <label>Camera name</label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Camera Name"
+                value={newCamera.name}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Camera Latitude</label>
+              <input
+                type="text"
+                name="latitude"
+                placeholder="Camera Latitude"
+                value={newCamera.latitude}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Longitude</label>
+              <input
+                name="longitude"
+                placeholder="Camera Longitude"
+                value={newCamera.longitude}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <button className="submit-btn" onClick={handleSubmit}>
+              {editingCamera ? "Save Changes" : "Submit"}
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

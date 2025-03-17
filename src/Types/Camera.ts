@@ -6,5 +6,5 @@ export default interface Camera {
   latitude: double;
   longitude: double;
   active: boolean;
-  addedAt: Date;
+  addedAt: string;
 }
