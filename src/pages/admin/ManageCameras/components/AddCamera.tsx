@@ -2,7 +2,7 @@ import "../AdminCameraPage.css";
 import Camera from "@Types/Camera";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import * as Api from "@api/camera";
-import { v4 as uuid } from "uuid";
+import CameraDTO from "@Types/CameraDTO";
 
 interface IAddCameraForm {
   setIsFormVisible: Dispatch<SetStateAction<boolean>>;
@@ -33,20 +33,20 @@ export default function AddCameraForm({
     }
 
     const payloadCamera: Camera = {
-      id: editingCamera.id ?? uuid(),
+      id: editingCamera.id ?? undefined,
       name: newCamera.name,
       latitude: newCamera.latitude,
       longitude: newCamera.longitude,
-      active: editingCamera.active ?? true,
-      addedAt: editingCamera.addedAt ?? new Date().toISOString(),
+      active: editingCamera.active ?? undefined,
+      addedAt: editingCamera.addedAt ?? undefined,
     };
 
     let response;
     try {
-      if (newCamera.id != "") {
+      if (newCamera.id !== undefined) {
         response = await Api.updateCamera(payloadCamera);
       } else {
-        response = await Api.addNewCamera(payloadCamera);
+        response = await Api.addNewCamera(payloadCamera as CameraDTO);
       }
     } catch (error) {
       console.error(error);
