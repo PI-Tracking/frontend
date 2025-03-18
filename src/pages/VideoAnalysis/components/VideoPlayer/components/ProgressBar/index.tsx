@@ -1,18 +1,27 @@
 import { ChangeEvent } from "react";
 import { Detection } from "../types/Detection";
 import styles from "./Player.module.css";
+import { Dispatch, SetStateAction } from "react";
+import { PauseIcon, PlayIcon } from "lucide-react";
 
 interface IProgressBar {
   videoRef: React.RefObject<HTMLVideoElement | null>;
-  progress: number;
-  setProgress: React.Dispatch<React.SetStateAction<number>>;
   detections: Detection[];
+
+  progress: number;
+  setProgress: Dispatch<SetStateAction<number>>;
+
+  playing: boolean;
+  setPlaying: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function ProgressBar({
+  videoRef,
   progress,
   setProgress,
-  videoRef,
+  playing,
+  setPlaying,
+  detections,
 }: IProgressBar) {
   if (videoRef.current == null) {
     return <></>;
@@ -27,8 +36,29 @@ export default function ProgressBar({
     setProgress(parseFloat(event.target.value));
   };
 
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.paused) {
+      video.play();
+      setPlaying(true);
+    } else {
+      video.pause();
+      setPlaying(false);
+    }
+  };
   return (
     <div style={{ width: "100%" }}>
+      <button onClick={togglePlay} className={styles.playButton}>
+        {/*  Alter here the color of the icons  */}
+        {playing ? (
+          <PauseIcon fill="#FFFFFF" strokeWidth={0} />
+        ) : (
+          <PlayIcon fill="#4335FF" strokeWidth={0} />
+        )}
+      </button>
+
       <input
         type="range"
         className={styles.progressBar}

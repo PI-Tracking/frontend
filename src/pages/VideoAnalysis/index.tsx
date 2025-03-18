@@ -4,14 +4,14 @@ import styles from "./styles.module.css";
 /* Default page components */
 import Navbar from "@components/Navbar";
 import CameraMenuOptions from "@components/CameraMenuOptions";
+import noimg from "@assets/noimg.png";
 
 /* Page components */
-import { Detection, DetectionType } from "./types/Detection";
 import ListDetections from "./components/ListDetections";
 import ListCameras from "./components/ListCameras";
-import Player from "./components/Player";
+import Player from "./components/VideoPlayer";
 import { Report, VideoAnalysis } from "./types/Report";
-import noimg from "@assets/noimg.png";
+import { Detection, DetectionType } from "./types/Detection";
 
 /* MOCK DATA */
 import mock_video from "./mock_data/video.mp4";
