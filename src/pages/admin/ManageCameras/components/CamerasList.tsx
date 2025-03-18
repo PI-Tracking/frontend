@@ -13,9 +13,13 @@ import Camera from "@Types/Camera";
 
 interface ICamerasList {
   setEditingCamera: Dispatch<SetStateAction<Camera>>;
+  openForm: () => void;
 }
 
-export default function CamerasList({ setEditingCamera }: ICamerasList) {
+export default function CamerasList({
+  setEditingCamera,
+  openForm,
+}: ICamerasList) {
   const [cameraList, setCameras] = useState<Camera[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +45,7 @@ export default function CamerasList({ setEditingCamera }: ICamerasList) {
 
   const handleEditCamera = (camera: Camera) => {
     setEditingCamera(camera);
+    openForm();
   };
 
   if (isLoading) {
@@ -69,7 +74,8 @@ export default function CamerasList({ setEditingCamera }: ICamerasList) {
                 <div className="camera-content">
                   <div className="camera-name">{camera.name}</div>
                   <div className="camera-description">
-                    `lat: ${camera.latitude};lon: ${camera.longitude}`
+                    <p>lat: {camera.latitude}</p>
+                    <p>lon: {camera.longitude}</p>
                   </div>
                 </div>
               </td>

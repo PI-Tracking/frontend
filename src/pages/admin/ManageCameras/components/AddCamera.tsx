@@ -49,17 +49,18 @@ export default function AddCameraForm({
         response = await Api.addNewCamera(payloadCamera as CameraDTO);
       }
     } catch (error) {
+      console.error("Error:");
       console.error(error);
     }
 
     setStatus({
       completed: true,
-      sucess: response?.status === 200,
+      sucess: response ? [200, 201].includes(response.status) : false,
     });
     setTimeout(() => {
       setStatus({ completed: false, sucess: false });
       setIsFormVisible(false);
-    }, 5_000);
+    }, 2_500);
 
     setIsLoading(false);
   };

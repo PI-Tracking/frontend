@@ -14,7 +14,10 @@ function AdminCameraPage() {
     <div className="admin-manage-container">
       <Navbar />
 
-      <CamerasList setEditingCamera={setEditingCamera} />
+      <CamerasList
+        setEditingCamera={setEditingCamera}
+        openForm={() => setIsFormVisible(true)}
+      />
 
       {isFormVisible && (
         <AddCameraForm
