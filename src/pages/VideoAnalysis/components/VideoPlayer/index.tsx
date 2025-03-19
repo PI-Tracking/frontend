@@ -1,49 +1,20 @@
-import { useEffect, useRef, useState } from "react";
-import styles from "./Player.module.css";
-import ProgressBar from "./ProgressBar";
-import { VideoAnalysis } from "../types/Report";
-
-//function normalizeDetection(
-//  detection: Detection,
-//  width: number,
-//  height: number
-//): Detection {
-//  const norm_points = detection.Box.points.map((coords) => [
-//    coords[0] / width,
-//    coords[0] / height,
-//  ]);
-//  return {
-//    ...detection,
-//    Box: {
-//      points: norm_points,
-//    },
-//  };
-//}
+import { useRef, useState } from "react";
+import { VideoAnalysis } from "@Types/VideoAnalysis";
+import ProgressBar from "./components/ProgressBar";
+import DetectionsBoxes from "./components/DetectionsBoxes";
+import styles from "./styles.module.css";
 
 interface IVideoPlayer {
   videoAnalysis: VideoAnalysis;
+  controls: boolean;
 }
-function VideoPlayer({ videoAnalysis }: IVideoPlayer) {
+
+function VideoPlayer({ videoAnalysis, controls }: IVideoPlayer) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [progress, setProgress] = useState(0);
   const [playing, setPlaying] = useState(false);
 
   const video = videoAnalysis?.video;
   const detections = videoAnalysis?.detections;
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const updateProgress = () => {
-      setProgress((video.currentTime / video.duration) * 100);
-    };
-
-    video.addEventListener("timeupdate", updateProgress);
-    return () => {
-      video.removeEventListener("timeupdate", updateProgress);
-    };
-  }, []);
 
   return (
     <div className={styles.videoContainer}>
@@ -55,17 +26,20 @@ function VideoPlayer({ videoAnalysis }: IVideoPlayer) {
         ></video>
 
         <DetectionsBoxes detections={detections} />
-        ))}
       </div>
 
-      <div className={styles.controls}>
-        <ProgressBar
-          videoRef={videoRef}
-          progress={progress}
-          setProgress={setProgress}
-          detections={detections}
-        />
-      </div>
+      {controls ? (
+        <div className={styles.controls}>
+          <ProgressBar
+            videoRef={videoRef}
+            detections={detections}
+            playing={playing}
+            setPlaying={setPlaying}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

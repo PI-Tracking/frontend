@@ -10,8 +10,8 @@ import noimg from "@assets/noimg.png";
 import ListDetections from "./components/ListDetections";
 import ListCameras from "./components/ListCameras";
 import Player from "./components/VideoPlayer";
-import { Report, VideoAnalysis } from "./types/Report";
-import { Detection, DetectionType } from "./types/Detection";
+import { Report, VideoAnalysis } from "@Types/Report";
+import { Detection, DetectionType } from "@Types/Detection";
 
 /* MOCK DATA */
 import mock_video from "./mock_data/video.mp4";
@@ -91,7 +91,7 @@ function VideoAnalysisPage() {
         </div>
 
         <div className={styles.player}>
-          <Player videoAnalysis={selectedCamera} />
+          <Player videoAnalysis={selectedCamera} controls={true} />
         </div>
 
         <div className={styles.column}>

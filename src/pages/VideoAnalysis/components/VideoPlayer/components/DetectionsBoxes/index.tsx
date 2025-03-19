@@ -1,5 +1,22 @@
-import { Detection } from "../types/Detection";
-import styles from 
+import { Detection } from "@Types/Detection";
+import styles from "./styles.module.css";
+
+//function normalizeDetection(
+//  detection: Detection,
+//  width: number,
+//  height: number
+//): Detection {
+//  const norm_points = detection.Box.points.map((coords) => [
+//    coords[0] / width,
+//    coords[0] / height,
+//  ]);
+//  return {
+//    ...detection,
+//    Box: {
+//      points: norm_points,
+//    },
+//  };
+//}
 
 interface IDetectionBoxes {
   detections: Detection[];
