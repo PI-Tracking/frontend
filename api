@@ -1,0 +1,17 @@
+Camera {
+    String name,
+    Double latitude,
+    Double Longitude, 
+    boolean active,
+}
+
+/api/v1
+    /cameras
+    GET -> Get all (Returns List<Camera>)
+    POST -> Add Camera (Body: Camera; Returns: Camera )
+        
+        /{id}
+        GET -> Get camera by id {returns Camera or NOT_FOUND}
+        
+            /toggle-active
+            PATCH -> (dis/en)able camera (returns NOT_FOUND or NO_CONTENT(204))
