@@ -7,10 +7,12 @@
 }
 
 .playButton {
+  width: 20px;
+  height: 20px;
   background: none;
   border: none;
-  font-size: 20px;
   cursor: pointer;
+  color: white;
 }
 
 .progressBar {
@@ -18,4 +20,35 @@
   height: 5px;
   background: #ccc;
   cursor: pointer;
+}
+
+.controlsWrapper {
+  padding: 10px 10px 10px 0px;
+  width: 100%;
+  height: 20px;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.progressBarBackground {
+  width: 100%;
+  height: 10px;
+  background: #ccc;
+}
+
+.progressBarSeen {
+  position: relative;
+  height: 10px;
+  background: #ff3131;
+}
+
+.progressBarBubble {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  background: #4848ff;
+  border-radius: 20px;
+  bottom: 12.5px;
 }

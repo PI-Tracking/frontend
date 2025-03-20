@@ -24,3 +24,7 @@
   background-color: rgb(29, 29, 29);
   /* Alter if needed the background color was just for testing purposes */
 }
+
+.controls {
+  width: 100%;
+}

@@ -1,11 +1,10 @@
 import {
   Dispatch,
   SetStateAction,
-  ChangeEvent,
+  //ChangeEvent,
   useState,
   useEffect,
 } from "react";
-import { PauseIcon, PlayIcon } from "lucide-react";
 import { Detection } from "@Types/Detection";
 import styles from "./styles.module.css";
 
@@ -38,14 +37,14 @@ export default function ProgressBar({
     }
   };
 
-  const handleSeek = (event: ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current;
-    if (video == null) return;
-
-    const newTime = parseFloat(event.target.value);
-    setProgressInMillis(newTime);
-    video.currentTime = newTime / 1000;
-  };
+  //const handleSeek = (event: ChangeEvent<HTMLInputElement>) => {
+  //  const video = videoRef.current;
+  //  if (video == null) return;
+  //
+  //  const newTime = parseFloat(event.target.value);
+  //  setProgressInMillis(newTime);
+  //  video.currentTime = newTime / 1000;
+  //};
 
   useEffect(() => {
     const video = videoRef.current;
@@ -64,22 +63,25 @@ export default function ProgressBar({
   return (
     <div className={styles.controlsWrapper}>
       <button onClick={togglePlay} className={styles.playButton}>
-        {/*  Alter here the color of the icons  */}
         {playing ? (
-          <PauseIcon fill="#FFFFFF" strokeWidth={0} />
+          <i className="fa fa-pause"></i>
         ) : (
-          <PlayIcon fill="#4335FF" strokeWidth={0} />
+          <i className="fa fa-play"></i>
         )}
       </button>
 
       <div className={styles.progressBarBackground}>
         <div
           style={{
-            width:
-              (videoRef.current?.currentTime / videoRef.current?.duration) *
-              100,
+            width: progressInMillis / videoRef.current?.duration / 10 + "%",
           }}
           className={styles.progressBarSeen}
+        ></div>
+        <div
+          //style={{
+          //  left:
+          //}}
+          className={styles.progressBarBubble}
         ></div>
         {detections.map(
           (detection) => (detection ? <></> : <></>)
@@ -93,14 +95,6 @@ export default function ProgressBar({
           //></div>
         )}
       </div>
-      <input
-        type="range"
-        className={styles.progressBar}
-        min="0"
-        max={videoRef.current?.duration * 1000}
-        value={progressInMillis}
-        onChange={handleSeek}
-      />
     </div>
   );
 }

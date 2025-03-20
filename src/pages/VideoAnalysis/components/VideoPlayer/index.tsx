@@ -29,14 +29,12 @@ function VideoPlayer({ videoAnalysis, controls }: IVideoPlayer) {
       </div>
 
       {controls ? (
-        <div className={styles.controls}>
-          <ProgressBar
-            videoRef={videoRef}
-            detections={detections}
-            playing={playing}
-            setPlaying={setPlaying}
-          />
-        </div>
+        <ProgressBar
+          videoRef={videoRef}
+          detections={detections}
+          playing={playing}
+          setPlaying={setPlaying}
+        />
       ) : (
         <></>
       )}
