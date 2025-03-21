@@ -4,7 +4,6 @@ import { FormEvent, useState } from "react";
 import Circles from "./assets/Circles.svg";
 import Curve from "./assets/Curve.svg";
 import login from "@api/auth";
-import { User } from "@Types/User";
 import { UserDTO } from "@Types/UserDTO";
 import { useNavigate } from "react-router-dom";
 
