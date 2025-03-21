@@ -1,5 +1,6 @@
 .admin-manage-container {
   margin: 0 auto;
+
 }
 
 .camera-page-header {
@@ -212,17 +213,11 @@
   0% {
     opacity: 1;
   }
-  100% {
-    opacity: 0;
-  }
 }
 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
   }
 }
 

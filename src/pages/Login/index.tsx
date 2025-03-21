@@ -1,10 +1,12 @@
 import logo from "@assets/logo.png";
 import "./LoginPage.css";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import Circles from "./assets/Circles.svg";
 import Curve from "./assets/Curve.svg";
 import login from "@api/auth";
 import { User } from "@Types/User";
+import { UserDTO } from "@Types/UserDTO";
+import { useNavigate } from "react-router-dom";
 
 const isEmptyString = (string: string) => {
   if (typeof string != "string") {
@@ -19,24 +21,35 @@ const isEmptyString = (string: string) => {
 };
 
 function LoginPage() {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [formData, setFormData] = useState<UserDTO>({
+    username: "",
+    password: "",
+  });
   const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
 
-  const handleLogin = async function () {
-    if (isEmptyString(username) || isEmptyString(password)) {
+  const handleLogin = async function (e: FormEvent) {
+    e.preventDefault();
+
+    if (isEmptyString(formData.username) || isEmptyString(formData.password)) {
       return;
     }
 
     try {
-      const response = await login({
-        username: username,
-        password: password,
-      } as User);
-
+      const response = await login(formData);
       console.log(response);
+
+      if (response.status !== 200) {
+        setError("Username/password combination is not valid");
+        return;
+      }
+
+      if (response.data.admin) {
+        navigate("/admin/cameras");
+      }
+      navigate("/cameras");
     } catch (error) {
-      setError("Username password combination is invalid!");
+      setError("Some unknown error occurred");
       console.error("Error trying to login: " + error);
     }
   };
@@ -52,21 +65,35 @@ function LoginPage() {
           <img src={logo} alt="Logo" className="login-logo" />
           <div className="login-box">
             <h2>Dashboard Login</h2>
-            <form>
+            <form onSubmit={handleLogin}>
               <div className="input-group">
                 <input
                   type="text"
                   placeholder="Username"
                   required
-                  value={username}
-                  onChange={({ target }) => setUsername(target.value)}
+                  value={formData.username}
+                  onChange={({ target }) => {
+                    setFormData((formData) => {
+                      return {
+                        ...formData,
+                        username: target.value,
+                      };
+                    });
+                  }}
                 />
                 <input
                   type="password"
                   placeholder="Password"
                   required
-                  value={password}
-                  onChange={({ target }) => setPassword(target.value)}
+                  value={formData.password}
+                  onChange={({ target }) => {
+                    setFormData((formData) => {
+                      return {
+                        ...formData,
+                        password: target.value,
+                      };
+                    });
+                  }}
                 />
               </div>
               {!isEmptyString(error) ? (
@@ -74,7 +101,7 @@ function LoginPage() {
               ) : (
                 <></>
               )}
-              <button type="submit" className="login-btn" onClick={handleLogin}>
+              <button type="submit" className="login-btn">
                 Login
               </button>
             </form>
