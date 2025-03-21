@@ -36,6 +36,7 @@ function LoginPage() {
     setPasswordMismatch(value);
   };
 
+  // If first login goto -> reset-password
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -44,12 +45,19 @@ function LoginPage() {
 
     try {
       const response = await login(formData);
+
+      console.log("Login response:", response);
+
       if (response.status !== 200) {
         setError("Username/password combination is not valid");
         return;
       }
 
-      navigate(response.data.admin ? "/admin/cameras" : "/cameras");
+      if (response.data && response.data.admin) {
+        navigate("/admin/cameras");
+      } else {
+        navigate("/cameras");
+      }
     } catch (error) {
       setError("Some unknown error occurred");
       console.error("Error trying to login: " + error);

@@ -13,6 +13,7 @@ import AdminManageUsers from "@pages/admin/ManageUsers";
 import AdminLogs from "@pages/admin/Logs";
 
 import CamerasPageMap from "@pages/Cameras2";
+import ResetPasswordPage from "@pages/Reset password";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
 
         <Route path="/upload-videos" element={<UploadVideosPage />} />
         <Route path="/reports" element={<ReportsPage />} />
+
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* For admin  */}
         <Route path="/admin/cameras" element={<AdminCameraPage />} />
