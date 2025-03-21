@@ -10,6 +10,7 @@ import CamerasPage from "@pages/Cameras";
 /* Admin */
 import AdminCameraPage from "@pages/admin/ManageCameras";
 import AdminManageUsers from "@pages/admin/ManageUsers";
+import AdminLogs from "@pages/admin/Logs";
 
 
 import CamerasPageMap from "@pages/Cameras2";
@@ -28,6 +29,8 @@ function App() {
         <Route path="/admin/cameras" element={<AdminCameraPage />} />
         <Route path="/admin/users" element={<AdminManageUsers />} /> */}
         <Route path="/" element={<CamerasPageMap />} />
+        <Route path="/admin/users" element={<AdminManageUsers />} />
+        <Route path="/admin/logs" element={<AdminLogs />} />
       </Routes>
     </Router>
   );
