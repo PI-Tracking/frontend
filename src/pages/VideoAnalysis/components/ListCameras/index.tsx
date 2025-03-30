@@ -1,5 +1,5 @@
 import styles from "./ListCameras.module.css";
-import { VideoAnalysis } from "../types/Report";
+import { VideoAnalysis } from "@Types/VideoAnalysis";
 
 import noimg from "@assets/noimg.png";
 

@@ -49,6 +49,18 @@ function VideoAnalysisPage() {
           currentTimestamp: 0,
           detections: detectionList,
         } as VideoAnalysis,
+        {
+          camera: { id: 138, name: "Macdonalds Solum" },
+          video: mock_video,
+          currentTimestamp: 0,
+          detections: detectionList,
+        } as VideoAnalysis,
+        {
+          camera: { id: 238, name: "Polo 2-2" },
+          video: mock_video,
+          currentTimestamp: 0,
+          detections: detectionList,
+        } as VideoAnalysis,
       ],
     };
 
@@ -76,10 +88,7 @@ function VideoAnalysisPage() {
       <Navbar />
       <main className={styles.main}>
         <div className={styles.column}>
-          <div
-            className={styles.box}
-            style={{ paddingLeft: "5px", paddingRight: "5px" }}
-          >
+          <div className={styles.box}>
             <h3 className={styles.boxTitle}>Selected Suspect</h3>
             <img src={suspectImg} className={styles.suspectImage} />
           </div>
