@@ -9,10 +9,11 @@ import LoginPage from "@pages/Login";
 /* User */
 import UploadVideosPage from "@pages/UploadVideos";
 import ReportsPage from "@pages/Reports";
+import ResetPasswordPage from "@pages/Reset password";
+import VideoAnalysisPage from "@pages/VideoAnalysis";
+import CamerasPageMap from "@pages/Cameras2";
+import AdminLogs from "@pages/admin/Logs";
 // import CamerasPage from "@pages/Cameras";
-/* Admin */
-import AdminCameraPage from "@pages/admin/ManageCameras";
-import AdminManageUsers from "@pages/admin/ManageUsers";
 
 function App() {
   return (
