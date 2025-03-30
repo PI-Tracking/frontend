@@ -3,13 +3,13 @@ import { UserCircle } from "lucide-react";
 import "./navbar.css";
 import logo from "@assets/logo.png";
 import { useState } from "react";
-import ProfileDropdown from "../ProfileDropDown";
+import ProfileDropdown from "../ProfileDropDown"; 
 
 function Navbar() {
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);  
 
   const toggleProfileMenu = () => {
-    setIsProfileMenuOpen((prevState) => !prevState);
+    setIsProfileMenuOpen(prevState => !prevState);
   };
 
   return (
@@ -20,45 +20,22 @@ function Navbar() {
           <img src={logo} alt="Logo" className="navbar-logo-image" />
         </Link>
         <ul className="navbar-menu">
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <a
-              href="https://github.com/PI-Tracking"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              About
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://pi-tracking.github.io/microsite/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Contact
-            </a>
-          </li>
-          <li>
-            <Link to="/cameras">Cameras</Link>
-          </li>
+          <li><Link to="/">Home</Link></li>
+          <li><a href="https://github.com/PI-Tracking" target="_blank" rel="noopener noreferrer">About</a></li>
+          <li><a href="https://pi-tracking.github.io/microsite/" target="_blank" rel="noopener noreferrer">Contact</a></li>
+          <li><Link to="/cameras">Cameras</Link></li>
         </ul>
 
         <div className="navbar-profile-container">
-          <UserCircle
-            className={`navbar-profile ${isProfileMenuOpen ? "active" : ""}`}
-            onClick={toggleProfileMenu}
+          <UserCircle 
+            className={`navbar-profile ${isProfileMenuOpen ? "active" : ""}`} 
+            onClick={toggleProfileMenu} 
           />
         </div>
       </nav>
 
       {/* Profile Dropdown (Outside of Navbar) */}
-      <ProfileDropdown
-        isOpen={isProfileMenuOpen}
-        onClose={() => setIsProfileMenuOpen(false)}
-      />
+      <ProfileDropdown isOpen={isProfileMenuOpen} onClose={() => setIsProfileMenuOpen(false)} />
     </>
   );
 }

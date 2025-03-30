@@ -8,19 +8,13 @@ function ProfileDropdown({ isOpen, onClose }) {
     <div className="profile-dropdown">
       <ul>
         <li>
-          <Link to="/profile" onClick={onClose}>
-            Profile
-          </Link>
+          <Link to="/profile" onClick={onClose}>Profile</Link>
         </li>
         <li>
-          <Link to="/settings" onClick={onClose}>
-            Settings
-          </Link>
+          <Link to="/settings" onClick={onClose}>Settings</Link>
         </li>
         <li>
-          <Link to="/logout" onClick={onClose}>
-            Logout
-          </Link>
+          <Link to="/logout" onClick={onClose}>Logout</Link>
         </li>
       </ul>
     </div>

@@ -1,10 +1,6 @@
-import type { double, UUID } from "./Base";
-
-export default interface Camera {
-  id: UUID;
+interface Camera {
+  id: number;
   name: string;
-  latitude: double;
-  longitude: double;
-  active: boolean;
-  addedAt: string;
 }
+
+export type { Camera };

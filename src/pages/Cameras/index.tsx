@@ -20,7 +20,7 @@ function CamerasPage() {
 
       {selectedCamera === null ? (
         <section className="cameras">
-          {dummyCameras.map((_, index: number) => (
+          {dummyCameras.map((_, index) => (
             <div
               key={index}
               className="camera-feed"
@@ -43,8 +43,8 @@ function CamerasPage() {
 
           <section className="carousel">
             {dummyCameras
-              .filter((_, index: number) => index !== selectedCamera)
-              .map((_, index: number) => (
+              .filter((_, index) => index !== selectedCamera)
+              .map((_, index) => (
                 <div
                   key={index}
                   className="camera-feed"

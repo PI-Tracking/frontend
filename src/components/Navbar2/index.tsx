@@ -38,9 +38,6 @@ function Navbar() {
       </div>
       <ul className="navbar-menu">
         <li>
-          <Link to="/admin/logs">Logs</Link>
-        </li>
-        <li>
           <Link to="/admin/manage">Manage</Link>
         </li>
         <li>
