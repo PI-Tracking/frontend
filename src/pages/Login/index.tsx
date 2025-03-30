@@ -1,17 +1,19 @@
-import logo from "@assets/logo.png";
-import "./LoginPage.css";
 import { FormEvent, useState } from "react";
-import Circles from "./assets/Circles.svg";
-import Curve from "./assets/Curve.svg";
-import login from "@api/auth";
-import { UserDTO } from "@Types/UserDTO";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+import { LoginDTO } from "@Types/LoginDTO";
+import login from "@api/auth";
+import logo from "@assets/logo.png";
+import styles from "./styles.module.css";
+
+import Curve from "./assets/Curve.svg";
+import Circles from "./assets/Circles.svg";
 
 const isEmptyString = (string: string) => !string || string.trim() === "";
 
 function LoginPage() {
-  const [formData, setFormData] = useState<UserDTO>({
+  const [formData, setFormData] = useState<LoginDTO>({
     username: "",
     password: "",
   });
@@ -103,17 +105,17 @@ function LoginPage() {
 
   return (
     <>
-      <div className="background">
+      <div className={styles.background}>
         <img src={Circles} />
         <img src={Curve} />
       </div>
       <section>
-        <div className="login-container">
-          <img src={logo} alt="Logo" className="login-logo" />
-          <div className="login-box">
+        <div className={styles.loginContainer}>
+          <img src={logo} alt="Logo" className={styles.loginLogo} />
+          <div className={styles.loginBox}>
             <h2>Dashboard Login</h2>
             <form onSubmit={handleLogin}>
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <input
                   type="text"
                   placeholder="Username"
@@ -133,14 +135,14 @@ function LoginPage() {
                   }
                 />
               </div>
-              {error && <span className="errorMessage">{error}</span>}
-              <button type="submit" className="login-btn">
+              {error && <span className={styles.errorMessage}>{error}</span>}
+              <button type="submit" className={styles.loginBtn}>
                 Login
               </button>
             </form>
             <a
               href="#"
-              className="forgot-password"
+              className={styles.forgotPassword}
               onClick={() => setShowModal(true)}
             >
               Forgot password?
@@ -150,8 +152,8 @@ function LoginPage() {
       </section>
 
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
             <h3>Reset Password</h3>
             {!codeSent ? (
               <>
@@ -162,7 +164,7 @@ function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <button
-                  className="login-btn"
+                  className={styles.loginBtn}
                   onClick={handleSendCode}
                   disabled={buttonDisabled}
                 >
@@ -177,12 +179,15 @@ function LoginPage() {
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                 />
-                <button className="login-btn" onClick={handleVerifyCode}>
+                <button className={styles.loginBtn} onClick={handleVerifyCode}>
                   Verify Code
                 </button>
               </>
             )}
-            <button className="close-btn" onClick={() => setShowModal(false)}>
+            <button
+              className={styles.closeBtn}
+              onClick={() => setShowModal(false)}
+            >
               Close
             </button>
           </div>
@@ -190,10 +195,10 @@ function LoginPage() {
       )}
 
       {showNewPasswordModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
             <h3>Set New Password</h3>
-            <div className="input-group">
+            <div className={styles.inputGroup}>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="New Password"
@@ -209,11 +214,11 @@ function LoginPage() {
               <button onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-              {/* {passwordMismatch && <span className="errorMessage">Passwords don't match</span>} */}
+              {/* {passwordMismatch && <span className={styles.errorMessage}>Passwords don't match</span>} */}
               {/* For some reason this is not working */}
             </div>
             <button
-              className="login-btn"
+              className={styles.loginBtn}
               onClick={handlePasswordChange}
               disabled={
                 newPassword !== repeatPassword || isEmptyString(newPassword)
@@ -222,7 +227,7 @@ function LoginPage() {
               Confirm New Password
             </button>
             <button
-              className="close-btn"
+              className={styles.closeBtn}
               onClick={() => setShowNewPasswordModal(false)}
             >
               Close
