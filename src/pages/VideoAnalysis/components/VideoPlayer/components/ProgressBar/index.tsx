@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  //ChangeEvent,
-  useState,
-  useEffect,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, MouseEvent } from "react";
 import { Detection } from "@Types/Detection";
 import styles from "./styles.module.css";
 
@@ -22,8 +16,6 @@ export default function ProgressBar({
   setPlaying,
   detections,
 }: IProgressBar) {
-  const [progressInMillis, setProgressInMillis] = useState<number>(0);
-
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -37,26 +29,42 @@ export default function ProgressBar({
     }
   };
 
-  //const handleSeek = (event: ChangeEvent<HTMLInputElement>) => {
-  //  const video = videoRef.current;
-  //  if (video == null) return;
-  //
-  //  const newTime = parseFloat(event.target.value);
-  //  setProgressInMillis(newTime);
-  //  video.currentTime = newTime / 1000;
-  //};
+  const handleSeek = (event: MouseEvent<HTMLDivElement>) => {
+    const video = videoRef.current;
+    if (video == null) return;
 
-  useEffect(() => {
+    const offset = event.nativeEvent.offsetX;
+    const divWidth = event.currentTarget.offsetWidth;
+
+    const newTime = (offset / divWidth) * video.duration;
+    video.currentTime = newTime;
+  };
+
+  const updateProgress = (newProgress?: number) => {
     const video = videoRef.current;
     if (!video) return;
 
-    const updateProgress = () => {
-      setProgressInMillis(video.currentTime * 1_000);
-    };
+    if (newProgress == undefined) {
+      newProgress = video.currentTime / video.duration;
+    }
 
-    video.addEventListener("timeupdate", updateProgress);
+    // Update css progress variables
+    document.documentElement.style.setProperty(
+      "--progress-position",
+      `${Math.ceil(newProgress * 100) / 100}`
+    );
+  };
+
+  useEffect(() => {
+    if (detections) {
+      console.log("Just to pass linter");
+    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.addEventListener("timeupdate", () => updateProgress());
     return () => {
-      video.removeEventListener("timeupdate", updateProgress);
+      video.removeEventListener("timeupdate", () => updateProgress());
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -70,30 +78,19 @@ export default function ProgressBar({
         )}
       </button>
 
-      <div className={styles.progressBarBackground}>
+      <div className={styles.progressBarContainer}>
         <div
-          style={{
-            width: progressInMillis / videoRef.current?.duration / 10 + "%",
+          className={styles.progressBar}
+          onClick={handleSeek}
+          onTouchMove={() => {
+            return;
           }}
-          className={styles.progressBarSeen}
-        ></div>
-        <div
-          //style={{
-          //  left:
-          //}}
-          className={styles.progressBarBubble}
-        ></div>
-        {detections.map(
-          (detection) => (detection ? <></> : <></>)
-          //<div
-          //  className={styles.progressBarDetection}
-          //  key={detection.type}
-          //  style={{
-          //    left: ,
-          //    width: ,
-          //  }}
-          //></div>
-        )}
+        >
+          <div className={styles.progressBarBubble}></div>
+          {
+            //detections.map((detection) => (detection ? <></> : <></>))
+          }
+        </div>
       </div>
     </div>
   );

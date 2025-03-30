@@ -1,3 +1,13 @@
+.controlsWrapper {
+  padding: 10px 10px 10px 0px;
+  width: 100%;
+  height: 20px;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
 .controls {
   display: flex;
   align-items: center;
@@ -15,40 +25,51 @@
   color: white;
 }
 
-.progressBar {
-  width: 100%;
-  height: 5px;
-  background: #ccc;
-  cursor: pointer;
+:root {
+  --progress-position: 0.25;
+  --progressbar-height: 7px;
 }
 
-.controlsWrapper {
-  padding: 10px 10px 10px 0px;
-  width: 100%;
-  height: 20px;
+.progressBarContainer {
   display: flex;
-
   align-items: center;
-  justify-content: center;
-}
 
-.progressBarBackground {
   width: 100%;
-  height: 10px;
-  background: #ccc;
+  height: var(--progressbar-height);
+
+  background: rgba(100, 100, 100, 1);
 }
 
-.progressBarSeen {
+.progressBar {
   position: relative;
-  height: 10px;
+  cursor: pointer;
+  width: 100%;
+  height: var(--progressbar-height);
+}
+
+.progressBar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: calc(100% - var(--progress-position) * 100%);
   background: #ff3131;
 }
 
 .progressBarBubble {
-  position: relative;
-  width: 15px;
-  height: 15px;
+  /* Aspect of the bubble */
+  position: absolute;
+  height: 200%;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
   background: #4848ff;
-  border-radius: 20px;
-  bottom: 12.5px;
+  transition: transform 150ms ease-in-out;
+
+  /* Position and animations */
+  left: calc(var(--progress-position) * 100%);
+  transform: translateX(-50%);
+  top: -50%;
+
+  z-index: 2;
 }
