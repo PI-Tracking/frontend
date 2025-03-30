@@ -1,5 +1,5 @@
 import apiClient from "./api";
-import { LoginDTO } from "@Types/UserDTO";
+import { LoginDTO } from "@Types/LoginDTO";
 
 async function login(user: LoginDTO) {
   const loginEndpoint = "/login";
