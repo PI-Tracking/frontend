@@ -1,5 +1,5 @@
 import Navbar from "@components/Navbar2";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import "./AdminManagePage.css";
 
 const initialUsers = [
@@ -13,7 +13,7 @@ function AdminManagePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [newUser, setNewUser] = useState({ email: "", enabled: true });
 
-  const toggleUserStatus = (id) => {
+  const toggleUserStatus = (id: number) => {
     setUsers(
       users.map((user) =>
         user.id === id ? { ...user, enabled: !user.enabled } : user
@@ -21,7 +21,7 @@ function AdminManagePage() {
     );
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setNewUser({
       ...newUser,
