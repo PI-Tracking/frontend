@@ -11,7 +11,7 @@ async function getAllCameras(): Promise<AxiosResponse<Camera[]>> {
    * GET /cameras
    * Return:
    *    SUCCESS
-   *     { data: Camera[]; statuids: OK }
+   *     { data: Camera[]; status: OK }
    *
    *    FAILURE
    *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
