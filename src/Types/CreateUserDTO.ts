@@ -4,3 +4,8 @@ export interface CreateUserDTO {
   username: string;
   admin: boolean;
 }
+
+export interface NewUserInfo {
+  username: string;
+  password: string;
+}
