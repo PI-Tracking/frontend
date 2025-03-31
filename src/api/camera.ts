@@ -11,7 +11,7 @@ async function getAllCameras(): Promise<AxiosResponse<Camera[]>> {
    * GET /cameras
    * Return:
    *    SUCCESS
-   *     { data: Camera[]; status: OK }
+   *     { data: Camera[]; statuids: OK }
    *
    *    FAILURE
    *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
@@ -48,12 +48,15 @@ async function getCameraInfo(id: UUID): Promise<AxiosResponse<Camera>> {
    *        status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
    */
 
-  const endpoint = `/${id}`;
+  const endpoint = `${baseEndpoint}/${id}`;
 
   return apiClient.get(endpoint);
 }
 
-async function updateCamera(updatedCamera: CameraDTO): Promise<AxiosResponse> {
+async function updateCamera(
+  cameraId: UUID,
+  updatedCamera: CameraDTO
+): Promise<AxiosResponse<Camera>> {
   /**
    * PUT /cameras/<id>
    * Return:
@@ -65,7 +68,7 @@ async function updateCamera(updatedCamera: CameraDTO): Promise<AxiosResponse> {
    *      Other:
    *        status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
    */
-  const endpoint = baseEndpoint;
+  const endpoint = `${baseEndpoint}/${cameraId}`;
   return apiClient.put(endpoint, updatedCamera);
 }
 
@@ -79,7 +82,7 @@ async function toggleCamera(id: UUID): Promise<AxiosResponse> {
    *      status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
    */
 
-  const endpoint = `/${id}/toggle-active`;
+  const endpoint = `${baseEndpoint}/${id}/toggle-active`;
 
   return apiClient.patch(endpoint);
 }
