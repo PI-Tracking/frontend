@@ -8,8 +8,13 @@ const baseEndpoint = "/cameras";
 
 async function getAllCameras(): Promise<AxiosResponse<Camera[]>> {
   /**
+   * GET /cameras
    * Return:
-   *     { data: Array[Camera]; status: OK }
+   *    SUCCESS
+   *     { data: Camera[]; status: OK }
+   *
+   *    FAILURE
+   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
    */
 
   const endpoint = baseEndpoint;
@@ -18,9 +23,12 @@ async function getAllCameras(): Promise<AxiosResponse<Camera[]>> {
 
 async function addNewCamera(camera: CameraDTO): Promise<AxiosResponse<Camera>> {
   /**
+   * POST /cameras
    * Return:
-   *     SUCCESS: { data: Camera; status: OK }
-   *     FAILURE: { status: ? }
+   *     SUCCESS
+   *      { data: Camera; status: OK }
+   *     FAILURE
+   *      status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
    */
   const endpoint = baseEndpoint;
 
@@ -29,9 +37,15 @@ async function addNewCamera(camera: CameraDTO): Promise<AxiosResponse<Camera>> {
 
 async function getCameraInfo(id: UUID): Promise<AxiosResponse<Camera>> {
   /**
+   * GET /cameras/<id>
    * Return:
-   *     SUCCESS: { data: Camera; status: OK }
-   *     FAILURE: { status: NOT_FOUND }
+   *     SUCCESS
+   *      { data: Camera; status: OK }
+   *     FAILURE
+   *      Unexistent Camera
+   *        status: NOT_FOUND
+   *      Other:
+   *        status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
    */
 
   const endpoint = `/${id}`;
@@ -39,11 +53,30 @@ async function getCameraInfo(id: UUID): Promise<AxiosResponse<Camera>> {
   return apiClient.get(endpoint);
 }
 
+async function updateCamera(updatedCamera: CameraDTO): Promise<AxiosResponse> {
+  /**
+   * PUT /cameras/<id>
+   * Return:
+   *     SUCCESS
+   *      { data: Camera; status: OK }
+   *     FAILURE
+   *      Unexistent Camera
+   *        status: NOT_FOUND
+   *      Other:
+   *        status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
+   */
+  const endpoint = baseEndpoint;
+  return apiClient.put(endpoint, updatedCamera);
+}
+
 async function toggleCamera(id: UUID): Promise<AxiosResponse> {
   /**
+   * PATCH /cameras/<id>/toggle-active
    * Return Status:
-   *     SUCCESS: { status: NO_CONTENT }
-   *     FAILURE: { status: NOT_FOUND }
+   *     SUCCESS
+   *      { status: OK }
+   *     FAILURE
+   *      status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
    */
 
   const endpoint = `/${id}/toggle-active`;
@@ -65,11 +98,6 @@ async function subscribeToCamera(id: UUID) {
   return {
     status: 501,
   };
-}
-
-async function updateCamera(updatedCamera: Camera): Promise<AxiosResponse> {
-  const endpoint = baseEndpoint;
-  return apiClient.put(endpoint, updatedCamera);
 }
 
 export {
