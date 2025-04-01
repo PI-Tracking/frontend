@@ -1,19 +1,19 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+/* Admin */
+import AdminCameraPage from "@pages/admin/ManageCameras";
+import AdminManageUsers from "@pages/admin/ManageUsers";
 /* Main */
 import MainPage from "@pages/Main";
 import LoginPage from "@pages/Login";
 /* User */
 import UploadVideosPage from "@pages/UploadVideos";
 import ReportsPage from "@pages/Reports";
-// import CamerasPage from "@pages/Cameras";
-/* Admin */
-import AdminCameraPage from "@pages/admin/ManageCameras";
-import AdminManageUsers from "@pages/admin/ManageUsers";
-import AdminLogs from "@pages/admin/Logs";
-
-import CamerasPageMap from "@pages/Cameras2";
 import ResetPasswordPage from "@pages/Reset password";
+import VideoAnalysisPage from "@pages/VideoAnalysis";
+import CamerasPageMap from "@pages/Cameras2";
+import AdminLogs from "@pages/admin/Logs";
+// import CamerasPage from "@pages/Cameras";
 
 function App() {
   return (
@@ -28,6 +28,7 @@ function App() {
 
         <Route path="/upload-videos" element={<UploadVideosPage />} />
         <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/report/:id" element={<VideoAnalysisPage />} />
 
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 

@@ -39,6 +39,9 @@ function CameraMenuOptions() {
       case "/upload-videos":
         setSelectedOption("share");
         break;
+      case "/report/*":
+        setSelectedOption("video");
+        break;
       default:
         break;
     }

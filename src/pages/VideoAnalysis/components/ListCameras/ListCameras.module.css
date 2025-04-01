@@ -1,0 +1,50 @@
+.list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0px 0px 28px 0px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  flex-direction: column;
+}
+
+.listElement {
+  display: flex;
+  width: 100%;
+  padding: 0px;
+  justify-content: flex-start;
+  cursor: pointer;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.frame {
+  height: 80px;
+}
+
+.cameraInfo {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 0px 0px 0px 8px;
+}
+
+.cameraName {
+  width: 100%;
+  text-align: left;
+  font-weight: bold;
+}
+
+.cameraId {
+  width: 100%;
+  text-align: left;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.cameraDetections {
+  text-align: left;
+}
+
+.accordion {
+}
