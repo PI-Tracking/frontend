@@ -1,7 +1,7 @@
 import apiClient from "./api";
 import { LoginDTO } from "@Types/LoginDTO";
 
-export async function login(user: LoginDTO) {
+async function login(user: LoginDTO) {
   /**
    * POST /login
    * Return:
@@ -16,7 +16,7 @@ export async function login(user: LoginDTO) {
   return apiClient.post(loginEndpoint, user);
 }
 
-export async function logout() {
+async function logout() {
   /**
    * POST /logout
    * Return:
@@ -30,3 +30,5 @@ export async function logout() {
   const loginEndpoint = "/logout";
   return apiClient.post(loginEndpoint);
 }
+
+export { login, logout };
