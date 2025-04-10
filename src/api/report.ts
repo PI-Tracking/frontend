@@ -1,0 +1,53 @@
+import { Report } from "@Types/Report";
+import apiClient from "./api";
+import { AxiosResponse } from "axios";
+import { NewReportDTO } from "@Types/NewReportDTO";
+import { UUID } from "@Types/Base";
+import { ReportResponseDTO } from "@Types/ReportResponseDTO";
+
+const baseEndpoint = "/reports";
+
+async function getAllReports(): Promise<AxiosResponse<Report[]>> {
+  /**
+   * GET /reports
+   * Return:
+   *    SUCCESS
+   *     { data: Report[]; status: OK }
+   *
+   *    FAILURE
+   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
+   */
+  const endpoint = baseEndpoint;
+  return apiClient.get(endpoint);
+}
+
+async function createNewReport(report: NewReportDTO): Promise<AxiosResponse> {
+  /**
+   * POST /reports
+   * Return:
+   *    SUCCESS
+   *     { status: OK }
+   *
+   *    FAILURE
+   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
+   */
+  const endpoint = baseEndpoint;
+  return apiClient.post(endpoint, report);
+}
+async function getReport(
+  report_id: UUID
+): Promise<AxiosResponse<ReportResponseDTO>> {
+  /**
+   * GET /reports/{report_id}
+   * Return:
+   *    SUCCESS
+   *     { data: Report, status: OK }
+   *
+   *    FAILURE
+   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
+   */
+  const endpoint = `${baseEndpoint}/${report_id}`;
+  return apiClient.get(endpoint);
+}
+
+export { getAllReports, createNewReport, getReport };

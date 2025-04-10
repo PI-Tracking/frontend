@@ -6,5 +6,5 @@ export interface Report {
   id: UUID;
   name: string;
   creator: User;
-  createdAt: string; // datetime
+  createdAt: Date; // datetime
 }

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { LoginDTO } from "@Types/LoginDTO";
-import login from "@api/auth";
+import { login } from "@api/auth";
 import logo from "@assets/logo.png";
 import styles from "./styles.module.css";
 
@@ -33,7 +33,8 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   // const [passwordMismatch, setPasswordMismatch] = useState(false);
 
-  // Since I commented the other code down there this was just placed here so I could commit with no errors
+  // Since I commented the other code down
+  // there this was just placed here so I could commit with no errors
   const setPasswordMismatch = (value: boolean) => {
     setPasswordMismatch(value);
   };
