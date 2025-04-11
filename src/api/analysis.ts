@@ -7,7 +7,7 @@ const baseEndpoint = "/analysis";
 
 async function requestNewAnalysis(
   camerasId: string[],
-  files: string[]
+  files: File[]
 ): Promise<AxiosResponse<string>> {
   if (camerasId.length != files.length) {
     Promise.reject({ error: "Number of cameras and files must be the same!" });

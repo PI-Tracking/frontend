@@ -7,6 +7,7 @@ import { MdUpload } from "react-icons/md";
 import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
+import SubmitFilesButton from "./components/SubmitFilesButton";
 
 // i cannot allow him to add the same video twice, need to have that in mind
 
@@ -143,6 +144,7 @@ function UploadVideosPage() {
               ))}
             </div>
           )}
+          <SubmitFilesButton files={files} setError={setErrorMessage} />
         </div>
       </section>
       <div className="menu-options">
