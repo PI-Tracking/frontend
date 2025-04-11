@@ -1,5 +1,4 @@
 import { useState, useEffect, ReactNode } from "react";
-import HttpStatusCode from "http-status-codes";
 
 import { login as LoginAPI, logout as LogoutAPI } from "@api/auth";
 import { ApiError } from "@api/ApiError";
@@ -9,6 +8,7 @@ import { User } from "@Types/User";
 import { ILogin } from "./ILogin";
 import { IAuthContext } from "./IAuthContext";
 import { AuthContext } from "./AuthContext";
+import { AxiosError } from "axios";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -28,25 +28,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (user: LoginDTO): Promise<ILogin> => {
     try {
       const response = await LoginAPI(user);
-
-      if (response.status != HttpStatusCode.OK) {
+      if (response.status !== 200) {
         return { success: false, error: (response.data as ApiError).message };
       }
 
       localStorage.setItem("user", JSON.stringify(response.data));
       setUser(response.data as User);
-
       return { success: true, error: "" } as ILogin;
     } catch (error) {
-      if (error instanceof Error)
-        return { success: false, error: error.message };
-      return { success: false, error: "unknown error" };
+      if (error instanceof AxiosError) {
+        return {
+          success: false,
+          error: error.response
+            ? error.response.data.message
+            : "Something went wrong",
+        };
+      }
+      return {
+        success: false,
+        // @ts-expect-error: 18046
+        error: error.message ? error.message : "Something went wrong",
+      };
     }
   };
 
   const logout = async () => {
-    const response = await LogoutAPI();
-    if (response.status == HttpStatusCode.OK) {
+    const response = await LogoutAPI(); // BE autoclears cookies
+    if (response.status === 200) {
       localStorage.removeItem("user");
     }
   };

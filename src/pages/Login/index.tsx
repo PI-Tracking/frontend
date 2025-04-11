@@ -52,9 +52,10 @@ function LoginPage() {
 
       if (!response.success) {
         setError(response.error);
+        return;
       }
 
-      if (auth.isAdmin) {
+      if (auth.isAdmin()) {
         navigate("/admin/cameras");
       } else {
         navigate("/cameras");
