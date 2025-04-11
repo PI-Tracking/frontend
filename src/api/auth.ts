@@ -1,7 +1,10 @@
+import { AxiosResponse } from "axios";
 import apiClient from "./api";
 import { LoginDTO } from "@Types/LoginDTO";
+import { User } from "@Types/User";
+import { ApiError } from "./ApiError";
 
-async function login(user: LoginDTO) {
+async function login(user: LoginDTO): Promise<AxiosResponse<User | ApiError>> {
   /**
    * POST /login
    * Return:

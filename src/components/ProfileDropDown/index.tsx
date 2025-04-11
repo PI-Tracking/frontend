@@ -1,8 +1,23 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./ProfileDropdown.css";
+import { useAuth } from "@hooks/useAuth";
 
-function ProfileDropdown({ isOpen, onClose }) {
+interface ProfileDropdownProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function ProfileDropdown({ isOpen, onClose }: ProfileDropdownProps) {
+  const auth = useAuth();
+  const navigate = useNavigate();
+
   if (!isOpen) return null;
+
+  const handleLogout = () => {
+    auth.logout();
+    onClose();
+    navigate("/");
+  };
 
   return (
     <div className="profile-dropdown">
@@ -18,7 +33,7 @@ function ProfileDropdown({ isOpen, onClose }) {
           </Link>
         </li>
         <li>
-          <Link to="/logout" onClick={onClose}>
+          <Link to="/logout" onClick={handleLogout}>
             Logout
           </Link>
         </li>
