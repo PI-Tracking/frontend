@@ -1,0 +1,48 @@
+.main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  margin-top: 60px;
+}
+
+.content {
+  background-color: #282828;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  overflow: hidden;
+
+  background: #d9d9d9;
+  width: max-content;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.boxTitle {
+  margin: 15px 10px;
+}
+
+.player {
+  min-width: 480px;
+  flex-grow: 100;
+}
+
+.suspectImage {
+  margin: 0px 10px 5px 10px;
+  width: 100%;
+}

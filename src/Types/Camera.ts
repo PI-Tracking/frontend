@@ -1,6 +1,6 @@
 import type { UUID } from "./Base";
 
-export default interface Camera {
+export interface Camera {
   id: UUID;
   name: string;
   latitude: number;
