@@ -34,7 +34,6 @@ function RequireAuth({ admin }: { admin: boolean }) {
   }
 
   if (!auth.user) {
-    console.log("No user");
     return <Navigate to="/not-found" replace />;
   }
 
