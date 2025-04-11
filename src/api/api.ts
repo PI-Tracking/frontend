@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { ApiError } from "./ApiError";
 
 const IP: string = "localhost";
 const PORT: string = "8080";
@@ -13,4 +14,17 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error instanceof AxiosError) {
+      return Promise.reject({
+        status: error.status,
+        error: error.response ? error.response.data.message : error.message,
+      } as unknown as ApiError);
+    }
+  }
+);
 export default apiClient;

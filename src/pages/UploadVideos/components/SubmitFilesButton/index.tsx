@@ -1,9 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 import styles from "./styles.module.css";
-import { requestNewAnalysis } from "@api/analysis";
+import { createNewReport } from "@api/report";
+import { NewReportDTO } from "@Types/NewReportDTO";
+//import { ApiError } from "@api/ApiError";
+import CamerasVideo from "../types/CamerasVideo";
 
 interface SubmitFilesButtonProps {
-  files: File[];
+  files: CamerasVideo[];
   setError: Dispatch<SetStateAction<string>>;
 }
 function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
@@ -13,11 +16,17 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
       return;
     }
 
-    const response = await requestNewAnalysis(
-      files.map(() => "") // array of empty strings, to not add camerasID
-    );
-    if (response.status === 200) {
-      return;
+    try {
+      const response = await createNewReport({
+        cameras: files.map((file) => file.cameraId),
+        name: "name????",
+      } as NewReportDTO);
+      if (response.status !== 201) {
+        console.log(response);
+      }
+    } catch (error) {
+      console.log(error);
+      //if (error instanceof ApiError)
     }
   };
 
