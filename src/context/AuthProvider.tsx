@@ -23,17 +23,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
-  const login = async (user: LoginDTO) => {
+  console.log("Loaded user: ", user);
+
+  const login = async (user: LoginDTO): Promise<ILogin> => {
     try {
       const response = await LoginAPI(user);
-      if (response.status !== HttpStatusCode.OK) {
+
+      if (response.status != HttpStatusCode.OK) {
         return { success: false, error: (response.data as ApiError).message };
       }
 
       localStorage.setItem("user", JSON.stringify(response.data));
       setUser(response.data as User);
 
-      return { success: true } as ILogin;
+      return { success: true, error: "" } as ILogin;
     } catch (error) {
       if (error instanceof Error)
         return { success: false, error: error.message };
@@ -43,20 +46,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     const response = await LogoutAPI();
-    if (response.status === HttpStatusCode.OK) {
+    if (response.status == HttpStatusCode.OK) {
       localStorage.removeItem("user");
     }
   };
 
   // Check if user is admin
-  const isAdmin = user?.admin;
+  const isAdmin = () => {
+    return user ? user.admin : false;
+  };
 
   const value: IAuthContext = {
     user: user,
     loading: loading,
     login: login,
     logout: logout,
-    isAdmin: isAdmin ? isAdmin : false,
+    isAdmin: isAdmin,
     isAuthenticated: !!user,
   };
 

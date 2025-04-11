@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { LoginDTO } from "@Types/LoginDTO";
-import { login } from "@api/auth";
 import logo from "@assets/logo.png";
 import styles from "./styles.module.css";
 
 import Curve from "./assets/Curve.svg";
 import Circles from "./assets/Circles.svg";
+import { useAuth } from "@hooks/useAuth";
 
 const isEmptyString = (string: string) => !string || string.trim() === "";
 
@@ -32,6 +32,7 @@ function LoginPage() {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   // const [passwordMismatch, setPasswordMismatch] = useState(false);
+  const auth = useAuth();
 
   // Since I commented the other code down
   // there this was just placed here so I could commit with no errors
@@ -47,16 +48,13 @@ function LoginPage() {
       return;
 
     try {
-      const response = await login(formData);
+      const response = await auth.login(formData);
 
-      console.log("Login response:", response);
-
-      if (response.status !== 200) {
-        setError("Username/password combination is not valid");
-        return;
+      if (!response.success) {
+        setError(response.error);
       }
 
-      if (response.data && response.data.admin) {
+      if (auth.isAdmin) {
         navigate("/admin/cameras");
       } else {
         navigate("/cameras");

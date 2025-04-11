@@ -7,6 +7,6 @@ export interface IAuthContext {
   logout: () => void;
   user: User | null;
   loading: boolean;
-  isAdmin: boolean;
+  isAdmin: () => boolean;
   isAuthenticated: boolean;
 }

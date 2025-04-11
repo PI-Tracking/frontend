@@ -41,14 +41,16 @@ function Navbar() {
           <Link to="/admin/logs">Logs</Link>
         </li>
         <li>
-          <Link to="/admin/manage">Manage</Link>
+          <Link to="/admin/users">Users</Link>
         </li>
         <li>
           <Link to="/admin/cameras">Cameras</Link>
         </li>
-        <li>
-          <Link to="/admin">Admin</Link>
-        </li>
+        {
+          //<li>
+          //  <Link to="/admin">Admin</Link>
+          //</li>
+        }
       </ul>
     </nav>
   );
