@@ -1,12 +1,13 @@
 import apiClient from "./api";
-import Camera from "@Types/Camera";
+import { Camera } from "@Types/Camera";
 import CameraDTO from "@Types/CameraDTO";
 import { UUID } from "@Types/Base";
 import { AxiosResponse } from "axios";
+import { ApiError } from "./ApiError";
 
 const baseEndpoint = "/cameras";
 
-async function getAllCameras(): Promise<AxiosResponse<Camera[]>> {
+async function getAllCameras(): Promise<AxiosResponse<Camera[] | ApiError>> {
   /**
    * GET /cameras
    * Return:
@@ -21,7 +22,9 @@ async function getAllCameras(): Promise<AxiosResponse<Camera[]>> {
   return apiClient.get(endpoint);
 }
 
-async function addNewCamera(camera: CameraDTO): Promise<AxiosResponse<Camera>> {
+async function addNewCamera(
+  camera: CameraDTO
+): Promise<AxiosResponse<Camera | ApiError>> {
   /**
    * POST /cameras
    * Return:
@@ -35,7 +38,9 @@ async function addNewCamera(camera: CameraDTO): Promise<AxiosResponse<Camera>> {
   return apiClient.post(endpoint, camera);
 }
 
-async function getCameraInfo(id: UUID): Promise<AxiosResponse<Camera>> {
+async function getCameraInfo(
+  id: UUID
+): Promise<AxiosResponse<Camera | ApiError>> {
   /**
    * GET /cameras/<id>
    * Return:
@@ -56,7 +61,7 @@ async function getCameraInfo(id: UUID): Promise<AxiosResponse<Camera>> {
 async function updateCamera(
   cameraId: UUID,
   updatedCamera: CameraDTO
-): Promise<AxiosResponse<Camera>> {
+): Promise<AxiosResponse<Camera | ApiError>> {
   /**
    * PUT /cameras/<id>
    * Return:

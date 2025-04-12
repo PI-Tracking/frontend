@@ -29,6 +29,8 @@ export default function CamerasList({
       try {
         const { data: allCameras, status } = await Api.getAllCameras();
 
+        console.log(allCameras);
+
         if (status == StatusCodes.OK) {
           setCameras(allCameras);
         }

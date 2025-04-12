@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect, ChangeEvent } from "react";
 import { useDropzone } from "react-dropzone";
 import CameraMenuOptions from "@components/CameraMenuOptions";
 import Navbar from "@components/Navbar";
@@ -8,6 +8,11 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import SubmitFilesButton from "./components/SubmitFilesButton";
+import CamerasVideo from "./components/types/CamerasVideo";
+import { getAllCameras } from "@api/camera";
+import { ApiError } from "@api/ApiError";
+import { Camera } from "@Types/Camera";
+import { AxiosError } from "axios";
 
 // i cannot allow him to add the same video twice, need to have that in mind
 
@@ -34,16 +39,46 @@ const Modal = ({
 };
 
 function UploadVideosPage() {
-  const [files, setFiles] = useState<File[]>([]);
+  const [videos, setVideos] = useState<CamerasVideo[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [duplicateFile, setDuplicateFile] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [cameras, setCameras] = useState<Camera[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  console.log(cameras);
+  useEffect(() => {
+    const fetchCameras = async () => {
+      try {
+        const response = await getAllCameras();
+
+        if (response.status !== 200) {
+          setErrorMessage(
+            "Failure fetching cameras! " + (response.data as ApiError).message
+          );
+        }
+        setCameras(response.data as Camera[]);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          const axiosError = error as AxiosError<ApiError>;
+
+          setErrorMessage(
+            axiosError.response?.data.message ||
+              `Failed to fetch cameras (error${axiosError.status})`
+          );
+        }
+      }
+    };
+
+    fetchCameras();
+  }, []);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const newFiles = acceptedFiles.filter((file) => {
-        if (files.some((existingFile) => existingFile.name === file.name)) {
+        if (
+          videos.some((existingFile) => existingFile.file.name === file.name)
+        ) {
           setDuplicateFile(file.name);
           setShowModal(true);
           return false;
@@ -67,12 +102,17 @@ function UploadVideosPage() {
         "video/x-m4v",
       ];
 
-      const validFiles = newFiles.filter((file) =>
-        videoFileTypes.includes(file.type)
-      );
+      const validFiles: CamerasVideo[] = newFiles
+        .filter((file) => videoFileTypes.includes(file.type))
+        .map((file) => {
+          return {
+            cameraId: "",
+            file: file,
+          } as CamerasVideo;
+        });
 
       if (validFiles.length === newFiles.length) {
-        setFiles((prevFiles) => [...prevFiles, ...validFiles]);
+        setVideos((prevFiles) => [...prevFiles, ...validFiles]);
         setErrorMessage("");
       } else {
         setErrorMessage("Only video files are allowed!");
@@ -81,11 +121,30 @@ function UploadVideosPage() {
         }, 5000);
       }
     },
-    [files]
+    [videos]
   );
 
+  const handleChangeCamera = (
+    event: ChangeEvent<HTMLSelectElement>,
+    filename: string
+  ) => {
+    setVideos((prev) =>
+      prev.map((video) => {
+        if (video.file.name !== filename) {
+          return video;
+        }
+        return {
+          ...video,
+          cameraId: event.target.value,
+        };
+      })
+    );
+  };
+
   const removeFile = (fileName: string) => {
-    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
+    setVideos((prevVideos) =>
+      prevVideos.filter((video) => video.file.name !== fileName)
+    );
   };
   // We can also put the acecpet here, i dont have any videos to test
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -111,7 +170,7 @@ function UploadVideosPage() {
       <section className="upload-videos">
         <div {...getRootProps()} className="video-uploader-container">
           <input {...getInputProps()} ref={inputRef} />
-          {!files.length && (
+          {!videos.length && (
             <div className="upload-videos-icon">
               <MdUpload />
             </div>
@@ -125,26 +184,48 @@ function UploadVideosPage() {
           )}
           <button className="upload-videos-button" onClick={handleAddFileClick}>
             <AiOutlineFileAdd />
-            {files.length ? "Add more files" : "Select file"}
+            {videos.length ? "Add more files" : "Select file"}
             <MdKeyboardArrowDown />
           </button>
-          {files.length > 0 && (
+          {videos.length > 0 && (
             <div className="uploaded-files-container">
-              {files.map((file) => (
-                <div key={file.name} className="uploaded-file">
-                  <p className="file-name">{file.name}</p>
-                  <p className="file-size">
-                    {(file.size / (1024 * 1024)).toFixed(2)} MB
-                  </p>
+              {videos.map((video) => (
+                <div key={video.file.name} className="uploaded-file">
+                  <span>
+                    <p className="file-name">{video.file.name}</p>
+                    <p className="file-size">
+                      {(video.file.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </span>
+                  <select
+                    key={video.file.name}
+                    value={
+                      video.cameraId === ""
+                        ? "Select a camera for this video"
+                        : video.cameraId
+                    }
+                    onChange={(event) =>
+                      handleChangeCamera(event, video.file.name)
+                    }
+                  >
+                    <option hidden>Select a camera</option>
+                    {cameras.map((camera) =>
+                      camera.active ? (
+                        <option value={camera.id} key={camera.id}>
+                          {camera.name}
+                        </option>
+                      ) : null
+                    )}
+                  </select>
                   <IoClose
                     className="remove-file-icon"
-                    onClick={() => removeFile(file.name)}
+                    onClick={() => removeFile(video.file.name)}
                   />
                 </div>
               ))}
             </div>
           )}
-          <SubmitFilesButton files={files} setError={setErrorMessage} />
+          <SubmitFilesButton files={videos} setError={setErrorMessage} />
         </div>
       </section>
       <div className="menu-options">

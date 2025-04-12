@@ -1,7 +1,13 @@
 import { UUID } from "./Base";
 
+export interface UploadData {
+  id: UUID;
+  cameraId: UUID;
+  uploadUrl: string;
+  uploaded: boolean;
+}
 export interface ReportResponseDTO {
   id: UUID;
   name: string;
-  uploads: string; // TODO: meter da maneira correta depos do pull request das analises,
+  uploads: UploadData[];
 }

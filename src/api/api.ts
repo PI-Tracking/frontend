@@ -20,11 +20,11 @@ axios.interceptors.response.use(
   },
   (error) => {
     if (error instanceof AxiosError) {
-      return Promise.reject({
-        status: error.status,
-        error: error.response ? error.response.data.message : error.message,
-      } as unknown as ApiError);
+      const axiosError = error as AxiosError<ApiError>;
+      return Promise.reject(axiosError);
     }
+
+    return Promise.reject(error);
   }
 );
 export default apiClient;
