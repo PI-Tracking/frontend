@@ -2,6 +2,7 @@ import { UUID } from "@Types/Base";
 import apiClient from "./api";
 import { AxiosResponse } from "axios";
 import SelectedSuspectDTO from "@Types/SelectedSuspectDTO";
+import { ApiError } from "./ApiError";
 
 const baseEndpoint = "/analysis";
 
@@ -26,7 +27,7 @@ async function requestNewAnalysis(
 async function requestReanalysis(
   reportId: UUID,
   selectedSuspect?: SelectedSuspectDTO
-): Promise<AxiosResponse<string>> {
+): Promise<AxiosResponse<{ analysisId: string } | ApiError>> {
   /**
    * POST /analysis/{reportId}
    * Return:
