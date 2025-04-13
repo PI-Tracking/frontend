@@ -32,7 +32,7 @@ function AdminManagePage() {
       }
     };
     fetchUsers();
-  }, [setUsers, setCredentials]);
+  }, [setUsers, setCredentials, credentials]);
 
   const toggleUserStatus = (id: string) => {
     toggleAccount(id);
@@ -87,6 +87,8 @@ function AdminManagePage() {
             {users.map((user) => (
               <tr key={user.badgeId} className="admin-row">
                 <td className="admin-user">
+                  {user.admin ? " [Admin]" : "_______"}
+
                   <div className="profile-icon">
                     {user.email.charAt(0).toUpperCase()}
                   </div>
@@ -147,7 +149,7 @@ function AdminManagePage() {
                 onChange={handleUsernameChange}
                 required
               />
-              <label>
+              <div>
                 <input
                   type="checkbox"
                   name="admin"
@@ -155,8 +157,8 @@ function AdminManagePage() {
                   onChange={handleIsAdminChange}
                   required
                 />
-                Is an Admin
-              </label>
+                <label>Is an Admin</label>
+              </div>
               <button onClick={handleAddUser}>Add User</button>
             </div>
           </div>
