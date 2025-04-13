@@ -8,7 +8,7 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import SubmitFilesButton from "./components/SubmitFilesButton";
-import CamerasVideo from "./components/types/CamerasVideo";
+import { CamerasVideo } from "@Types/CamerasVideo";
 import { getAllCameras } from "@api/camera";
 import { ApiError } from "@api/ApiError";
 import { Camera } from "@Types/Camera";

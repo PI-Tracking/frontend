@@ -26,7 +26,7 @@
 }
 
 :root {
-  --progress-position: 0.25;
+  --progress-position: 0;
   --progressbar-height: 7px;
 }
 
