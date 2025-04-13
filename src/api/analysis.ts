@@ -6,12 +6,8 @@ import SelectedSuspectDTO from "@Types/SelectedSuspectDTO";
 const baseEndpoint = "/analysis";
 
 async function requestNewAnalysis(
-  camerasId: string[],
-  files: string[]
+  camerasId: string[]
 ): Promise<AxiosResponse<string>> {
-  if (camerasId.length != files.length) {
-    Promise.reject({ error: "Number of cameras and files must be the same!" });
-  }
   /**
    * GET /analysis/live
    * Return:

@@ -4,10 +4,11 @@ import { AxiosResponse } from "axios";
 import { NewReportDTO } from "@Types/NewReportDTO";
 import { UUID } from "@Types/Base";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
+import { ApiError } from "./ApiError";
 
 const baseEndpoint = "/reports";
 
-async function getAllReports(): Promise<AxiosResponse<Report[]>> {
+async function getAllReports(): Promise<AxiosResponse<Report[] | ApiError>> {
   /**
    * GET /reports
    * Return:
@@ -21,7 +22,9 @@ async function getAllReports(): Promise<AxiosResponse<Report[]>> {
   return apiClient.get(endpoint);
 }
 
-async function createNewReport(report: NewReportDTO): Promise<AxiosResponse> {
+async function createNewReport(
+  report: NewReportDTO
+): Promise<AxiosResponse<ReportResponseDTO | ApiError>> {
   /**
    * POST /reports
    * Return:
@@ -36,7 +39,7 @@ async function createNewReport(report: NewReportDTO): Promise<AxiosResponse> {
 }
 async function getReport(
   report_id: UUID
-): Promise<AxiosResponse<ReportResponseDTO>> {
+): Promise<AxiosResponse<ReportResponseDTO | ApiError>> {
   /**
    * GET /reports/{report_id}
    * Return:
