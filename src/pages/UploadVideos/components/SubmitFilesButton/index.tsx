@@ -13,6 +13,7 @@ import { Report } from "@Types/Report";
 import { User } from "@Types/User";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { Camera } from "@Types/Camera";
+import { useNavigate } from "react-router-dom";
 
 interface SubmitFilesButtonProps {
   files: CamerasVideo[];
@@ -23,6 +24,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
   const [uploadingFile, setUploadingFile] = useState<File | null>(null);
   const { setReport } = useReport();
   const auth = useAuth();
+  const navigate = useNavigate();
 
   const submitAnalysis = async () => {
     if (files.length === 0) {
@@ -82,6 +84,8 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         }),
       };
       setReport(newReport);
+      /* Navigate to video analysis page */
+      navigate(`/report/${id}`);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
