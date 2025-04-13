@@ -7,6 +7,12 @@ import { CamerasVideo } from "@Types/CamerasVideo";
 import { AxiosError } from "axios";
 import { useMinIO } from "@hooks/useMinIO";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
+import useReport from "@hooks/useUploadedReport";
+import { useAuth } from "@hooks/useAuth";
+import { Report } from "@Types/Report";
+import { User } from "@Types/User";
+import { VideoAnalysis } from "@Types/VideoAnalysis";
+import { Camera } from "@Types/Camera";
 
 interface SubmitFilesButtonProps {
   files: CamerasVideo[];
@@ -15,6 +21,8 @@ interface SubmitFilesButtonProps {
 function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
   const minio = useMinIO();
   const [uploadingFile, setUploadingFile] = useState<File | null>(null);
+  const { setReport } = useReport();
+  const auth = useAuth();
 
   const submitAnalysis = async () => {
     if (files.length === 0) {
@@ -30,17 +38,19 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
     }
 
     try {
-      const response = await createNewReport({
+      /* Create a new Report Request */
+      const request: NewReportDTO = {
         cameras: files.map((file) => file.cameraId),
         name: new Date().toUTCString(),
-      } as NewReportDTO);
+      };
+      const response = await createNewReport(request);
 
       if (response.status !== 201) {
         setError((response.data as ApiError).message);
       }
 
-      const { uploads } = response.data as ReportResponseDTO;
-
+      /* Upload Files to MinIO */
+      const { id, name, uploads } = response.data as ReportResponseDTO;
       for (const upload of uploads) {
         console.log("From url:", upload);
         const file: File = (
@@ -54,6 +64,24 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         await minio.uploadFile(file, upload.uploadUrl);
       }
       setUploadingFile(null);
+
+      /* Save state to use in videoAnalysis */
+      const newReport: Report = {
+        id: id,
+        name: name,
+        creator: auth.user || ({} as User),
+        createdAt: new Date(request.name), // TODO if this changes, this HAS to change
+        uploads: files.map((video) => {
+          return {
+            id: uploads.find((upload) => upload.cameraId == video.cameraId)!.id,
+            camera: { id: video.cameraId } as Camera,
+            video: video.file,
+            currentTimestamp: 0,
+            detections: [],
+          } as VideoAnalysis;
+        }),
+      };
+      setReport(newReport);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
@@ -63,6 +91,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
     }
   };
 
+  /* Upload progresss bar */
   document.documentElement.style.setProperty(
     "--progress-position",
     `${Math.ceil(minio.progress * 100) / 100}`
@@ -78,7 +107,9 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
           <div className={styles.progressBarContainer}>
             <div className={styles.progressBar}></div>
           </div>
-          <p>Uploading file {uploadingFile?.name}</p>
+          <p>
+            Uploading file {uploadingFile?.name} ({minio.progress}%)
+          </p>
         </div>
       ) : (
         <></>

@@ -5,7 +5,7 @@ import { UUID } from "./Base";
 interface VideoAnalysis {
   id: UUID;
   camera: Camera;
-  video: string;
+  video: string | File;
   currentTimestamp: number; // To save state of what part of video was being watched
   detections: Detection[];
 }
