@@ -14,6 +14,7 @@ import { User } from "@Types/User";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { Camera } from "@Types/Camera";
 import { useNavigate } from "react-router-dom";
+import { requestReanalysis } from "@api/analysis";
 
 interface SubmitFilesButtonProps {
   files: CamerasVideo[];
@@ -84,6 +85,11 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         }),
       };
       setReport(newReport);
+      const analysisResponse = await requestReanalysis(id);
+      if (analysisResponse.status !== 200) {
+        setError((analysisResponse.data as ApiError).message);
+        return;
+      }
       /* Navigate to video analysis page */
       navigate(`/report/${id}`);
     } catch (error) {
