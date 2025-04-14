@@ -1,7 +1,7 @@
 import Navbar from "@components/Navbar2";
 import { useState } from "react";
 import "./AdminCameraPage.css";
-import Camera from "@Types/Camera";
+import { Camera } from "@Types/Camera";
 import CamerasList from "./components/CamerasList";
 import AddCameraForm from "./components/AddCamera";
 

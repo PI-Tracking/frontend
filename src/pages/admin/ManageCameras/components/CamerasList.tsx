@@ -9,7 +9,8 @@ import { StatusCodes } from "http-status-codes";
 
 import "../AdminCameraPage.css";
 import * as Api from "@api/camera";
-import Camera from "@Types/Camera";
+import { Camera } from "@Types/Camera";
+import { UUID } from "@Types/Base";
 
 interface ICamerasList {
   setEditingCamera: Dispatch<SetStateAction<Camera>>;
@@ -31,7 +32,7 @@ export default function CamerasList({
 
         console.log(allCameras);
 
-        if (status == StatusCodes.OK) {
+        if (status == StatusCodes.OK && allCameras instanceof Array) {
           setCameras(allCameras);
         }
       } catch (error) {
@@ -48,6 +49,10 @@ export default function CamerasList({
   const handleEditCamera = (camera: Camera) => {
     setEditingCamera(camera);
     openForm();
+  };
+
+  const toggleCameraActive = (id: UUID) => {
+    Api.toggleCamera(id);
   };
 
   if (isLoading) {
@@ -91,6 +96,13 @@ export default function CamerasList({
                 <button onClick={() => handleEditCamera(camera)}>
                   <PencilSquareIcon className="w-6 h-6 text-gray-500 hover:text-gray-800" />
                 </button>
+              </td>
+              <td className="admin-checkbox">
+                <input
+                  type="checkbox"
+                  checked={camera.active}
+                  onChange={() => toggleCameraActive(camera.id)}
+                />
               </td>
             </tr>
           ))}
