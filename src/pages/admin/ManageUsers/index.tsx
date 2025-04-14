@@ -19,6 +19,7 @@ function AdminManagePage() {
     username: "",
     admin: false,
   });
+  const [toggleUsed, setToggleUsed] = useState(0);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -32,9 +33,10 @@ function AdminManagePage() {
       }
     };
     fetchUsers();
-  }, [setUsers, setCredentials, credentials]);
+  }, [setUsers, setCredentials, credentials, toggleUsed]);
 
   const toggleUserStatus = (id: string) => {
+    setToggleUsed(toggleUsed + 1);
     toggleAccount(id);
   };
 
