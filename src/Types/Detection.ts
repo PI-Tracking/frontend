@@ -3,18 +3,11 @@ type Point = {
   y: number;
 };
 
-enum DetectionType {
-  SUSPECT,
-  GUN,
-  KNIFE,
-}
-
 interface Detection {
   timestamp: number;
-  class_name: DetectionType;
+  class_name: string;
   confidence: number;
   coordinate: Point[];
 }
 
-export { DetectionType };
 export type { Detection };
