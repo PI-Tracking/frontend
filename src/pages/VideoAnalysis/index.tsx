@@ -10,13 +10,17 @@ import noimg from "@assets/noimg.png";
 import ListDetections from "./components/ListDetections";
 import ListCameras from "./components/ListCameras";
 import Player from "./components/VideoPlayer";
-import { Report, VideoAnalysis } from "@Types/Report";
+import { Report } from "@Types/Report";
+import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { Detection, DetectionType } from "@Types/Detection";
 
 /* MOCK DATA */
 import mock_video from "./mock_data/video.mp4";
 import mock_suspectimage from "./mock_data/suspect.png";
 import Loading from "@components/Loading";
+import { User } from "@Types/User";
+import { UUID } from "@Types/Base";
+import { Camera } from "@Types/Camera";
 
 type Image = string;
 function VideoAnalysisPage() {
@@ -30,33 +34,40 @@ function VideoAnalysisPage() {
   useEffect(() => {
     const detectionList: Detection[] = [
       {
-        detection_box: {
-          points: [
-            [10, 10],
-            [230, 230],
-          ],
-        },
+        coordinates: [
+          { x: 10, y: 10 },
+          { x: 230, y: 230 },
+        ],
         type: DetectionType.SUSPECT,
+        class_name: DetectionType.SUSPECT,
+        confidence: 0.7,
+        timestamp: 0,
       },
     ];
 
-    const mock_report = {
-      id: 10,
-      reportAnalysis: [
+    const mock_report: Report = {
+      id: "10",
+      name: "report_name",
+      creator: {} as User,
+      createdAt: new Date(),
+      uploads: [
         {
-          camera: { id: 137, name: "Solum" },
+          camera: { id: "137" } as Camera,
+          analysis_id: "",
           video: mock_video,
           currentTimestamp: 0,
           detections: detectionList,
         } as VideoAnalysis,
         {
-          camera: { id: 138, name: "Macdonalds Solum" },
+          camera: { id: "138" } as Camera,
+          analysis_id: "",
           video: mock_video,
           currentTimestamp: 0,
           detections: detectionList,
         } as VideoAnalysis,
         {
-          camera: { id: 238, name: "Polo 2-2" },
+          camera: { id: "238" } as Camera,
+          analysis_id: "",
           video: mock_video,
           currentTimestamp: 0,
           detections: detectionList,
@@ -66,15 +77,15 @@ function VideoAnalysisPage() {
 
     setReport(mock_report);
     setSuspectImg(mock_suspectimage);
-    setSelectedCamera(mock_report.reportAnalysis[0]);
+    setSelectedCamera(mock_report.uploads[0]);
   }, []);
 
   if (report == null) {
     return <Loading />;
   }
 
-  const changeCamera = function (cameraId: number) {
-    const videoAnalysis: VideoAnalysis | undefined = report.reportAnalysis.find(
+  const changeCamera = function (cameraId: UUID) {
+    const videoAnalysis: VideoAnalysis | undefined = report.uploads.find(
       (analysis) => analysis.camera.id == cameraId
     );
 
@@ -107,7 +118,7 @@ function VideoAnalysisPage() {
           <div className={styles.box} style={{ minWidth: "250px" }}>
             <h3 className={styles.boxTitle}>Cameras</h3>
             <ListCameras
-              analysis={report.reportAnalysis}
+              analysis={report.uploads}
               changeCamera={changeCamera}
             />
           </div>

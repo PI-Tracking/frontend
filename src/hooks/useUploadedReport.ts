@@ -4,25 +4,11 @@ import { Report } from "@Types/Report";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { create } from "zustand";
 
-//interface VideoAnalysis {
-//  analysis_id: UUID;
-//  report_id: UUID;
-//  video: string | File;
-//  detections: Detection[];
-//  currentTimestamp: number; // To save state of what part of video was being watched
-//}
-//export interface Report {
-//  id: UUID;
-//  name: string;
-//  creator: User;
-//  uploads: VideoAnalysis[];
-//  createdAt: Date; // datetime
-//}
-
 interface ReportStore {
   report: Report;
   setReport: (newReport: Report) => void;
   addVideoAnalysis: (newAnalysis: VideoAnalysis) => void;
+  addDetection: (cameraId: UUID, newDetection: Detection) => void;
 }
 
 const useReportStore = create<ReportStore>((set) => ({
@@ -32,7 +18,6 @@ const useReportStore = create<ReportStore>((set) => ({
 
   addVideoAnalysis: (newAnalysis: VideoAnalysis) =>
     set((state) => ({
-      ...state,
       report: {
         ...state.report,
         uploads: [...state.report.uploads, newAnalysis],
@@ -43,7 +28,7 @@ const useReportStore = create<ReportStore>((set) => ({
     set((state) => {
       const newAnalysis: VideoAnalysis[] = state.report.uploads.map(
         (analysis) => {
-          if (analysis.camera_id !== cameraId) {
+          if (analysis.camera.id !== cameraId) {
             return analysis;
           }
           return {
@@ -54,7 +39,6 @@ const useReportStore = create<ReportStore>((set) => ({
       );
 
       return {
-        ...state,
         report: {
           ...state.report,
           uploads: newAnalysis,

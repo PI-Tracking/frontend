@@ -1,12 +1,13 @@
+import { UUID } from "@Types/Base";
 import styles from "./ListCameras.module.css";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 
 import noimg from "@assets/noimg.png";
 
-type video = string;
+type video = string | File;
 
 interface IListCameras {
-  changeCamera: (camera_id: number) => void;
+  changeCamera: (camera_id: UUID) => void;
   analysis: VideoAnalysis[];
 }
 

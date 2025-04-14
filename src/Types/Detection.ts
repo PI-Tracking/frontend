@@ -9,11 +9,19 @@ enum DetectionType {
   KNIFE,
 }
 
+/**
+ * timestamp: number;
+ * class_name: DetectionType;
+ * confidence: number;
+ * coordinates: Point[];
+ * type: DetectionType;
+ */
 interface Detection {
   timestamp: number;
   class_name: DetectionType;
   confidence: number;
-  coordinate: Point[];
+  coordinates: Point[];
+  type: DetectionType;
 }
 
 export { DetectionType };
