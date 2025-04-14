@@ -7,7 +7,7 @@ import { CamerasVideo } from "@Types/CamerasVideo";
 import { AxiosError } from "axios";
 import { useMinIO } from "@hooks/useMinIO";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
-import useReport from "@hooks/useUploadedReport";
+import useReport from "@hooks/useReportStore";
 import { useAuth } from "@hooks/useAuth";
 import { Report } from "@Types/Report";
 import { User } from "@Types/User";
@@ -78,7 +78,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
               (upload) => upload.cameraId == video.camera.id
             )!.id,
             camera: video.camera,
-            video: video.file,
+            video: video.file.webkitRelativePath,
             currentTimestamp: 0,
             detections: [],
           } as VideoAnalysis;

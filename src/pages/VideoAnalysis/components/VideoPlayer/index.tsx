@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import ProgressBar from "./components/ProgressBar";
 import DetectionsBoxes from "./components/DetectionsBoxes";
 import styles from "./styles.module.css";
+import useReportStore from "@hooks/useReportStore";
 
 interface IVideoPlayer {
   videoAnalysis: VideoAnalysis;
@@ -15,6 +16,15 @@ function VideoPlayer({ videoAnalysis, controls }: IVideoPlayer) {
 
   const video = videoAnalysis?.video;
   const detections = videoAnalysis?.detections;
+  const { setCurrentTime } = useReportStore();
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = videoAnalysis.currentTimestamp;
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  setCurrentTime(videoAnalysis.analysis_id, videoAnalysis.currentTimestamp);
 
   return (
     <div className={styles.videoContainer}>
@@ -25,7 +35,11 @@ function VideoPlayer({ videoAnalysis, controls }: IVideoPlayer) {
           className={styles.videoElement}
         ></video>
 
-        <DetectionsBoxes detections={detections} />
+        <DetectionsBoxes
+          detections={detections}
+          width={videoRef.current?.clientWidth ?? 0}
+          height={videoRef.current?.clientHeight ?? 0}
+        />
       </div>
 
       {controls ? (

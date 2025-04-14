@@ -56,9 +56,6 @@ export default function ProgressBar({
   };
 
   useEffect(() => {
-    if (detections) {
-      console.log("Just to pass linter");
-    }
     const video = videoRef.current;
     if (!video) return;
 
@@ -67,6 +64,12 @@ export default function ProgressBar({
       video.removeEventListener("timeupdate", () => updateProgress());
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const formatTime = (time: number) => {
+    const minutes = Math.ceil(time / 60);
+    const seconds = time - minutes * 60;
+    return `${minutes}:${seconds}`;
+  };
 
   return (
     <div className={styles.controlsWrapper}>
@@ -77,6 +80,13 @@ export default function ProgressBar({
           <i className="fa fa-play"></i>
         )}
       </button>
+      <span>
+        {videoRef.current
+          ? formatTime(videoRef.current.currentTime) +
+            "/" +
+            formatTime(videoRef.current.duration)
+          : "00:00 / 00:00"}
+      </span>
 
       <div className={styles.progressBarContainer}>
         <div
@@ -87,9 +97,7 @@ export default function ProgressBar({
           }}
         >
           <div className={styles.progressBarBubble}></div>
-          {
-            //detections.map((detection) => (detection ? <></> : <></>))
-          }
+          {detections.map((detection) => (detection ? <></> : <></>))}
         </div>
       </div>
     </div>

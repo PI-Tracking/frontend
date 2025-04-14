@@ -1,37 +1,45 @@
 import { Detection } from "@Types/Detection";
 import styles from "./styles.module.css";
 
-//function normalizeDetection(
-//  detection: Detection,
-//  width: number,
-//  height: number
-//): Detection {
-//  const norm_points = detection.Box.points.map((coords) => [
-//    coords[0] / width,
-//    coords[0] / height,
-//  ]);
-//  return {
-//    ...detection,
-//    Box: {
-//      points: norm_points,
-//    },
-//  };
-//}
+function normalizeDetection(
+  detection: Detection,
+  width: number,
+  height: number
+): Detection {
+  const norm_points = detection.coordinates.map((coords) => ({
+    x: coords.x / width,
+    y: coords.y / height,
+  }));
+  return {
+    ...detection,
+    coordinates: norm_points,
+  };
+}
 
 interface IDetectionBoxes {
   detections: Detection[];
+  width: number;
+  height: number;
 }
 
-export default function DetectionBoxes({ detections }: IDetectionBoxes) {
-  return detections.map((detection, index) => (
+export default function DetectionBoxes({
+  detections,
+  width,
+  height,
+}: IDetectionBoxes) {
+  const normalizedDetections = detections.map((detection) =>
+    normalizeDetection(detection, width, height)
+  );
+
+  return normalizedDetections.map((detection, index) => (
     <div
       key={index}
       className={styles.detectionBox}
       style={{
-        left: `${detection.detection_box.points[0][0]}px`,
-        top: `${detection.detection_box.points[0][1]}px`,
-        width: `${detection.detection_box.points[1][0] - detection.detection_box.points[0][0]}px`,
-        height: `${detection.detection_box.points[1][1] - detection.detection_box.points[0][1]}px`,
+        left: `${detection.coordinates[0].x}px`,
+        top: `${detection.coordinates[0].y}px`,
+        width: `${detection.coordinates[1].x - detection.coordinates[0].x}px`,
+        height: `${detection.coordinates[1].y - detection.coordinates[0].y}px`,
         borderColor: "red",
       }}
     ></div>

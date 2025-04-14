@@ -10,80 +10,39 @@ import noimg from "@assets/noimg.png";
 import ListDetections from "./components/ListDetections";
 import ListCameras from "./components/ListCameras";
 import Player from "./components/VideoPlayer";
-import { Report } from "@Types/Report";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
-import { Detection, DetectionType } from "@Types/Detection";
 
-/* MOCK DATA */
-import mock_video from "./mock_data/video.mp4";
-import mock_suspectimage from "./mock_data/suspect.png";
-import Loading from "@components/Loading";
-import { User } from "@Types/User";
 import { UUID } from "@Types/Base";
-import { Camera } from "@Types/Camera";
+import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
+import { useParams } from "react-router-dom";
+import useReportStore from "@hooks/useReportStore";
+/* MOCK DATA */
+import mock_suspectimage from "./mock_data/suspect.png";
 
 type Image = string;
 function VideoAnalysisPage() {
-  const [report, setReport] = useState<Report | null>(null);
+  const { id: paramReportId } = useParams();
   const [suspectImg, setSuspectImg] = useState<Image>(noimg);
   const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis>(
     {} as VideoAnalysis
   );
+  const websocket = useDetectionWebSocket();
+  const { report } = useReportStore();
 
-  /* Fetch report */
   useEffect(() => {
-    const detectionList: Detection[] = [
-      {
-        coordinates: [
-          { x: 10, y: 10 },
-          { x: 230, y: 230 },
-        ],
-        type: DetectionType.SUSPECT,
-        class_name: DetectionType.SUSPECT,
-        confidence: 0.7,
-        timestamp: 0,
-      },
-    ];
-
-    const mock_report: Report = {
-      id: "10",
-      name: "report_name",
-      creator: {} as User,
-      createdAt: new Date(),
-      uploads: [
-        {
-          camera: { id: "137" } as Camera,
-          analysis_id: "",
-          video: mock_video,
-          currentTimestamp: 0,
-          detections: detectionList,
-        } as VideoAnalysis,
-        {
-          camera: { id: "138" } as Camera,
-          analysis_id: "",
-          video: mock_video,
-          currentTimestamp: 0,
-          detections: detectionList,
-        } as VideoAnalysis,
-        {
-          camera: { id: "238" } as Camera,
-          analysis_id: "",
-          video: mock_video,
-          currentTimestamp: 0,
-          detections: detectionList,
-        } as VideoAnalysis,
-      ],
-    };
-
-    setReport(mock_report);
+    setSelectedCamera(report.uploads[0]);
     setSuspectImg(mock_suspectimage);
-    setSelectedCamera(mock_report.uploads[0]);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (report == null) {
-    return <Loading />;
+  if (!paramReportId) {
+    return <h1>No report id given!</h1>;
   }
 
+  if (report.id !== paramReportId) {
+    return <h1>Report id does not match!</h1>;
+  }
+
+  websocket.connect();
   const changeCamera = function (cameraId: UUID) {
     const videoAnalysis: VideoAnalysis | undefined = report.uploads.find(
       (analysis) => analysis.camera.id == cameraId
@@ -111,6 +70,7 @@ function VideoAnalysisPage() {
         </div>
 
         <div className={styles.player}>
+          {websocket.analysing ? <h1>Video is being analysed...</h1> : <></>}
           <Player videoAnalysis={selectedCamera} controls={true} />
         </div>
 

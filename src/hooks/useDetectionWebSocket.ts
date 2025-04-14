@@ -1,22 +1,21 @@
 import { useState, useEffect, useCallback } from "react";
 import detectionWebSocket from "../websockets/DetectionWebSocket";
-import { Detection } from "../Types/Detection";
+import useReportStore from "@hooks/useReportStore";
 
 // hook da websocket de detecção
 // interface to use the websocket service
 
 interface UseDetectionWebSocketResult {
-  detections: Detection[];
-  analysisId: string | null;
   isConnected: boolean;
-  connect: (analysisId: string) => void;
+  analysing: boolean;
+  connect: () => void;
   disconnect: () => void;
 }
 
 export function useDetectionWebSocket(): UseDetectionWebSocketResult {
-  const [detections, setDetections] = useState<Detection[]>([]);
-  const [analysisId, setAnalysisId] = useState<string | null>(null);
+  const { report, setDetections } = useReportStore();
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [analysing, setAnalysing] = useState<boolean>(true);
 
   useEffect(() => {
     const checkConnection = () => {
@@ -30,32 +29,28 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
     return () => clearInterval(interval);
   }, []);
 
-  const connect = useCallback((id: string) => {
-    setAnalysisId(id);
-    detectionWebSocket.connect(id);
-  }, []);
+  const connect = useCallback(() => {
+    detectionWebSocket.connect(report.id);
+  }, [report.id]);
 
   const disconnect = useCallback(() => {
     detectionWebSocket.disconnect();
-    setAnalysisId(null);
-    setDetections([]);
   }, []);
 
   useEffect(() => {
     const unsubscribe = detectionWebSocket.onMessage((newDetections, id) => {
-      setDetections(newDetections);
-      setAnalysisId(id);
+      setDetections(id, newDetections);
+      setAnalysing(false);
     });
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
-    detections,
-    analysisId,
     isConnected,
+    analysing,
     connect,
     disconnect,
   };

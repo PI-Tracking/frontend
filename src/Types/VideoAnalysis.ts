@@ -12,7 +12,7 @@ import { Camera } from "./Camera";
 interface VideoAnalysis {
   analysis_id: UUID;
   camera: Camera;
-  video: string | File;
+  video: string;
   detections: Detection[];
   currentTimestamp: number; // To save state of what part of video was being watched
 }
