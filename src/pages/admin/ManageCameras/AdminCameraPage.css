@@ -1,6 +1,5 @@
 .admin-manage-container {
   margin: 0 auto;
-
 }
 
 .camera-page-header {
@@ -37,8 +36,35 @@
 }
 
 .admin-table {
+  margin-top: 50px;
   width: 100%;
   border-collapse: collapse;
+}
+
+.admin-checkbox {
+  text-align: right;
+  padding: 15px;
+}
+
+.admin-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background-color: #8a8a8a;
+  appearance: none;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+}
+
+.admin-checkbox input[type="checkbox"]:checked::before {
+  content: "\2713";
+  font-size: 18px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .admin-row {
