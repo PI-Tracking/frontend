@@ -1,4 +1,4 @@
-import Navbar from "@components/Navbar2";
+import Navbar from "@components/Navbar";
 import { useState, useEffect } from "react";
 import "./AdminCameraPage.css";
 import { Camera } from "@Types/Camera";

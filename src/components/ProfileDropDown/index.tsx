@@ -16,9 +16,28 @@ function ProfileDropdown({ isOpen, onClose }: ProfileDropdownProps) {
   const handleLogout = () => {
     auth.logout();
     onClose();
-    navigate("/");
+    navigate("");
+    auth.isAuthenticated = !auth.isAuthenticated;
   };
 
+  const handleLogin = () => {
+    navigate("/login");
+    auth.isAuthenticated = !auth.isAuthenticated;
+  };
+
+  if (!auth.isAuthenticated) {
+    return (
+      <div className="profile-dropdown">
+        <ul>
+          <li>
+            <Link to="/login" onClick={handleLogin}>
+              Login
+            </Link>
+          </li>
+        </ul>
+      </div>
+    );
+  }
   return (
     <div className="profile-dropdown">
       <ul>
@@ -33,7 +52,7 @@ function ProfileDropdown({ isOpen, onClose }: ProfileDropdownProps) {
           </Link>
         </li>
         <li>
-          <Link to="/logout" onClick={handleLogout}>
+          <Link to="/" onClick={handleLogout}>
             Logout
           </Link>
         </li>
