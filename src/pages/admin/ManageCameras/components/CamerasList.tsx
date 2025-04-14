@@ -24,7 +24,6 @@ export default function CamerasList({
   const [cameraList, setCameras] = useState<Camera[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [toggleUsed, setToggleUsed] = useState(0);
 
   useEffect(() => {
     async function getAllCameras() {
@@ -45,16 +44,24 @@ export default function CamerasList({
     }
 
     getAllCameras();
-  }, [toggleUsed]);
+  }, []);
 
   const handleEditCamera = (camera: Camera) => {
     setEditingCamera(camera);
     openForm();
   };
 
-  const toggleCameraActive = (id: UUID) => {
-    Api.toggleCamera(id);
-    setToggleUsed(toggleUsed + 1);
+  const toggleCameraActive = async (id: UUID) => {
+    await Api.toggleCamera(id);
+
+    setCameras((prev) => {
+      return prev.reduce((acc, curr) => {
+        if (curr.id === id) {
+          acc.push({ ...curr, active: !curr.active });
+        } else acc.push(curr);
+        return acc;
+      }, [] as Camera[]);
+    });
   };
 
   if (isLoading) {
