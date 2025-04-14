@@ -31,8 +31,8 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
       return;
     }
     if (
-      !files.every((video) => video.cameraId !== "") ||
-      new Set(files.map((video) => video.cameraId)).size !== files.length
+      !files.every((video) => video.camera.id !== "") ||
+      new Set(files.map((video) => video.camera.id)).size !== files.length
     ) {
       setError("All cameras must be associated to (different) camera");
       return;
@@ -41,7 +41,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
     try {
       /* Create a new Report Request */
       const request: NewReportDTO = {
-        cameras: files.map((file) => file.cameraId),
+        cameras: files.map((file) => file.camera.id),
         name: new Date().toUTCString(),
       };
       const response = await createNewReport(request);
@@ -56,7 +56,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         console.log("From url:", upload);
         const file: File = (
           files.find(
-            (video) => video.cameraId === upload.cameraId
+            (video) => video.camera.id === upload.cameraId
           ) as CamerasVideo
         ).file;
         console.log("Uploading: " + file.name);
@@ -75,9 +75,9 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         uploads: files.map((video) => {
           return {
             analysis_id: uploads.find(
-              (upload) => upload.cameraId == video.cameraId
+              (upload) => upload.cameraId == video.camera.id
             )!.id,
-            camera_id: video.cameraId,
+            camera: video.camera,
             video: video.file,
             currentTimestamp: 0,
             detections: [],

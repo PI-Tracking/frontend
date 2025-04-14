@@ -33,7 +33,7 @@ export function convertBrokerDetectionToAppDetection(
   timestamp: number;
   class_name: string;
   confidence: number;
-  coordinate: { x: number; y: number }[];
+  coordinates: { x: number; y: number }[];
 } {
   const coordinates = [
     { x: detection.coordinates.x1, y: detection.coordinates.y1 },
@@ -46,6 +46,6 @@ export function convertBrokerDetectionToAppDetection(
     timestamp: detection.timestamp,
     class_name: detection.class_name,
     confidence: 0.7,
-    coordinate: coordinates,
+    coordinates: coordinates,
   };
 }

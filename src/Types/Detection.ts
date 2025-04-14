@@ -3,11 +3,19 @@ type Point = {
   y: number;
 };
 
+/**
+ * timestamp: number;
+ * class_name: DetectionType;
+ * confidence: number;
+ * coordinates: Point[];
+ * type: DetectionType;
+ */
+
 interface Detection {
   timestamp: number;
   class_name: string;
   confidence: number;
-  coordinate: Point[];
+  coordinates: Point[];
 }
 
 export type { Detection };

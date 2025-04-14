@@ -106,7 +106,7 @@ function UploadVideosPage() {
         .filter((file) => videoFileTypes.includes(file.type))
         .map((file) => {
           return {
-            cameraId: "",
+            camera: { id: "" } as Camera,
             file: file,
           } as CamerasVideo;
         });
@@ -135,7 +135,7 @@ function UploadVideosPage() {
         }
         return {
           ...video,
-          cameraId: event.target.value,
+          camera: cameras.find((camera) => camera.id === event.target.value)!,
         };
       })
     );
@@ -200,9 +200,9 @@ function UploadVideosPage() {
                   <select
                     key={video.file.name}
                     value={
-                      video.cameraId === ""
+                      video.camera.id === ""
                         ? "Select a camera for this video"
-                        : video.cameraId
+                        : video.camera.id
                     }
                     onChange={(event) =>
                       handleChangeCamera(event, video.file.name)
