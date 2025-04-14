@@ -1,8 +1,4 @@
-import {
-  ResultsRequest,
-  convertBrokerDetectionToAppDetection,
-} from "../Types/WebSocketTypes";
-import { Detection } from "../Types/Detection";
+import { DetectionResult, ResultsRequest } from "@Types/WebSocketTypes";
 
 // websocket service
 // handles the connection to the websocket
@@ -12,7 +8,10 @@ import { Detection } from "../Types/Detection";
 
 // ws://localhost:8000/api/v1/ws/{analysisId}
 
-type MessageHandler = (detections: Detection[], analysisId: string) => void;
+type MessageHandler = (
+  detections: DetectionResult[],
+  analysisId: string
+) => void;
 
 class DetectionWebSocket {
   private ws: WebSocket | null = null;
@@ -21,7 +20,7 @@ class DetectionWebSocket {
   private maxReconnectAttempts = 5;
   private reconnectTimeout = 1000;
 
-  constructor(private baseUrl: string = "ws://localhost:8000") {}
+  constructor(private baseUrl: string = "ws://localhost:8001") {}
 
   connect(analysisId: string) {
     if (this.ws?.readyState === WebSocket.OPEN) {
@@ -38,13 +37,13 @@ class DetectionWebSocket {
     this.ws.onmessage = (event) => {
       try {
         const data: ResultsRequest = JSON.parse(event.data);
-        const appDetections = data.detections.map((detection) =>
-          convertBrokerDetectionToAppDetection(detection)
-        );
 
-        this.messageHandlers.forEach((handler) =>
-          handler(appDetections, data.analysis_id)
-        );
+        console.log("Received raw data: ", data);
+
+        this.messageHandlers.forEach((handler) => {
+          console.log("Passed to handler");
+          handler(data.detections, data.analysis_id);
+        });
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
       }

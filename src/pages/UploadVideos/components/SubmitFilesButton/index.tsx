@@ -13,6 +13,7 @@ import { Report } from "@Types/Report";
 import { User } from "@Types/User";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { useNavigate } from "react-router-dom";
+import { requestReanalysis } from "@api/analysis";
 
 interface SubmitFilesButtonProps {
   files: CamerasVideo[];
@@ -21,7 +22,7 @@ interface SubmitFilesButtonProps {
 function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
   const minio = useMinIO();
   const [uploadingFile, setUploadingFile] = useState<File | null>(null);
-  const { setReport } = useReport();
+  const { setReport, setInitialAnalysisId } = useReport();
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -74,17 +75,26 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         createdAt: new Date(request.name), // TODO if this changes, this HAS to change
         uploads: files.map((video) => {
           return {
-            analysis_id: uploads.find(
+            analysis_id: "",
+            video_id: uploads.find(
               (upload) => upload.cameraId == video.camera.id
             )!.id,
             camera: video.camera,
-            video: video.file.webkitRelativePath,
+            video: URL.createObjectURL(video.file),
             currentTimestamp: 0,
             detections: [],
           } as VideoAnalysis;
         }),
       };
       setReport(newReport);
+      const requestAnalysisResponse = await requestReanalysis(id);
+      if (requestAnalysisResponse.status !== 200) {
+        console.log("Something went wrong!");
+        console.log(requestAnalysisResponse);
+        return;
+      }
+
+      setInitialAnalysisId(requestAnalysisResponse.data.analysisId);
       /* Navigate to video analysis page */
       navigate(`/report/${id}`);
     } catch (error) {

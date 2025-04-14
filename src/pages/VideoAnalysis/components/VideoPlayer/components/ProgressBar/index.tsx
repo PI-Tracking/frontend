@@ -5,9 +5,9 @@ import styles from "./styles.module.css";
 interface IProgressBar {
   videoRef: React.RefObject<HTMLVideoElement | null>;
   detections: Detection[];
-
   playing: boolean;
   setPlaying: Dispatch<SetStateAction<boolean>>;
+  setCurrentTime: (time: number) => void;
 }
 
 export default function ProgressBar({
@@ -15,6 +15,7 @@ export default function ProgressBar({
   playing,
   setPlaying,
   detections,
+  setCurrentTime,
 }: IProgressBar) {
   const togglePlay = () => {
     const video = videoRef.current;
@@ -48,6 +49,7 @@ export default function ProgressBar({
       newProgress = video.currentTime / video.duration;
     }
 
+    setCurrentTime(video.currentTime);
     // Update css progress variables
     document.documentElement.style.setProperty(
       "--progress-position",
@@ -66,27 +68,33 @@ export default function ProgressBar({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatTime = (time: number) => {
-    const minutes = Math.ceil(time / 60);
-    const seconds = time - minutes * 60;
-    return `${minutes}:${seconds}`;
+    const minutes = Math.floor(time / 60);
+    const str_seconds = Math.floor(time - minutes * 60)
+      .toString()
+      .padStart(2, "0");
+    const str_minutes = minutes.toString().padStart(2, "0");
+
+    return `${str_minutes}:${str_seconds}`;
   };
 
   return (
     <div className={styles.controlsWrapper}>
-      <button onClick={togglePlay} className={styles.playButton}>
-        {playing ? (
-          <i className="fa fa-pause"></i>
-        ) : (
-          <i className="fa fa-play"></i>
-        )}
-      </button>
-      <span>
-        {videoRef.current
-          ? formatTime(videoRef.current.currentTime) +
-            "/" +
-            formatTime(videoRef.current.duration)
-          : "00:00 / 00:00"}
-      </span>
+      <div className={styles.buttonWrapper}>
+        <button onClick={togglePlay} className={styles.playButton}>
+          {playing ? (
+            <i className="fa fa-pause"></i>
+          ) : (
+            <i className="fa fa-play"></i>
+          )}
+        </button>
+        <span>
+          {videoRef.current
+            ? formatTime(videoRef.current.currentTime) +
+              "/" +
+              formatTime(videoRef.current.duration)
+            : "00:00 / 00:00"}
+        </span>
+      </div>
 
       <div className={styles.progressBarContainer}>
         <div
@@ -97,7 +105,9 @@ export default function ProgressBar({
           }}
         >
           <div className={styles.progressBarBubble}></div>
-          {detections.map((detection) => (detection ? <></> : <></>))}
+          {detections
+            ? detections.map((detection) => (detection ? <></> : <></>))
+            : null}
         </div>
       </div>
     </div>

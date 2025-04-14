@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import detectionWebSocket from "../websockets/DetectionWebSocket";
 import useReportStore from "@hooks/useReportStore";
+import { UUID } from "@Types/Base";
+import { Detection } from "@Types/Detection";
 
 // hook da websocket de detecção
 // interface to use the websocket service
@@ -8,14 +10,16 @@ import useReportStore from "@hooks/useReportStore";
 interface UseDetectionWebSocketResult {
   isConnected: boolean;
   analysing: boolean;
-  connect: () => void;
+  currentAnalysisId: UUID;
+  connect: (analysis_id: UUID) => void;
   disconnect: () => void;
 }
 
 export function useDetectionWebSocket(): UseDetectionWebSocketResult {
-  const { report, setDetections } = useReportStore();
+  const { setDetections } = useReportStore();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [analysing, setAnalysing] = useState<boolean>(true);
+  const [currentAnalysisId, setCurrentAnalysisId] = useState<UUID>("");
 
   useEffect(() => {
     const checkConnection = () => {
@@ -23,25 +27,32 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
     };
 
     checkConnection();
-
     const interval = setInterval(checkConnection, 1000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const connect = useCallback(() => {
-    detectionWebSocket.connect(report.id);
-  }, [report.id]);
+  const connect = useCallback((analysis_id: UUID) => {
+    setCurrentAnalysisId(analysis_id);
+    detectionWebSocket.connect(analysis_id);
+  }, []);
 
   const disconnect = useCallback(() => {
     detectionWebSocket.disconnect();
   }, []);
 
   useEffect(() => {
-    const unsubscribe = detectionWebSocket.onMessage((newDetections, id) => {
-      setDetections(id, newDetections);
-      setAnalysing(false);
-    });
+    const unsubscribe = detectionWebSocket.onMessage(
+      (newDetections, analysis_id) => {
+        console.log(newDetections);
+        setDetections(
+          newDetections[0].video_id,
+          analysis_id,
+          newDetections as Detection[]
+        );
+        setAnalysing(false);
+      }
+    );
 
     return () => {
       unsubscribe();
@@ -51,6 +62,7 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
   return {
     isConnected,
     analysing,
+    currentAnalysisId,
     connect,
     disconnect,
   };

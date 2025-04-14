@@ -7,17 +7,38 @@ import { create } from "zustand";
 interface ReportStore {
   report: Report;
   setReport: (newReport: Report) => void;
+  setInitialAnalysisId: (analysisId: UUID) => void;
+
   addVideoAnalysis: (newAnalysis: VideoAnalysis) => void;
-  addDetection: (analysisId: UUID, newDetection: Detection) => void;
-  addDetections: (analysisId: UUID, newDetections: Detection[]) => void;
-  setDetections: (analysisId: UUID, newDetections: Detection[]) => void;
-  setCurrentTime: (analysisId: UUID, newDetectionTime: number) => void;
+
+  // TODO meter tambem com analysis_id
+  addDetection: (videoId: UUID, newDetection: Detection) => void;
+  addDetections: (videoId: UUID, newDetections: Detection[]) => void;
+
+  setDetections: (
+    video_id: UUID,
+    analysis_id: UUID,
+    newDetections: Detection[]
+  ) => void;
+
+  setCurrentTime: (videoId: UUID, newDetectionTime: number) => void;
 }
 
 const useReportStore = create<ReportStore>((set) => ({
   report: {} as Report,
 
   setReport: (newReport: Report) => set(() => ({ report: newReport })),
+
+  setInitialAnalysisId: (analysisId: UUID) =>
+    set((state) => ({
+      report: {
+        ...state.report,
+        uploads: state.report.uploads.map((upload) => ({
+          ...upload,
+          analysis_id: analysisId,
+        })),
+      },
+    })),
 
   addVideoAnalysis: (newAnalysis: VideoAnalysis) =>
     set((state) => ({
@@ -27,11 +48,11 @@ const useReportStore = create<ReportStore>((set) => ({
       },
     })),
 
-  setCurrentTime: (analysisId: UUID, newCurrentTime: number) =>
+  setCurrentTime: (videoId: UUID, newCurrentTime: number) =>
     set((state) => {
       const newAnalysis: VideoAnalysis[] = state.report.uploads.map(
         (analysis) => {
-          if (analysis.analysis_id !== analysisId) {
+          if (analysis.video_id !== videoId) {
             return analysis;
           }
           return {
@@ -49,11 +70,11 @@ const useReportStore = create<ReportStore>((set) => ({
       };
     }),
 
-  addDetection: (analysisId: UUID, newDetection: Detection) => {
+  addDetection: (videoId: UUID, newDetection: Detection) => {
     set((state) => {
       const newAnalysis: VideoAnalysis[] = state.report.uploads.map(
         (analysis) => {
-          if (analysis.analysis_id !== analysisId) {
+          if (analysis.video_id !== videoId) {
             return analysis;
           }
           return {
@@ -72,11 +93,11 @@ const useReportStore = create<ReportStore>((set) => ({
     });
   },
 
-  addDetections: (analysisId: UUID, newDetections: Detection[]) => {
+  addDetections: (videoId: UUID, newDetections: Detection[]) => {
     set((state) => {
       const newAnalysis: VideoAnalysis[] = state.report.uploads.map(
         (analysis) => {
-          if (analysis.analysis_id !== analysisId) {
+          if (analysis.video_id !== videoId) {
             return analysis;
           }
           return {
@@ -95,11 +116,18 @@ const useReportStore = create<ReportStore>((set) => ({
     });
   },
 
-  setDetections: (analysisId: UUID, newDetections: Detection[]) => {
+  setDetections: (
+    video_id: UUID,
+    analysis_id: UUID,
+    newDetections: Detection[]
+  ) => {
     set((state) => {
       const newAnalysis: VideoAnalysis[] = state.report.uploads.map(
         (analysis) => {
-          if (analysis.analysis_id !== analysisId) {
+          if (
+            analysis.video_id !== video_id ||
+            analysis.analysis_id !== analysis_id
+          ) {
             return analysis;
           }
           return {

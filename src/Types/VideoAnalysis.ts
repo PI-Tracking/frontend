@@ -4,13 +4,16 @@ import { Camera } from "./Camera";
 
 /**
  * analysis_id: UUID;
+ * video_id: UUID;
  * camera: Camera;
  * video: string | File;
  * detections: Detection[];
  * currentTimestamp: number; // To save state of what part of video was being watched
  */
+// TODO: Meter video_id, camera, video e currentTimestamp em evidencia
 interface VideoAnalysis {
   analysis_id: UUID;
+  video_id: UUID;
   camera: Camera;
   video: string;
   detections: Detection[];

@@ -26,7 +26,7 @@ async function requestNewAnalysis(
 async function requestReanalysis(
   reportId: UUID,
   selectedSuspect?: SelectedSuspectDTO
-): Promise<AxiosResponse<string>> {
+): Promise<AxiosResponse<{ analysisId: string }>> {
   /**
    * POST /analysis/{reportId}
    * Return:

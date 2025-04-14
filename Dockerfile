@@ -3,11 +3,11 @@ FROM node:22.11-alpine
 # Set the working directory inside the container
 WORKDIR /app
  
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy package.json
+COPY package.json ./
  
 # Install dependencies
-RUN npm install
+RUN npm install --force --loglevel verbose
  
 # Copy the rest of your application files
 COPY . .

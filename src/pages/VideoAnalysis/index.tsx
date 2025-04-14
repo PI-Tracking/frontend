@@ -29,29 +29,44 @@ function VideoAnalysisPage() {
   const websocket = useDetectionWebSocket();
   const { report } = useReportStore();
 
+  console.log(report);
   useEffect(() => {
+    websocket.connect(report.uploads[0].analysis_id);
     setSelectedCamera(report.uploads[0]);
     setSuspectImg(mock_suspectimage);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!paramReportId) {
-    return <h1>No report id given!</h1>;
-  }
-
-  if (report.id !== paramReportId) {
-    return <h1>Report id does not match!</h1>;
-  }
-
-  websocket.connect();
   const changeCamera = function (cameraId: UUID) {
-    const videoAnalysis: VideoAnalysis | undefined = report.uploads.find(
-      (analysis) => analysis.camera.id == cameraId
-    );
-
-    if (videoAnalysis == undefined) return;
+    const videoAnalysis: VideoAnalysis = report.uploads.find(
+      (analysis) => analysis.camera.id === cameraId
+    )!;
 
     setSelectedCamera(videoAnalysis);
   };
+
+  useEffect(() => {
+    if (!websocket.analysing) {
+      changeCamera(selectedCamera.camera.id);
+    }
+  }, [websocket.analysing]); //eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!paramReportId) {
+    return (
+      <div className={styles.content}>
+        <Navbar />
+        <h1>No report id given!</h1>;
+      </div>
+    );
+  }
+
+  if (report.id !== paramReportId) {
+    return (
+      <div className={styles.content}>
+        <Navbar />
+        <h1>Report id does not match upload id received!</h1>;
+      </div>
+    );
+  }
 
   return (
     <div className={styles.content}>

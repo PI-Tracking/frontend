@@ -23,8 +23,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
-  console.log("Loaded user: ", user);
-
   const login = async (user: LoginDTO): Promise<ILogin> => {
     try {
       const response = await LoginAPI(user);
