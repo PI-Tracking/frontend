@@ -1,5 +1,5 @@
 import "../AdminCameraPage.css";
-import Camera from "@Types/Camera";
+import { Camera } from "@Types/Camera";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import * as Api from "@api/camera";
 import CameraDTO from "@Types/CameraDTO";
@@ -44,7 +44,7 @@ export default function AddCameraForm({
     let response;
     try {
       if (newCamera.id !== undefined) {
-        response = await Api.updateCamera(payloadCamera);
+        response = await Api.updateCamera(newCamera.id, payloadCamera);
       } else {
         response = await Api.addNewCamera(payloadCamera as CameraDTO);
       }
@@ -92,12 +92,12 @@ export default function AddCameraForm({
         {status.sucess ? (
           <div className="preview-placeholder">
             <p className="success-checkmark">&#10003;</p>
-            <p>Camera successfully added! :D</p>
+            <p>Camera successfully saved! :D</p>
           </div>
         ) : (
           <div className="preview-placeholder">
             <p className="success-checkmark">&#10005;</p>
-            <p>Failure adding/updating Camera :(</p>
+            <p>Failure saving Camera :(</p>
           </div>
         )}
       </div>
