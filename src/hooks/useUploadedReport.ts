@@ -41,21 +41,23 @@ const useReportStore = create<ReportStore>((set) => ({
 
   addDetection: (cameraId: UUID, newDetection: Detection) => {
     set((state) => {
-      const newAnalysis = state.report.uploads.map((analysis) => {
-        if (analysis.camera_id !== cameraId) {
-          return analysis;
+      const newAnalysis: VideoAnalysis[] = state.report.uploads.map(
+        (analysis) => {
+          if (analysis.camera_id !== cameraId) {
+            return analysis;
+          }
+          return {
+            ...analysis,
+            detections: [...analysis.detections, newDetection],
+          };
         }
-        return {
-          ...analysis,
-          detections: [...analysis.detections, newDetection],
-        };
-      });
+      );
 
       return {
         ...state,
         report: {
           ...state.report,
-          uploads: [...state.report.uploads, newAnalysis],
+          uploads: newAnalysis,
         },
       };
     });
