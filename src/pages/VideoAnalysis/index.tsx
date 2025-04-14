@@ -30,7 +30,7 @@ function VideoAnalysisPage() {
   useEffect(() => {
     const detectionList: Detection[] = [
       {
-        Box: {
+        detection_box: {
           points: [
             [10, 10],
             [230, 230],

@@ -12,7 +12,6 @@ import { useAuth } from "@hooks/useAuth";
 import { Report } from "@Types/Report";
 import { User } from "@Types/User";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
-import { Camera } from "@Types/Camera";
 import { useNavigate } from "react-router-dom";
 
 interface SubmitFilesButtonProps {
@@ -75,8 +74,10 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         createdAt: new Date(request.name), // TODO if this changes, this HAS to change
         uploads: files.map((video) => {
           return {
-            id: uploads.find((upload) => upload.cameraId == video.cameraId)!.id,
-            camera: { id: video.cameraId } as Camera,
+            analysis_id: uploads.find(
+              (upload) => upload.cameraId == video.cameraId
+            )!.id,
+            camera_id: video.cameraId,
             video: video.file,
             currentTimestamp: 0,
             detections: [],

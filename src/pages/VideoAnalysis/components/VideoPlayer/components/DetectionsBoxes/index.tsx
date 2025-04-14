@@ -28,10 +28,10 @@ export default function DetectionBoxes({ detections }: IDetectionBoxes) {
       key={index}
       className={styles.detectionBox}
       style={{
-        left: `${detection.Box.points[0][0]}px`,
-        top: `${detection.Box.points[0][1]}px`,
-        width: `${detection.Box.points[1][0] - detection.Box.points[0][0]}px`,
-        height: `${detection.Box.points[1][1] - detection.Box.points[0][1]}px`,
+        left: `${detection.detection_box.points[0][0]}px`,
+        top: `${detection.detection_box.points[0][1]}px`,
+        width: `${detection.detection_box.points[1][0] - detection.detection_box.points[0][0]}px`,
+        height: `${detection.detection_box.points[1][1] - detection.detection_box.points[0][1]}px`,
         borderColor: "red",
       }}
     ></div>
