@@ -1,25 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Navbar from "@components/Navbar";
 import CameraMenuOptions from "@components/CameraMenuOptions";
 import "./CamerasPageMap.css";
-
-interface Camera {
-  id: number;
-  lat: number;
-  lng: number;
-}
-
-const dummyCameras: Camera[] = [
-  { id: 1, lat: 39.495, lng: -7.84 },
-  { id: 2, lat: 41.515, lng: -7.33 },
-  { id: 3, lat: 37.525, lng: -7.12 },
-];
+import { getAllCameras } from "@api/camera";
+import { Camera } from "@Types/Camera";
 
 function CamerasPageMap() {
+  const [cameras, setCameras] = useState<Camera[]>([]);
   const [showMap, setShowMap] = useState<boolean>(false);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+
+  useEffect(() => {
+    const fetchCameras = async () => {
+      try {
+        const response = await getAllCameras();
+        if (response.status == 200 && response.data instanceof Array) {
+          setCameras(response.data);
+        }
+      } catch {
+        alert(" There was an unexpected error with the request.");
+      }
+    };
+    fetchCameras();
+  }, []);
 
   const handleAddCamera = (): void => {
     setShowMap(true);
@@ -42,20 +47,24 @@ function CamerasPageMap() {
         </section>
       ) : (
         <section className="map-view">
-          <MapContainer center={[40.366715, -8.036196]} zoom={13} style={{ height: "400px", width: "100%" }}>
+          <MapContainer
+            center={[40.366715, -8.036196]}
+            zoom={13}
+            style={{ height: "400px", width: "100%" }}
+          >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              {...({ attribution: "&copy; OpenStreetMap contributors" } as any)}
+              {...{ attribution: "&copy; OpenStreetMap contributors" }}
             />
-            {dummyCameras.map((camera) => (
+            {cameras.map((camera) => (
               <Marker
                 key={camera.id}
-                position={[camera.lat, camera.lng]}
+                position={[camera.latitude, camera.longitude]}
                 eventHandlers={{
                   click: () => handleSelectCamera(camera),
                 }}
               >
-                <Popup>Camera {camera.id}</Popup>
+                <Popup>Camera {camera.name}</Popup>
               </Marker>
             ))}
           </MapContainer>
@@ -66,7 +75,7 @@ function CamerasPageMap() {
         <section className="camera-feed">
           {selectedCameras.map((camera) => (
             <div key={camera.id} className="camera-view">
-              Camera {camera.id}
+              Camera {camera.name}
             </div>
           ))}
         </section>

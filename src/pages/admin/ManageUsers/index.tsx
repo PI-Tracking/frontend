@@ -1,42 +1,82 @@
-import Navbar from "@components/Navbar2";
-import { ChangeEvent, useState } from "react";
+import Navbar from "@components/Navbar";
+import { ChangeEvent, useState, useEffect } from "react";
 import "./AdminManagePage.css";
-
-const initialUsers = [
-  { id: 1, email: "1234@asfjuiahsf.cc", enabled: true },
-  { id: 2, email: "dfskdjhfosdj@fdoighujofsigs.pt", enabled: false },
-  { id: 3, email: "johnmcnugget@nein.s", enabled: true },
-];
+import { getAllUsers, createNewAccount, toggleAccount } from "@api/users";
+import { User } from "@Types/User";
+import { CreateUserDTO, NewUserInfo } from "@Types/CreateUserDTO";
 
 function AdminManagePage() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState<User[]>([]);
+  const [credentials, setCredentials] = useState<NewUserInfo>({
+    username: "",
+    password: "",
+  });
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [newUser, setNewUser] = useState({ email: "", enabled: true });
+  const [isForm2Visible, setIsForm2Visible] = useState(false);
+  const [newUser, setNewUser] = useState<CreateUserDTO>({
+    badgeId: "",
+    email: "",
+    username: "",
+    admin: false,
+  });
+  const [toggleUsed, setToggleUsed] = useState(0);
 
-  const toggleUserStatus = (id: number) => {
-    setUsers(
-      users.map((user) =>
-        user.id === id ? { ...user, enabled: !user.enabled } : user
-      )
-    );
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await getAllUsers();
+        if (response.status == 200) {
+          setUsers(response.data);
+        }
+      } catch {
+        alert(" There was an unexpected error with the request.");
+      }
+    };
+    fetchUsers();
+  }, [setUsers, setCredentials, credentials, toggleUsed]);
+
+  const toggleUserStatus = (id: string) => {
+    setToggleUsed(toggleUsed + 1);
+    toggleAccount(id);
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setNewUser({
-      ...newUser,
-      [name]: type === "checkbox" ? checked : value,
-    });
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewUser((prevUser) => ({
+      ...prevUser,
+      email: e.target.value,
+    }));
+  };
+  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewUser((prevUser) => ({
+      ...prevUser,
+      username: e.target.value,
+    }));
+  };
+  const handleBadgeIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewUser((prevUser) => ({
+      ...prevUser,
+      badgeId: e.target.value,
+    }));
+  };
+  const handleIsAdminChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewUser((prevUser) => ({
+      ...prevUser,
+      admin: e.target.checked,
+    }));
   };
 
-  const handleAddUser = () => {
-    if (newUser.email) {
-      setUsers([
-        ...users,
-        { id: Date.now(), email: newUser.email, enabled: newUser.enabled },
-      ]);
-      setNewUser({ email: "", enabled: true });
+  const handleAddUser = async () => {
+    if (newUser) {
+      try {
+        const response = await createNewAccount(newUser);
+        if (response.status === 201) {
+          setCredentials(response.data);
+        }
+      } catch {
+        alert("There was an unexpected error with the request.");
+      }
       setIsFormVisible(false);
+      setIsForm2Visible(true);
     }
   };
 
@@ -47,8 +87,10 @@ function AdminManagePage() {
         <table className="admin-table">
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="admin-row">
+              <tr key={user.badgeId} className="admin-row">
                 <td className="admin-user">
+                  {user.admin ? " [Admin]" : "_______"}
+
                   <div className="profile-icon">
                     {user.email.charAt(0).toUpperCase()}
                   </div>
@@ -59,7 +101,7 @@ function AdminManagePage() {
                   <input
                     type="checkbox"
                     checked={user.enabled}
-                    onChange={() => toggleUserStatus(user.id)}
+                    onChange={() => toggleUserStatus(user.badgeId)}
                   />
                 </td>
               </tr>
@@ -86,24 +128,56 @@ function AdminManagePage() {
             </button>
             <div className="add-user-form">
               <input
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                value={newUser.email}
-                onChange={handleInputChange}
+                type="text"
+                name="badgeId"
+                placeholder="Enter a badgeId"
+                value={newUser?.badgeId}
+                onChange={handleBadgeIdChange}
                 required
               />
-              {/*  Here it should generate a random passowrd */}
-              <label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter an email"
+                value={newUser?.email}
+                onChange={handleEmailChange}
+                required
+              />
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter a name"
+                value={newUser?.username}
+                onChange={handleUsernameChange}
+                required
+              />
+              <div>
                 <input
                   type="checkbox"
-                  name="enabled"
-                  checked={newUser.enabled}
-                  onChange={handleInputChange}
+                  name="admin"
+                  checked={newUser?.admin}
+                  onChange={handleIsAdminChange}
+                  required
                 />
-                Enabled
-              </label>
+                <label>Is an Admin</label>
+              </div>
               <button onClick={handleAddUser}>Add User</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isForm2Visible && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="modal-close-btn"
+              onClick={() => setIsForm2Visible(false)}
+            >
+              &times;
+            </button>
+            <div>
+              <h3>Username: {credentials?.username}</h3>
+              <h3>Password: {credentials?.password}</h3>
             </div>
           </div>
         </div>

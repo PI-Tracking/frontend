@@ -4,9 +4,11 @@ import "./navbar.css";
 import logo from "@assets/logo.png";
 import { useState } from "react";
 import ProfileDropdown from "../ProfileDropDown";
+import { useAuth } from "@hooks/useAuth";
 
 function Navbar() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const auth = useAuth();
 
   const toggleProfileMenu = () => {
     setIsProfileMenuOpen((prevState) => !prevState);
@@ -41,11 +43,27 @@ function Navbar() {
               Contact
             </a>
           </li>
-          <li>
-            <Link to="/cameras">Cameras</Link>
-          </li>
-        </ul>
+          {auth.isAuthenticated && (
+            <li>
+              <Link to="/cameras">Cameras</Link>
+            </li>
+          )}
 
+          {auth.isAdmin() && auth.isAuthenticated && (
+            <ul className="navbar-menu-admin">
+              <li>Admin: </li>
+              <li>
+                <Link to="/admin/logs">Logs</Link>
+              </li>
+              <li>
+                <Link to="/admin/users">Users</Link>
+              </li>
+              <li>
+                <Link to="/admin/cameras">Cameras</Link>
+              </li>
+            </ul>
+          )}
+        </ul>
         <div className="navbar-profile-container">
           <UserCircle
             className={`navbar-profile ${isProfileMenuOpen ? "active" : ""}`}

@@ -32,7 +32,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       localStorage.setItem("user", JSON.stringify(response.data));
       setUser(response.data as User);
-      return { success: true, error: "" } as ILogin;
+      const userData = response.data as User;
+      return { success: true, error: "", admin: userData.admin } as ILogin;
     } catch (error) {
       if (error instanceof AxiosError) {
         return {

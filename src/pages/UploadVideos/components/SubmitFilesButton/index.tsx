@@ -87,14 +87,12 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         }),
       };
       setReport(newReport);
-      const requestAnalysisResponse = await requestReanalysis(id);
-      if (requestAnalysisResponse.status !== 200) {
-        console.log("Something went wrong!");
-        console.log(requestAnalysisResponse);
+
+      const analysisResponse = await requestReanalysis(id);
+      if (analysisResponse.status !== 200) {
+        setError((analysisResponse.data as ApiError).message);
         return;
       }
-
-      setInitialAnalysisId(requestAnalysisResponse.data.analysisId);
       /* Navigate to video analysis page */
       navigate(`/report/${id}`);
     } catch (error) {
