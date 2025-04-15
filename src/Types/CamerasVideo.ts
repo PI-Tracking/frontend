@@ -1,6 +1,6 @@
-import { UUID } from "@Types/Base";
+import { Camera } from "./Camera";
 
 export interface CamerasVideo {
-  cameraId: UUID;
+  camera: Camera;
   file: File;
 }

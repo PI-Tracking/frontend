@@ -10,78 +10,63 @@ import noimg from "@assets/noimg.png";
 import ListDetections from "./components/ListDetections";
 import ListCameras from "./components/ListCameras";
 import Player from "./components/VideoPlayer";
-import { Report, VideoAnalysis } from "@Types/Report";
-import { Detection, DetectionType } from "@Types/Detection";
+import { VideoAnalysis } from "@Types/VideoAnalysis";
 
+import { UUID } from "@Types/Base";
+import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
+import { useParams } from "react-router-dom";
+import useReportStore from "@hooks/useReportStore";
 /* MOCK DATA */
-import mock_video from "./mock_data/video.mp4";
 import mock_suspectimage from "./mock_data/suspect.png";
-import Loading from "@components/Loading";
 
 type Image = string;
 function VideoAnalysisPage() {
-  const [report, setReport] = useState<Report | null>(null);
+  const { id: paramReportId } = useParams();
   const [suspectImg, setSuspectImg] = useState<Image>(noimg);
   const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis>(
     {} as VideoAnalysis
   );
+  const websocket = useDetectionWebSocket();
+  const { report } = useReportStore();
 
-  /* Fetch report */
+  console.log(report);
   useEffect(() => {
-    const detectionList: Detection[] = [
-      {
-        Box: {
-          points: [
-            [10, 10],
-            [230, 230],
-          ],
-        },
-        type: DetectionType.SUSPECT,
-      },
-    ];
-
-    const mock_report = {
-      id: 10,
-      reportAnalysis: [
-        {
-          camera: { id: 137, name: "Solum" },
-          video: mock_video,
-          currentTimestamp: 0,
-          detections: detectionList,
-        } as VideoAnalysis,
-        {
-          camera: { id: 138, name: "Macdonalds Solum" },
-          video: mock_video,
-          currentTimestamp: 0,
-          detections: detectionList,
-        } as VideoAnalysis,
-        {
-          camera: { id: 238, name: "Polo 2-2" },
-          video: mock_video,
-          currentTimestamp: 0,
-          detections: detectionList,
-        } as VideoAnalysis,
-      ],
-    };
-
-    setReport(mock_report);
+    websocket.connect(report.uploads[0].analysis_id);
+    setSelectedCamera(report.uploads[0]);
     setSuspectImg(mock_suspectimage);
-    setSelectedCamera(mock_report.reportAnalysis[0]);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (report == null) {
-    return <Loading />;
-  }
-
-  const changeCamera = function (cameraId: number) {
-    const videoAnalysis: VideoAnalysis | undefined = report.reportAnalysis.find(
-      (analysis) => analysis.camera.id == cameraId
-    );
-
-    if (videoAnalysis == undefined) return;
+  const changeCamera = function (cameraId: UUID) {
+    const videoAnalysis: VideoAnalysis = report.uploads.find(
+      (analysis) => analysis.camera.id === cameraId
+    )!;
 
     setSelectedCamera(videoAnalysis);
   };
+
+  useEffect(() => {
+    if (!websocket.analysing) {
+      changeCamera(selectedCamera.camera.id);
+    }
+  }, [websocket.analysing]); //eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!paramReportId) {
+    return (
+      <div className={styles.content}>
+        <Navbar />
+        <h1>No report id given!</h1>;
+      </div>
+    );
+  }
+
+  if (report.id !== paramReportId) {
+    return (
+      <div className={styles.content}>
+        <Navbar />
+        <h1>Report id does not match upload id received!</h1>;
+      </div>
+    );
+  }
 
   return (
     <div className={styles.content}>
@@ -100,6 +85,7 @@ function VideoAnalysisPage() {
         </div>
 
         <div className={styles.player}>
+          {websocket.analysing ? <h1>Video is being analysed...</h1> : <></>}
           <Player videoAnalysis={selectedCamera} controls={true} />
         </div>
 
@@ -107,7 +93,7 @@ function VideoAnalysisPage() {
           <div className={styles.box} style={{ minWidth: "250px" }}>
             <h3 className={styles.boxTitle}>Cameras</h3>
             <ListCameras
-              analysis={report.reportAnalysis}
+              analysis={report.uploads}
               changeCamera={changeCamera}
             />
           </div>

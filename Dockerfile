@@ -3,17 +3,17 @@ FROM node:22.11-alpine
 # Set the working directory inside the container
 WORKDIR /app
  
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy package.json
+COPY package.json ./
  
 # Install dependencies
-RUN npm install
+RUN npm install --force --loglevel verbose
  
 # Copy the rest of your application files
 COPY . .
  
 # Expose the port your app runs on
-EXPOSE 80
- 
+EXPOSE 5173
+
 # Define the command to run your app
 CMD ["npm", "run", "dev", "--", "--host"]

@@ -7,12 +7,11 @@ import { CamerasVideo } from "@Types/CamerasVideo";
 import { AxiosError } from "axios";
 import { useMinIO } from "@hooks/useMinIO";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
-import useReport from "@hooks/useUploadedReport";
+import useReport from "@hooks/useReportStore";
 import { useAuth } from "@hooks/useAuth";
 import { Report } from "@Types/Report";
 import { User } from "@Types/User";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
-import { Camera } from "@Types/Camera";
 import { useNavigate } from "react-router-dom";
 import { requestReanalysis } from "@api/analysis";
 
@@ -23,7 +22,7 @@ interface SubmitFilesButtonProps {
 function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
   const minio = useMinIO();
   const [uploadingFile, setUploadingFile] = useState<File | null>(null);
-  const { setReport } = useReport();
+  const { setReport, setInitialAnalysisId } = useReport();
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -33,8 +32,8 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
       return;
     }
     if (
-      !files.every((video) => video.cameraId !== "") ||
-      new Set(files.map((video) => video.cameraId)).size !== files.length
+      !files.every((video) => video.camera.id !== "") ||
+      new Set(files.map((video) => video.camera.id)).size !== files.length
     ) {
       setError("All cameras must be associated to (different) camera");
       return;
@@ -43,7 +42,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
     try {
       /* Create a new Report Request */
       const request: NewReportDTO = {
-        cameras: files.map((file) => file.cameraId),
+        cameras: files.map((file) => file.camera.id),
         name: new Date().toUTCString(),
       };
       const response = await createNewReport(request);
@@ -58,7 +57,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         console.log("From url:", upload);
         const file: File = (
           files.find(
-            (video) => video.cameraId === upload.cameraId
+            (video) => video.camera.id === upload.cameraId
           ) as CamerasVideo
         ).file;
         console.log("Uploading: " + file.name);
@@ -76,15 +75,19 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
         createdAt: new Date(request.name), // TODO if this changes, this HAS to change
         uploads: files.map((video) => {
           return {
-            id: uploads.find((upload) => upload.cameraId == video.cameraId)!.id,
-            camera: { id: video.cameraId } as Camera,
-            video: video.file,
+            analysis_id: "",
+            video_id: uploads.find(
+              (upload) => upload.cameraId == video.camera.id
+            )!.id,
+            camera: video.camera,
+            video: URL.createObjectURL(video.file),
             currentTimestamp: 0,
             detections: [],
           } as VideoAnalysis;
         }),
       };
       setReport(newReport);
+
       const analysisResponse = await requestReanalysis(id);
       if (analysisResponse.status !== 200) {
         setError((analysisResponse.data as ApiError).message);
