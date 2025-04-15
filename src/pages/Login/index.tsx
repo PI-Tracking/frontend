@@ -54,8 +54,8 @@ function LoginPage() {
         setError(response.error);
         return;
       }
-
-      if (auth.isAdmin()) {
+      console.log(response.admin);
+      if (response.admin) {
         navigate("/admin/cameras");
       } else {
         navigate("/cameras");

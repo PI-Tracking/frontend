@@ -1,4 +1,4 @@
-import Navbar from "@components/Navbar2";
+import Navbar from "@components/Navbar";
 import { ChangeEvent, useState, useEffect } from "react";
 import "./AdminManagePage.css";
 import { getAllUsers, createNewAccount, toggleAccount } from "@api/users";
