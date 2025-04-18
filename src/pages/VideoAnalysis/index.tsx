@@ -16,6 +16,7 @@ import { UUID } from "@Types/Base";
 import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
 import { useParams } from "react-router-dom";
 import useReportStore from "@hooks/useReportStore";
+
 /* MOCK DATA */
 import mock_suspectimage from "./mock_data/suspect.png";
 
@@ -85,7 +86,11 @@ function VideoAnalysisPage() {
         </div>
 
         <div className={styles.player}>
-          {websocket.analysing ? <h1>Video is being analysed...</h1> : <></>}
+          {websocket.analysing ? (
+            <h1 style={{ color: "white" }}>Video is being analysed...</h1>
+          ) : (
+            <></>
+          )}
           <Player videoAnalysis={selectedCamera} controls={true} />
         </div>
 

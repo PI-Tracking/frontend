@@ -39,7 +39,9 @@ function ListCameras({ analysis, changeCamera }: IListCameras) {
               }}
             >
               <p className={styles.cameraName}>{camera.name}</p>
-              <p className={styles.cameraId}>ID: {camera.id}</p>
+              <p className={styles.cameraId}>
+                ID: {camera.id.substring(0, 8)}-(...)
+              </p>
               <p className={styles.cameraDetections}>
                 {analise.detections.length} deteções
               </p>

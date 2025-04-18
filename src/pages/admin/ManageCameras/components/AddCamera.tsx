@@ -1,23 +1,26 @@
-import "../AdminCameraPage.css";
+import styles from "./AddCamera.module.css";
 import { Camera } from "@Types/Camera";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import * as Api from "@api/camera";
 import CameraDTO from "@Types/CameraDTO";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import { LeafletMouseEvent } from "leaflet";
 
 interface IAddCameraForm {
   setIsFormVisible: Dispatch<SetStateAction<boolean>>;
   editingCamera: Camera;
 }
 
+const COIMBRA: [number, number] = [40.202852, -8.410192];
 export default function AddCameraForm({
   setIsFormVisible,
   editingCamera,
 }: IAddCameraForm) {
   const [newCamera, setNewCamera] = useState<Camera>({
     ...editingCamera,
-    name: editingCamera.name,
-    latitude: editingCamera.latitude,
-    longitude: editingCamera.longitude,
+    //name: editingCamera.name,
+    //latitude: editingCamera.latitude,
+    //longitude: editingCamera.longitude,
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,6 +28,24 @@ export default function AddCameraForm({
     completed: false,
     sucess: false,
   });
+
+  const NewCameraMarker = () => {
+    useMapEvents({
+      click(e: LeafletMouseEvent) {
+        setNewCamera({
+          ...newCamera,
+          latitude: e.latlng.lat,
+          longitude: e.latlng.lng,
+        });
+      },
+    });
+    return newCamera.latitude ? (
+      <Marker
+        key={newCamera.id}
+        position={[newCamera.latitude, newCamera.longitude]}
+      />
+    ) : null;
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -76,9 +97,9 @@ export default function AddCameraForm({
   if (isLoading) {
     return (
       <>
-        <div className="camera-preview-area">
-          <div className="preview-placeholder">
-            <div className="loading-spinner"></div>
+        <div className={styles.cameraPreviewArea}>
+          <div className={styles.previewPlaceholder}>
+            <div className={styles.loadingSpinner}></div>
             <p>Attempting to add camera</p>
           </div>
         </div>
@@ -88,15 +109,15 @@ export default function AddCameraForm({
 
   if (status.completed) {
     return (
-      <div className="camera-preview-area">
+      <div className={styles.cameraPreviewArea}>
         {status.sucess ? (
-          <div className="preview-placeholder">
-            <p className="success-checkmark">&#10003;</p>
+          <div className={styles.previewPlaceholder}>
+            <p className={styles.successCheckmark}>&#10003;</p>
             <p>Camera successfully saved! :D</p>
           </div>
         ) : (
-          <div className="preview-placeholder">
-            <p className="success-checkmark">&#10005;</p>
+          <div className={styles.previewPlaceholder}>
+            <p className={styles.successCheckmark}>&#10005;</p>
             <p>Failure saving Camera :(</p>
           </div>
         )}
@@ -106,53 +127,86 @@ export default function AddCameraForm({
 
   return (
     <>
-      <div className="modal-overlay">
-        <div className="modal-content">
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
           <button
-            className="modal-close-btn"
+            className={styles.modalCloseBtn}
             onClick={() => setIsFormVisible(false)}
           >
             &times;
           </button>
-          <div className="add-camera-form">
-            <h2>{editingCamera ? "Edit Camera" : "Add Camera"}</h2>
+          <div className={styles.addCameraForm}>
+            <h2>{editingCamera.id ? "Edit Camera" : "Add Camera"}</h2>
 
-            <div className="form-group">
-              <label>Camera name</label>
-              <input
-                type="text"
-                name="name"
-                placeholder="Camera Name"
-                value={newCamera.name}
-                onChange={handleInputChange}
-                required
-              />
+            <div className={styles.row}>
+              <div className={styles.inputColumn}>
+                <div className={styles.formGroup}>
+                  <label>Camera name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Camera Name"
+                    value={newCamera.name}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Camera Latitude</label>
+                  <input
+                    type="text"
+                    name="latitude"
+                    placeholder="Camera Latitude"
+                    value={newCamera.latitude}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Longitude</label>
+                  <input
+                    name="longitude"
+                    placeholder="Camera Longitude"
+                    value={newCamera.longitude}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className={styles.mapColumn}>
+                <MapContainer
+                  center={
+                    newCamera.latitude && newCamera.longitude // TODO fucking fix -
+                      ? [newCamera.latitude, newCamera.longitude]
+                      : COIMBRA
+                  }
+                  zoom={13}
+                  style={{ height: "500px" }}
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    {...{ attribution: "&copy; OpenStreetMap contributors" }}
+                  />
+                  <NewCameraMarker />
+                  {
+                    //{cameras.map((camera) => (
+                    //  <Marker
+                    //    key={camera.id}
+                    //    position={[camera.latitude, camera.longitude]}
+                    //    eventHandlers={{
+                    //      click: () => handleSelectCamera(camera),
+                    //    }}
+                    //  >
+                    //    <Popup>Camera {camera.name}</Popup>
+                    //  </Marker>
+                    //))}
+                  }
+                </MapContainer>
+              </div>
             </div>
-
-            <div className="form-group">
-              <label>Camera Latitude</label>
-              <input
-                type="text"
-                name="latitude"
-                placeholder="Camera Latitude"
-                value={newCamera.latitude}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Longitude</label>
-              <input
-                name="longitude"
-                placeholder="Camera Longitude"
-                value={newCamera.longitude}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <button className="submit-btn" onClick={handleSubmit}>
-              {editingCamera ? "Save Changes" : "Submit"}
+            <button className={styles.submitBtn} onClick={handleSubmit}>
+              {editingCamera.id ? "Save Changes" : "Submit"}
             </button>
           </div>
         </div>
