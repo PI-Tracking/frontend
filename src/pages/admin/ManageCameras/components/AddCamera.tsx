@@ -3,25 +3,55 @@ import { Camera } from "@Types/Camera";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import * as Api from "@api/camera";
 import CameraDTO from "@Types/CameraDTO";
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import {
+  MapContainer,
+  Marker,
+  TileLayer,
+  useMapEvents,
+  Popup,
+} from "react-leaflet";
 import { LeafletMouseEvent } from "leaflet";
+import L from "leaflet";
 
 interface IAddCameraForm {
   setIsFormVisible: Dispatch<SetStateAction<boolean>>;
   editingCamera: Camera;
+  allCameras: Camera[];
+}
+
+const greenIcon = new L.Icon({
+  iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png`,
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+function isValidCoords(lat: number, lon: number): boolean {
+  // if no number
+  if (lat === undefined || lon === undefined || lat === null || lon === null)
+    return false;
+
+  // If doesnt match expression
+  const re = new RegExp("^-?[0-9]*(.[0-9]+)?");
+  if (!re.test(lat.toString()) || !re.test(lon.toString())) return false;
+
+  // if match lat and long restrictions
+  return -90 <= lat && lat <= 90 && -180 <= lon && lon <= 180;
 }
 
 const COIMBRA: [number, number] = [40.202852, -8.410192];
 export default function AddCameraForm({
   setIsFormVisible,
   editingCamera,
+  allCameras,
 }: IAddCameraForm) {
   const [newCamera, setNewCamera] = useState<Camera>({
     ...editingCamera,
-    //name: editingCamera.name,
-    //latitude: editingCamera.latitude,
-    //longitude: editingCamera.longitude,
   });
+  const cameras: Camera[] =
+    allCameras?.filter((camera) => camera.id !== newCamera.id) ?? [];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [status, setStatus] = useState({
@@ -39,8 +69,9 @@ export default function AddCameraForm({
         });
       },
     });
-    return newCamera.latitude ? (
+    return isValidCoords(newCamera.latitude, newCamera.longitude) ? (
       <Marker
+        icon={greenIcon}
         key={newCamera.id}
         position={[newCamera.latitude, newCamera.longitude]}
       />
@@ -155,7 +186,7 @@ export default function AddCameraForm({
                 <div className={styles.formGroup}>
                   <label>Camera Latitude</label>
                   <input
-                    type="text"
+                    type="number"
                     name="latitude"
                     placeholder="Camera Latitude"
                     value={newCamera.latitude}
@@ -177,7 +208,7 @@ export default function AddCameraForm({
               <div className={styles.mapColumn}>
                 <MapContainer
                   center={
-                    newCamera.latitude && newCamera.longitude // TODO fucking fix -
+                    isValidCoords(newCamera.latitude, newCamera.longitude) // TODO fucking fix -
                       ? [newCamera.latitude, newCamera.longitude]
                       : COIMBRA
                   }
@@ -189,19 +220,14 @@ export default function AddCameraForm({
                     {...{ attribution: "&copy; OpenStreetMap contributors" }}
                   />
                   <NewCameraMarker />
-                  {
-                    //{cameras.map((camera) => (
-                    //  <Marker
-                    //    key={camera.id}
-                    //    position={[camera.latitude, camera.longitude]}
-                    //    eventHandlers={{
-                    //      click: () => handleSelectCamera(camera),
-                    //    }}
-                    //  >
-                    //    <Popup>Camera {camera.name}</Popup>
-                    //  </Marker>
-                    //))}
-                  }
+                  {cameras.map((camera: Camera) => (
+                    <Marker
+                      key={camera.id}
+                      position={[camera.latitude, camera.longitude]}
+                    >
+                      <Popup>Camera {camera.name}</Popup>
+                    </Marker>
+                  ))}
                 </MapContainer>
               </div>
             </div>

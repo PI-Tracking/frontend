@@ -29,6 +29,7 @@ const Modal = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const COIMBRA: [number, number] = [40.202852, -8.410192];
 function UploadVideosPage() {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [videos, setVideos] = useState<CamerasVideo[]>([]);
@@ -248,53 +249,42 @@ function UploadVideosPage() {
       )}
 
       {showMap && (
-        <Modal>
-          <h2>Select a map to associate with file {}</h2>
-          <section className="map-view">
-            <p>
-              Selected camera:
-              <span>
-                {
-                  videos.find((video) => video.file.name === selectedFile)!
-                    .camera.name
-                }
-              </span>
-            </p>
-
-            <MapContainer
-              center={[40.202852, -8.410192]}
-              zoom={13}
-              style={{ height: "400px", width: "100%" }} // TODO: fix this
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                {...{ attribution: "&copy; OpenStreetMap contributors" }}
-              />
-              {cameras.map((camera) => (
-                <Marker
-                  key={camera.id}
-                  position={[camera.latitude, camera.longitude]}
-                  eventHandlers={{
-                    click: () => {
-                      handleChangeCamera(camera.id, selectedFile);
-                    },
-                  }}
-                >
-                  <Popup>Camera {camera.name}</Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-          </section>
-          <button
-            className="close-modal-button2"
-            onClick={() => {
-              setShowMap(false);
-              setSelectedFile("");
-            }}
+        <section className="map-view">
+          <MapContainer
+            center={COIMBRA}
+            zoom={13}
+            style={{ height: "400px", width: "100%" }}
           >
-            Done
-          </button>
-        </Modal>
+            <button
+              className="close-modal-button2"
+              onClick={() => {
+                setShowMap(false);
+                setSelectedFile("");
+              }}
+            >
+              Close
+            </button>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              {...{ attribution: "&copy; OpenStreetMap contributors" }}
+            />
+            {cameras.map((camera) => (
+              <Marker
+                key={camera.id}
+                position={[camera.latitude, camera.longitude]}
+                eventHandlers={{
+                  click: () => {
+                    handleChangeCamera(camera.id, selectedFile);
+                    setShowMap(false);
+                    setSelectedFile("");
+                  },
+                }}
+              >
+                <Popup>Camera {camera.name}</Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </section>
       )}
     </div>
   );

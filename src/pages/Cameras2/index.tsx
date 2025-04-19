@@ -7,6 +7,7 @@ import "./CamerasPageMap.css";
 import { getAllCameras } from "@api/camera";
 import { Camera } from "@Types/Camera";
 
+const COIMBRA: [number, number] = [40.202852, -8.410192];
 function CamerasPageMap() {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [showMap, setShowMap] = useState<boolean>(false);
@@ -48,10 +49,16 @@ function CamerasPageMap() {
       ) : (
         <section className="map-view">
           <MapContainer
-            center={[40.366715, -8.036196]}
+            center={COIMBRA}
             zoom={13}
             style={{ height: "400px", width: "100%" }}
           >
+            <button
+              className="close-modal-button2"
+              onClick={() => setShowMap(false)}
+            >
+              Close
+            </button>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               {...{ attribution: "&copy; OpenStreetMap contributors" }}
