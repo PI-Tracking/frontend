@@ -120,7 +120,7 @@
   cursor: pointer;
 }
 
-.add-camera-btn:after {
+.add-camera-btn::after {
   content: "+";
   margin-left: 10px;
   font-size: 1.2em;
@@ -143,8 +143,6 @@
   background-color: white;
   padding: 30px;
   border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -166,6 +164,7 @@
 .add-camera-form h2 {
   margin-bottom: 20px;
   text-align: center;
+  color: black;
 }
 
 .form-group {
@@ -196,28 +195,6 @@
   border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
-}
-
-.camera-preview-area {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #333;
-  padding: 50px;
-  display: flex;
-  opacity: 0.9;
-  justify-content: center;
-  align-items: center;
-  height: 400px;
-  width: 50%;
-  border-radius: 8px;
-  z-index: 999;
-}
-
-.preview-placeholder {
-  text-align: center;
-  color: white;
 }
 
 .loading-spinner {

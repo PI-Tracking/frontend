@@ -89,7 +89,7 @@ function AdminManagePage() {
             {users.map((user) => (
               <tr key={user.badgeId} className="admin-row">
                 <td className="admin-user">
-                  {user.admin ? " [Admin]" : "_______"}
+                  <span>{user.admin ? " [Admin]" : "[User]"}</span>
 
                   <div className="profile-icon">
                     {user.email.charAt(0).toUpperCase()}

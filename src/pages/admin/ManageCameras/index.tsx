@@ -92,6 +92,7 @@ function AdminCameraPage() {
         <AddCameraForm
           editingCamera={editingCamera}
           setIsFormVisible={setIsFormVisible}
+          allCameras={cameraList}
         />
       )}
 

@@ -50,18 +50,17 @@ function Navbar() {
           )}
 
           {auth.isAdmin() && auth.isAuthenticated && (
-            <ul className="navbar-menu-admin">
-              <li>Admin: </li>
-              <li>
-                <Link to="/admin/logs">Logs</Link>
+            <>
+              <li className="admin-link">
+                <Link to="/admin/logs">Manage Logs</Link>
               </li>
-              <li>
-                <Link to="/admin/users">Users</Link>
+              <li className="admin-link">
+                <Link to="/admin/users">Manage Users</Link>
               </li>
-              <li>
-                <Link to="/admin/cameras">Cameras</Link>
+              <li className="admin-link">
+                <Link to="/admin/cameras">Manage Cameras</Link>
               </li>
-            </ul>
+            </>
           )}
         </ul>
         <div className="navbar-profile-container">
