@@ -29,6 +29,12 @@
   justify-content: flex-start;
   gap: 15px;
   padding: 15px;
+  /*width: 500px;*/
+}
+
+.admin-user span {
+  /*Width of 7 characters '[Admin]'*/
+  width: 7ch;
 }
 
 .admin-icon {
