@@ -144,12 +144,12 @@ export default function AddCameraForm({
         {status.sucess ? (
           <div className={styles.previewPlaceholder}>
             <p className={styles.successCheckmark}>&#10003;</p>
-            <p>Camera successfully saved! :D</p>
+            <p>Camera successfully added/saved!</p>
           </div>
         ) : (
           <div className={styles.previewPlaceholder}>
             <p className={styles.successCheckmark}>&#10005;</p>
-            <p>Failure saving Camera :(</p>
+            <p>Failure saving Camera!</p>
           </div>
         )}
       </div>
