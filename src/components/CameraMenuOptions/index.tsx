@@ -42,6 +42,9 @@ function CameraMenuOptions() {
       case "/report/*":
         setSelectedOption("video");
         break;
+      case "/map-tracking":
+        setSelectedOption("map");
+        break;
       default:
         break;
     }
@@ -54,6 +57,7 @@ function CameraMenuOptions() {
         navigate("/reports");
         break;
       case "map":
+        navigate("/map-tracking");
         break;
       case "camera":
         navigate("/cameras");
