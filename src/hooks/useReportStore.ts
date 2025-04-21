@@ -3,9 +3,15 @@ import { Detection } from "@Types/Detection";
 import { Report } from "@Types/Report";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { create } from "zustand";
+import {
+  useDetectionWebSocket,
+  UseDetectionWebSocketResult,
+} from "@hooks/useDetectionWebSocket";
 
 interface ReportStore {
   report: Report;
+  websocket: UseDetectionWebSocketResult;
+
   setReport: (newReport: Report) => void;
   setInitialAnalysisId: (analysisId: UUID) => void;
 
@@ -26,6 +32,7 @@ interface ReportStore {
 
 const useReportStore = create<ReportStore>((set) => ({
   report: {} as Report,
+  websocket: useDetectionWebSocket(),
 
   setReport: (newReport: Report) => set(() => ({ report: newReport })),
 

@@ -7,7 +7,7 @@ import { Detection } from "@Types/Detection";
 // hook da websocket de detecção
 // interface to use the websocket service
 
-interface UseDetectionWebSocketResult {
+export interface UseDetectionWebSocketResult {
   isConnected: boolean;
   analysing: boolean;
   currentAnalysisId: UUID;

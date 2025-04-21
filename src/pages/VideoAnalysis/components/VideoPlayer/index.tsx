@@ -23,7 +23,23 @@ function VideoPlayer({ videoAnalysis, controls }: IVideoPlayer) {
       videoRef.current.currentTime = videoAnalysis.currentTimestamp ?? 0;
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  //setCurrentTime(videoAnalysis.analysis_id, videoAnalysis.currentTimestamp);
+
+  // add button to request reanalisys, instead of always on to improve usability, to not always ask for reanalysis
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.addEventListener("mousedown", (event: MouseEvent) => {
+      const rect = video.getBoundingClientRect();
+
+      const offsetX = event.clientX - rect.left; // eslint-disable-line @typescript-eslint/no-unused-vars
+      const offsetY = event.clientY - rect.top; // eslint-disable-line @typescript-eslint/no-unused-vars
+    });
+
+    return () => {
+      video.removeEventListener("", () => {});
+    };
+  }, []);
 
   return (
     <div className={styles.videoContainer}>
