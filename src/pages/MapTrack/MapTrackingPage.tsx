@@ -4,28 +4,6 @@ import Navbar from "@components/Navbar";
 import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
 import L from "leaflet";
 
-// Icon to represent direction
-const arrowIcon = (angle: number) =>
-  L.divIcon({
-    html: `<div style="transform: rotate(${angle}deg); font-size:40px; color:red">▲</div>`,
-    iconSize: [50, 50],
-    className: "arrow-icon",
-  });
-
-// Calculate direction based on two coordinates
-function calculateBearing(start: [number, number], end: [number, number]) {
-  const [lat1, lon1] = start.map((deg) => (deg * Math.PI) / 180);
-  const [lat2, lon2] = end.map((deg) => (deg * Math.PI) / 180);
-
-  const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
-  const x =
-    Math.cos(lat1) * Math.sin(lat2) -
-    Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-
-  const theta = Math.atan2(y, x);
-  return ((theta * 180) / Math.PI + 360) % 360; // convert to degrees
-}
-
 function MapTrackingPage() {
   // Temporary fake detections
   const [detections, setDetections] = useState<string[]>([]);
@@ -40,6 +18,9 @@ function MapTrackingPage() {
       "40.202852, -8.420192",
       "40.202852, -8.430192",
       "40.302852, -8.540192",
+      "40.202852, -8.410192",
+      "40.302852, -8.540192",
+      "40.202852, -8.410192",
     ];
     setDetections(fakeDetections);
     setCenter([40.202852, -8.410192]);
@@ -52,6 +33,20 @@ function MapTrackingPage() {
       return [lat, lng] as [number, number];
     });
   }, [detections]);
+
+  // For repeated coordinates, add a small offset to avoid overlap in leaflet
+  const jitteredCoordinates = useMemo(() => {
+    const seen = new Map<string, number>();
+
+    return coordinates.map(([lat, lng]) => {
+      const key = `${lat},${lng}`;
+      const count = seen.get(key) ?? 0;
+      seen.set(key, count + 1);
+
+      const offset = 0.0001 * count; // ~5 meters
+      return [lat + offset, lng + offset] as [number, number];
+    });
+  }, [coordinates]);
 
   return (
     <div className="container">
@@ -66,29 +61,39 @@ function MapTrackingPage() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; OpenStreetMap contributors"
           />
-          {coordinates.map((pos, idx) => (
-            <Marker key={idx} position={pos} />
+          {jitteredCoordinates.map((pos, idx) => (
+            <Marker
+              key={`${pos[0]}-${pos[1]}-${idx}`}
+              position={pos}
+              icon={L.divIcon({
+                html: `
+                  <div style="
+                    background: white;
+                    border: 2px solid black;
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    font-size: 14px;
+                    color: black;
+                    line-height: 30px;
+                  ">
+                    ${idx + 1}
+                  </div>
+                `,
+                className: "leaflet-numbered-icon",
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+              })}
+            />
           ))}
 
           {coordinates.length > 1 && (
             <Polyline positions={coordinates} pathOptions={{ color: "blue" }} />
           )}
-
-          {/* Directional Arrows */}
-          {coordinates.map((point, index) => {
-            if (index === 0 || index >= coordinates.length) return null;
-            const from = coordinates[index - 1];
-            const to = point;
-            const angle = calculateBearing(from, to);
-
-            return (
-              <Marker
-                key={`arrow-${index}`}
-                position={from}
-                icon={arrowIcon(angle)}
-              />
-            );
-          })}
         </MapContainer>
       </section>
 
