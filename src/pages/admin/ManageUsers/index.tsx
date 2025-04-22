@@ -20,6 +20,7 @@ function AdminManagePage() {
     admin: false,
   });
   const [toggleUsed, setToggleUsed] = useState(0);
+  const [created, setCreated] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -71,6 +72,7 @@ function AdminManagePage() {
         const response = await createNewAccount(newUser);
         if (response.status === 201) {
           setCredentials(response.data);
+          setCreated(true);
         }
       } catch {
         alert("There was an unexpected error with the request.");
@@ -171,14 +173,26 @@ function AdminManagePage() {
           <div className="modal-content">
             <button
               className="modal-close-btn"
-              onClick={() => setIsForm2Visible(false)}
+              onClick={() => {
+                setIsForm2Visible(false);
+                setCreated(false);
+              }}
             >
               &times;
             </button>
+            {created ?  
             <div>
-              <h3>Username: {credentials?.username}</h3>
-              <h3>Password: {credentials?.password}</h3>
+              <h3>User created with success.</h3>
+              <h3>Credentials have been sent by email!</h3>
+              {/* <h3>Username: {credentials?.username}</h3>
+              <h3>Password: {credentials?.password}</h3> */}
             </div>
+            :
+            <div>
+              <h3>An error occurred!</h3>
+              <h3>User was not created!</h3>
+            </div>
+}
           </div>
         </div>
       )}
