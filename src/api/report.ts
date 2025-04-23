@@ -5,6 +5,7 @@ import { NewReportDTO } from "@Types/NewReportDTO";
 import { UUID } from "@Types/Base";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
 import { ApiError } from "./ApiError";
+import { ReportAnalysisResponseDTO } from "@Types/ReportAnalysisResponseDTO";
 
 const baseEndpoint = "/reports";
 
@@ -53,4 +54,20 @@ async function getReport(
   return apiClient.get(endpoint);
 }
 
-export { getAllReports, createNewReport, getReport };
+async function getAnalysisByReportId(
+  report_id: UUID
+): Promise<AxiosResponse<ReportAnalysisResponseDTO | ApiError>> {
+  /**
+   * GET /reports/{report_id}/analysis
+   * Return:
+   *    SUCCESS
+   *     { data: AnalysisList, status: OK }
+   *
+   *    FAILURE
+   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
+   */
+  const endpoint = `${baseEndpoint}/${report_id}/analysis`;
+  return apiClient.get(endpoint);
+}
+
+export { getAllReports, createNewReport, getReport, getAnalysisByReportId };

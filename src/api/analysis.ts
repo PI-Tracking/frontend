@@ -3,6 +3,7 @@ import apiClient from "./api";
 import { AxiosResponse } from "axios";
 import SelectedSuspectDTO from "@Types/SelectedSuspectDTO";
 import { ApiError } from "./ApiError";
+import { CameraTimeIntervalDTO } from "@Types/CameraTimeIntervalDTO";
 
 const baseEndpoint = "/analysis";
 
@@ -56,4 +57,25 @@ async function stopAnalysis(analysisId: UUID): Promise<AxiosResponse> {
   return apiClient.post(endpoint);
 }
 
-export { requestNewAnalysis, requestReanalysis, stopAnalysis };
+async function getAnalysisDetections(
+  analysisId: UUID
+): Promise<AxiosResponse<CameraTimeIntervalDTO[] | ApiError>> {
+  /**
+   * GET /analysis/live/{analysisId}
+   * Return:
+   *    SUCCESS
+   *     { data: CameraTimeIntervalDTO[]; status: OK }
+   *
+   *    FAILURE
+   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN | NOT_FOUND
+   */
+  const endpoint = `${baseEndpoint}/${analysisId}/timestamps`;
+  return apiClient.get(endpoint);
+}
+
+export {
+  requestNewAnalysis,
+  requestReanalysis,
+  stopAnalysis,
+  getAnalysisDetections,
+};
