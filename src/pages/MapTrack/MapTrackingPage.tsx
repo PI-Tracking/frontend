@@ -15,13 +15,22 @@ import { Camera } from "@Types/Camera";
 function MapTrackingPage() {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const { report } = useReportStore();
-  // const [realDetections, setRealDetections] = useState<CameraTimeIntervalDTO[]>([]);
+  const [realDetections, setRealDetections] = useState<CameraTimeIntervalDTO[]>(
+    []
+  );
+  const locationUsage = new Map<string, number>();
   const [center, setCenter] = useState<[number, number]>([
     40.202852, -8.410192,
   ]);
 
-  // Temporary fake detections
-  const [detections, setDetections] = useState<string[]>([]);
+  const coordinates = useMemo(() => {
+    return realDetections
+      .map((detection) => {
+        const cam = cameras.find((c) => c.id === detection.cameraId);
+        return cam ? ([cam.latitude, cam.longitude] as [number, number]) : null;
+      })
+      .filter((coord): coord is [number, number] => coord !== null);
+  }, [realDetections, cameras]);
 
   useEffect(() => {
     if (!report?.id) return;
@@ -73,43 +82,6 @@ function MapTrackingPage() {
     fetchDetections();
   }, [report.id, cameras]);
 
-  useEffect(() => {
-    // Temporary fake detections
-    const fakeDetections: string[] = [
-      "40.202852, -8.410192",
-      "40.202852, -8.420192",
-      "40.202852, -8.430192",
-      "40.302852, -8.540192",
-      "40.202852, -8.410192",
-      "40.302852, -8.540192",
-      "40.202852, -8.410192",
-    ];
-    setDetections(fakeDetections);
-    setCenter([40.202852, -8.410192]);
-  }, []);
-
-  // Temporary convertion of fake detections
-  const coordinates = useMemo(() => {
-    return detections.map((d) => {
-      const [lat, lng] = d.split(",").map(Number);
-      return [lat, lng] as [number, number];
-    });
-  }, [detections]);
-
-  // For repeated coordinates, add a small offset to avoid overlap in leaflet
-  const jitteredCoordinates = useMemo(() => {
-    const seen = new Map<string, number>();
-
-    return coordinates.map(([lat, lng]) => {
-      const key = `${lat},${lng}`;
-      const count = seen.get(key) ?? 0;
-      seen.set(key, count + 1);
-
-      const offset = 0.0001 * count; // ~5 meters
-      return [lat + offset, lng + offset] as [number, number];
-    });
-  }, [coordinates]);
-
   return (
     <div className="container">
       <Navbar />
@@ -123,23 +95,31 @@ function MapTrackingPage() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; OpenStreetMap contributors"
           />
-          {jitteredCoordinates.map((pos, idx) => (
-            <Marker
-              key={`${pos[0]}-${pos[1]}-${idx}`}
-              position={pos}
-              icon={L.divIcon({
-                html: `
-                  <div class="leaflet-numbered-icon">
-                    ${idx + 1}
-                  </div>
-                `,
-                className: "leaflet-numbered-icon",
-                iconSize: [30, 30],
-                iconAnchor: [15, 15],
-              })}
-            />
-          ))}
+          {realDetections.map((detection, idx) => {
+            const camera = cameras.find((cam) => cam.id === detection.cameraId);
+            if (!camera) return null;
 
+            const locKey = `${camera.latitude},${camera.longitude}`;
+            const count = locationUsage.get(locKey) ?? 0;
+            // Offset the marker position slightly to avoid overlap of numbers
+            const offsetLat = camera.latitude;
+            const offsetLng = camera.longitude + 0.0005 * count;
+
+            locationUsage.set(locKey, count + 1);
+
+            return (
+              <Marker
+                key={`${camera.id}-${idx}`}
+                position={[offsetLat, offsetLng]}
+                icon={L.divIcon({
+                  html: `<div class="leaflet-numbered-icon">${idx + 1}</div>`,
+                  className: "leaflet-numbered-icon",
+                  iconSize: [30, 30],
+                  iconAnchor: [15, 15],
+                })}
+              />
+            );
+          })}
           {coordinates.length > 1 && (
             <Polyline positions={coordinates} pathOptions={{ color: "blue" }} />
           )}
