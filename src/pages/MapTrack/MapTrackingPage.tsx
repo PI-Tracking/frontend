@@ -33,9 +33,12 @@ function MapTrackingPage() {
   }, [realDetections, cameras]);
 
   useEffect(() => {
-    if (!report?.id) return;
-
+    if (!report?.id) {
+      console.log("No report selected");
+      return;
+    }
     const fetchCameras = async () => {
+      console.log("Fetching cameras...");
       try {
         const response = await getAllCameras();
 
@@ -51,6 +54,7 @@ function MapTrackingPage() {
     };
 
     const fetchDetections = async () => {
+      console.log("Fetching detections...");
       try {
         const analysis = await getAnalysisByReportId(report.id);
         if ("data" in analysis && Array.isArray(analysis.data)) {
@@ -85,47 +89,56 @@ function MapTrackingPage() {
   return (
     <div className="container">
       <Navbar />
-      <section className="map-view">
-        <MapContainer
-          center={center}
-          zoom={13}
-          style={{ height: "500px", width: "100%" }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; OpenStreetMap contributors"
-          />
-          {realDetections.map((detection, idx) => {
-            const camera = cameras.find((cam) => cam.id === detection.cameraId);
-            if (!camera) return null;
+      {!report?.id ? (
+        <div className="no-report-message">
+          <h2>Please select a report to analyze the suspect's path.</h2>
+        </div>
+      ) : (
+        <section className="map-view">
+          <MapContainer
+            center={center}
+            zoom={13}
+            style={{ height: "500px", width: "100%" }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="&copy; OpenStreetMap contributors"
+            />
+            {realDetections.map((detection, idx) => {
+              const camera = cameras.find(
+                (cam) => cam.id === detection.cameraId
+              );
+              if (!camera) return null;
 
-            const locKey = `${camera.latitude},${camera.longitude}`;
-            const count = locationUsage.get(locKey) ?? 0;
-            // Offset the marker position slightly to avoid overlap of numbers
-            const offsetLat = camera.latitude;
-            const offsetLng = camera.longitude + 0.0005 * count;
+              const locKey = `${camera.latitude},${camera.longitude}`;
+              const count = locationUsage.get(locKey) ?? 0;
+              const offsetLat = camera.latitude;
+              const offsetLng = camera.longitude + 0.0005 * count;
 
-            locationUsage.set(locKey, count + 1);
+              locationUsage.set(locKey, count + 1);
 
-            return (
-              <Marker
-                key={`${camera.id}-${idx}`}
-                position={[offsetLat, offsetLng]}
-                icon={L.divIcon({
-                  html: `<div class="leaflet-numbered-icon">${idx + 1}</div>`,
-                  className: "leaflet-numbered-icon",
-                  iconSize: [30, 30],
-                  iconAnchor: [15, 15],
-                })}
+              return (
+                <Marker
+                  key={`${camera.id}-${idx}`}
+                  position={[offsetLat, offsetLng]}
+                  icon={L.divIcon({
+                    html: `<div class="leaflet-numbered-icon">${idx + 1}</div>`,
+                    className: "leaflet-numbered-icon",
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15],
+                  })}
+                />
+              );
+            })}
+            {coordinates.length > 1 && (
+              <Polyline
+                positions={coordinates}
+                pathOptions={{ color: "blue" }}
               />
-            );
-          })}
-          {coordinates.length > 1 && (
-            <Polyline positions={coordinates} pathOptions={{ color: "blue" }} />
-          )}
-        </MapContainer>
-      </section>
-
+            )}
+          </MapContainer>
+        </section>
+      )}
       <div className="menu-options">
         <CameraMenuOptions />
       </div>
