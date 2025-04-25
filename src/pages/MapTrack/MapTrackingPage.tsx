@@ -41,7 +41,7 @@ function MapTrackingPage() {
       console.log("Fetching cameras...");
       try {
         const response = await getAllCameras();
-
+        console.log("Cameras response:", response);
         if (response.status !== 200) {
           console.error(
             "Failure fetching cameras! " + (response.data as ApiError).message
@@ -57,12 +57,17 @@ function MapTrackingPage() {
       console.log("Fetching detections...");
       try {
         const analysis = await getAnalysisByReportId(report.id);
-        if ("data" in analysis && Array.isArray(analysis.data)) {
-          const last = analysis.data[analysis.data.length - 1];
-          const response = await getAnalysisDetections(last.id);
+        console.log("Analysis response:", analysis);
+        if ("data" in analysis && Array.isArray(analysis.data.analysisIds)) {
+          const last =
+            analysis.data.analysisIds[analysis.data.analysisIds.length - 1];
+          console.log("Last analysis ID:", last);
+          const response = await getAnalysisDetections(last);
           const detections = response.data as CameraTimeIntervalDTO[];
           setRealDetections(detections);
+          console.log("Detections response:", detections);
           const firstDetection = detections[0];
+
           if (firstDetection) {
             const lat = cameras.find(
               (camera) => camera.id === firstDetection.cameraId
@@ -84,7 +89,7 @@ function MapTrackingPage() {
 
     fetchCameras();
     fetchDetections();
-  }, [report.id, cameras]);
+  }, [report]);
 
   return (
     <div className="container">

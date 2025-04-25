@@ -56,7 +56,7 @@ async function getReport(
 
 async function getAnalysisByReportId(
   report_id: UUID
-): Promise<AxiosResponse<ReportAnalysisResponseDTO | ApiError>> {
+): Promise<AxiosResponse<ReportAnalysisResponseDTO>> {
   /**
    * GET /reports/{report_id}/analysis
    * Return:
