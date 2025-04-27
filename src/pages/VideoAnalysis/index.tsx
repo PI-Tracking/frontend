@@ -13,6 +13,7 @@ import Player from "./components/VideoPlayer";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 
 import { UUID } from "@Types/Base";
+import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
 import { useParams } from "react-router-dom";
 import useReportStore from "@hooks/useReportStore";
 
@@ -26,7 +27,8 @@ function VideoAnalysisPage() {
   const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis>(
     {} as VideoAnalysis
   );
-  const { websocket, report } = useReportStore();
+  const websocket = useDetectionWebSocket();
+  const { report } = useReportStore();
 
   console.log(report);
   useEffect(() => {
