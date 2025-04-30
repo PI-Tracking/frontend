@@ -15,6 +15,8 @@ import CamerasPageMap from "@pages/Cameras2";
 import AdminLogs from "@pages/admin/Logs";
 // import CamerasPage from "@pages/Cameras";
 
+import ProfilePage from "@pages/Profile";
+
 function App() {
   return (
     <Router>
@@ -25,6 +27,8 @@ function App() {
 
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        {/* Maybe put an id? profile/{id} */}
 
         <Route path="/upload-videos" element={<UploadVideosPage />} />
         <Route path="/reports" element={<ReportsPage />} />

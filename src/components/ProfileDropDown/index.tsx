@@ -13,12 +13,7 @@ function ProfileDropdown({ isOpen, onClose }) {
           </Link>
         </li>
         <li>
-          <Link to="/settings" onClick={onClose}>
-            Settings
-          </Link>
-        </li>
-        <li>
-          <Link to="/logout" onClick={onClose}>
+          <Link to="/login" onClick={onClose}>
             Logout
           </Link>
         </li>
