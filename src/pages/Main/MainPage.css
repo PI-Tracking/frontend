@@ -12,8 +12,13 @@
   height: 100vh;
   background-color: #ffffff;
   color: rgb(0, 0, 0);
-  text-align: center;
-  padding: 20px 0;
+  text-align: left;
+  padding: 100px 50px 20px;
+}
+
+.product-introduction h1 {
+  position: relative;
+  z-index: 20;
 }
 
 .bg-svg {
