@@ -1,48 +1,79 @@
-import { useCallback, useState, useRef } from "react";
+import { AxiosError } from "axios";
+import { useCallback, useState, useRef, useEffect, ReactNode } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { useDropzone } from "react-dropzone";
-import CameraMenuOptions from "@components/CameraMenuOptions";
-import Navbar from "@components/Navbar";
-import "./UploadVideosPage.css";
 import { MdUpload } from "react-icons/md";
 import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
+import { BsPinMap } from "react-icons/bs";
 
-// i cannot allow him to add the same video twice, need to have that in mind
+import SubmitFilesButton from "./components/SubmitFilesButton";
+import CameraMenuOptions from "@components/CameraMenuOptions";
+import Navbar from "@components/Navbar";
 
-const Modal = ({
-  fileName,
-  onClose,
-}: {
-  fileName: string;
-  onClose: () => void;
-}) => {
+import { Camera } from "@Types/Camera";
+import { UUID } from "@Types/Base";
+import { CamerasVideo } from "@Types/CamerasVideo";
+
+import { getAllCameras } from "@api/camera";
+import { ApiError } from "@api/ApiError";
+
+import "./UploadVideosPage.css";
+
+const Modal = ({ children }: { children: ReactNode }) => {
   return (
     <div className="modal-overlay2">
-      <div className="modal-content2">
-        <h2>File Already Exists</h2>
-        <p>
-          A file with the name <strong>{fileName}</strong> already exists.
-        </p>
-        <button className="close-modal-button2" onClick={onClose}>
-          Close
-        </button>
-      </div>
+      <div className="modal-content2">{children}</div>
     </div>
   );
 };
 
+const COIMBRA: [number, number] = [40.202852, -8.410192];
 function UploadVideosPage() {
-  const [files, setFiles] = useState<File[]>([]);
+  const [cameras, setCameras] = useState<Camera[]>([]);
+  const [videos, setVideos] = useState<CamerasVideo[]>([]);
+
   const [showModal, setShowModal] = useState<boolean>(false);
   const [duplicateFile, setDuplicateFile] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [showMap, setShowMap] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<string>("");
+
+  useEffect(() => {
+    const fetchCameras = async () => {
+      try {
+        const response = await getAllCameras();
+
+        if (response.status !== 200) {
+          setErrorMessage(
+            "Failure fetching cameras! " + (response.data as ApiError).message
+          );
+        }
+        setCameras(response.data as Camera[]);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          const axiosError = error as AxiosError<ApiError>;
+
+          setErrorMessage(
+            axiosError.response?.data.message ||
+              `Failed to fetch cameras (error${axiosError.status})`
+          );
+        }
+      }
+    };
+
+    fetchCameras();
+  }, []);
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const newFiles = acceptedFiles.filter((file) => {
-        if (files.some((existingFile) => existingFile.name === file.name)) {
+        if (
+          videos.some((existingFile) => existingFile.file.name === file.name)
+        ) {
           setDuplicateFile(file.name);
           setShowModal(true);
           return false;
@@ -66,12 +97,17 @@ function UploadVideosPage() {
         "video/x-m4v",
       ];
 
-      const validFiles = newFiles.filter((file) =>
-        videoFileTypes.includes(file.type)
-      );
+      const validFiles: CamerasVideo[] = newFiles
+        .filter((file) => videoFileTypes.includes(file.type))
+        .map((file) => {
+          return {
+            camera: { id: "" } as Camera,
+            file: file,
+          } as CamerasVideo;
+        });
 
       if (validFiles.length === newFiles.length) {
-        setFiles((prevFiles) => [...prevFiles, ...validFiles]);
+        setVideos((prevFiles) => [...prevFiles, ...validFiles]);
         setErrorMessage("");
       } else {
         setErrorMessage("Only video files are allowed!");
@@ -80,11 +116,32 @@ function UploadVideosPage() {
         }, 5000);
       }
     },
-    [files]
+    [videos]
   );
 
+  const handleChangeCamera = (cameraId: UUID, filename: string) => {
+    setVideos((prev) =>
+      prev.map((video) => {
+        if (video.file.name !== filename) {
+          return video;
+        }
+        return {
+          ...video,
+          camera: cameras.find((camera) => camera.id === cameraId)!,
+        };
+      })
+    );
+  };
+
+  const openMap = (filename: string) => {
+    setSelectedFile(filename);
+    setShowMap(true);
+  };
+
   const removeFile = (fileName: string) => {
-    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
+    setVideos((prevVideos) =>
+      prevVideos.filter((video) => video.file.name !== fileName)
+    );
   };
   // We can also put the acecpet here, i dont have any videos to test
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -110,7 +167,7 @@ function UploadVideosPage() {
       <section className="upload-videos">
         <div {...getRootProps()} className="video-uploader-container">
           <input {...getInputProps()} ref={inputRef} />
-          {!files.length && (
+          {!videos.length && (
             <div className="upload-videos-icon">
               <MdUpload />
             </div>
@@ -124,32 +181,111 @@ function UploadVideosPage() {
           )}
           <button className="upload-videos-button" onClick={handleAddFileClick}>
             <AiOutlineFileAdd />
-            {files.length ? "Add more files" : "Select file"}
+            {videos.length ? "Add more files" : "Select file"}
             <MdKeyboardArrowDown />
           </button>
-          {files.length > 0 && (
+          {videos.length > 0 && (
             <div className="uploaded-files-container">
-              {files.map((file) => (
-                <div key={file.name} className="uploaded-file">
-                  <p className="file-name">{file.name}</p>
-                  <p className="file-size">
-                    {(file.size / (1024 * 1024)).toFixed(2)} MB
-                  </p>
+              {videos.map((video) => (
+                <div key={video.file.name} className="uploaded-file">
+                  <span>
+                    <p className="file-name">{video.file.name}</p>
+                    <p className="file-size">
+                      {(video.file.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </span>
+                  <span style={{ display: "flex", gap: "0.5rem" }}>
+                    <select
+                      key={video.file.name}
+                      value={
+                        video.camera.id === ""
+                          ? "Select a camera for this video"
+                          : video.camera.id
+                      }
+                      onChange={(event) =>
+                        handleChangeCamera(event.target.value, video.file.name)
+                      }
+                    >
+                      <option hidden>Select a camera</option>
+                      {cameras.map((camera) =>
+                        camera.active ? (
+                          <option value={camera.id} key={camera.id}>
+                            {camera.name}
+                          </option>
+                        ) : null
+                      )}
+                    </select>
+                    <BsPinMap
+                      onClick={() => openMap(video.file.name)}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </span>
                   <IoClose
                     className="remove-file-icon"
-                    onClick={() => removeFile(file.name)}
+                    onClick={() => removeFile(video.file.name)}
                   />
                 </div>
               ))}
             </div>
           )}
+          <SubmitFilesButton files={videos} setError={setErrorMessage} />
         </div>
       </section>
       <div className="menu-options">
         <CameraMenuOptions />
       </div>
 
-      {showModal && <Modal fileName={duplicateFile} onClose={closeModal} />}
+      {showModal && (
+        <Modal>
+          <h2>File Already Exists</h2>
+          <p>
+            A file with the name <strong>{duplicateFile}</strong> already
+            exists.
+          </p>
+          <button className="close-modal-button2" onClick={closeModal}>
+            Close
+          </button>
+        </Modal>
+      )}
+
+      {showMap && (
+        <section className="map-view">
+          <MapContainer
+            center={COIMBRA}
+            zoom={13}
+            style={{ height: "400px", width: "100%" }}
+          >
+            <button
+              className="close-modal-button2"
+              onClick={() => {
+                setShowMap(false);
+                setSelectedFile("");
+              }}
+            >
+              Close
+            </button>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              {...{ attribution: "&copy; OpenStreetMap contributors" }}
+            />
+            {cameras.map((camera) => (
+              <Marker
+                key={camera.id}
+                position={[camera.latitude, camera.longitude]}
+                eventHandlers={{
+                  click: () => {
+                    handleChangeCamera(camera.id, selectedFile);
+                    setShowMap(false);
+                    setSelectedFile("");
+                  },
+                }}
+              >
+                <Popup>Camera {camera.name}</Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </section>
+      )}
     </div>
   );
 }

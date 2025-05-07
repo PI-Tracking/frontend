@@ -1,12 +1,13 @@
+import { UUID } from "@Types/Base";
 import styles from "./ListCameras.module.css";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 
 import noimg from "@assets/noimg.png";
 
-type video = string;
+type video = string | File;
 
 interface IListCameras {
-  changeCamera: (camera_id: number) => void;
+  changeCamera: (camera_id: UUID) => void;
   analysis: VideoAnalysis[];
 }
 
@@ -38,7 +39,9 @@ function ListCameras({ analysis, changeCamera }: IListCameras) {
               }}
             >
               <p className={styles.cameraName}>{camera.name}</p>
-              <p className={styles.cameraId}>ID: {camera.id}</p>
+              <p className={styles.cameraId}>
+                ID: {camera.id.substring(0, 8)}-(...)
+              </p>
               <p className={styles.cameraDetections}>
                 {analise.detections.length} deteções
               </p>

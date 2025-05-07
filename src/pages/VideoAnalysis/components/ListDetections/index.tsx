@@ -1,4 +1,4 @@
-import { Detection } from "../types/Detection";
+import { Detection } from "@Types/Detection";
 
 interface IListDetections {
   detections: Detection[];
