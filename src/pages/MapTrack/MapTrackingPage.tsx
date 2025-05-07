@@ -11,6 +11,7 @@ import { CameraTimeIntervalDTO } from "@Types/CameraTimeIntervalDTO";
 import { getAllCameras } from "@api/camera";
 import { ApiError } from "@api/ApiError";
 import { Camera } from "@Types/Camera";
+import { Popup } from "react-leaflet";
 
 function MapTrackingPage() {
   const [cameras, setCameras] = useState<Camera[]>([]);
@@ -121,7 +122,6 @@ function MapTrackingPage() {
               const offsetLng = camera.longitude + 0.0005 * count;
 
               locationUsage.set(locKey, count + 1);
-
               return (
                 <Marker
                   key={`${camera.id}-${idx}`}
@@ -132,7 +132,24 @@ function MapTrackingPage() {
                     iconSize: [30, 30],
                     iconAnchor: [15, 15],
                   })}
-                />
+                >
+                  <Popup>
+                    <div>
+                      <strong>Camera Position:</strong>
+                      <br />
+                      Lat: {camera.latitude.toFixed(6)}, Lng:{" "}
+                      {camera.longitude.toFixed(6)}
+                      <br />
+                      <strong>Time Interval:</strong>
+                      <br />
+                      {new Date(detection.initialTimestamp).toLocaleString()}
+                      <br />
+                      to
+                      <br />
+                      {new Date(detection.finalTimestamp).toLocaleString()}
+                    </div>
+                  </Popup>
+                </Marker>
               );
             })}
             {coordinates.length > 1 && (
