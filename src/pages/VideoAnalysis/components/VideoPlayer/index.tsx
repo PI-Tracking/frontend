@@ -8,9 +8,16 @@ import useReportStore from "@hooks/useReportStore";
 interface IVideoPlayer {
   videoAnalysis: VideoAnalysis;
   controls: boolean;
+  extractingSuspect: boolean;
+  requestReanalysis: (x: number, y: number, timestamp: number) => void;
 }
 
-function VideoPlayer({ videoAnalysis, controls }: IVideoPlayer) {
+function VideoPlayer({
+  videoAnalysis,
+  controls,
+  extractingSuspect,
+  requestReanalysis,
+}: IVideoPlayer) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
 
@@ -19,11 +26,32 @@ function VideoPlayer({ videoAnalysis, controls }: IVideoPlayer) {
   const { setCurrentTime } = useReportStore();
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = videoAnalysis.currentTimestamp ?? 0;
+    const videoElement = videoRef.current;
+
+    if (!videoElement) {
+      return;
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  //setCurrentTime(videoAnalysis.analysis_id, videoAnalysis.currentTimestamp);
+
+    videoElement.currentTime = videoAnalysis.currentTimestamp ?? 0;
+
+    const handleClick = (event: MouseEvent) => {
+      if (!videoElement || !extractingSuspect) {
+        return;
+      }
+
+      const rect = videoElement.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      if (extractingSuspect) {
+        requestReanalysis(x, y, videoElement.currentTime);
+      }
+    };
+
+    videoElement.addEventListener("click", handleClick);
+    return () => {
+      videoElement.removeEventListener("click", handleClick);
+    };
+  }, [videoRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={styles.videoContainer}>
