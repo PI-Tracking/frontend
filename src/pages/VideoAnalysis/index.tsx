@@ -19,6 +19,7 @@ function VideoAnalysisPage() {
     suspectImg,
     websocket,
     extractingSuspect,
+    isLoading,
     // functions
     changeCamera,
     activateExtractSuspect,
@@ -31,6 +32,42 @@ function VideoAnalysisPage() {
         <Navbar />
         <main className={styles.main}>
           <h1>Invalid reportId!</h1>;
+        </main>
+      </div>
+    );
+  }
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className={styles.content}>
+        <Navbar />
+        <main className={styles.main}>
+          <h1>Loading video analysis data...</h1>
+        </main>
+      </div>
+    );
+  }
+
+  // Handle case where no camera is selected yet
+  if (!selectedCamera) {
+    return (
+      <div className={styles.content}>
+        <Navbar />
+        <main className={styles.main}>
+          <h1>No camera data available</h1>
+          {report && report.uploads && report.uploads.length > 0 ? (
+            <div className={styles.column}>
+              <div className={styles.box} style={{ minWidth: "250px" }}>
+                <h3 className={styles.boxTitle}>Available Cameras</h3>
+                <ListCameras
+                  analysis={report.uploads}
+                  changeCamera={changeCamera}
+                />
+              </div>
+            </div>
+          ) : (
+            <p>No camera uploads found in this report.</p>
+          )}
         </main>
       </div>
     );
@@ -56,13 +93,22 @@ function VideoAnalysisPage() {
 
           <div className={styles.box}>
             <h3 className={styles.boxTitle}>Detections</h3>
-            <ListDetections detections={selectedCamera.detections} />
+            <ListDetections detections={selectedCamera?.detections} />
           </div>
         </div>
 
         <div className={styles.player}>
           {websocket.analysing ? (
-            <h1 style={{ color: "white" }}>Video is being analysed...</h1>
+            <h1 style={{ color: "white", textAlign: "center" }}>
+              Video is being analysed...
+            </h1>
+          ) : (
+            <></>
+          )}
+          {extractingSuspect ? (
+            <h1 style={{ color: "white", textAlign: "center" }}>
+              Select on the suspect to request analysis
+            </h1>
           ) : (
             <></>
           )}
@@ -70,7 +116,7 @@ function VideoAnalysisPage() {
             videoAnalysis={selectedCamera}
             controls={true}
             extractingSuspect={extractingSuspect}
-            requestReanalysis={requestNewReanalysis}
+            requestNewReanalysis={requestNewReanalysis}
           />
         </div>
 

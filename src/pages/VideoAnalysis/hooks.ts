@@ -2,7 +2,7 @@ import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
 import useReportStore from "@hooks/useReportStore";
 import { UUID } from "@Types/Base";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 /* MOCK DATA */
@@ -16,47 +16,98 @@ export default function useVideoAnalysis() {
   const websocket = useDetectionWebSocket();
   const { report } = useReportStore();
   const [suspectImg, setSuspectImg] = useState<string>(noimg);
-  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis>(
-    {} as VideoAnalysis
+  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis | null>(
+    null
   );
   const [extractingSuspect, setExtractingSuspect] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    websocket.connect(report.uploads[0].analysis_id);
-    setSelectedCamera(report.uploads[0]);
-    setSuspectImg(mock_suspectimage);
+    const initializeData = async () => {
+      setIsLoading(true);
+
+      // Check if report and uploads exist
+      if (report && report.uploads && report.uploads.length > 0) {
+        try {
+          // Connect to websocket
+          websocket.connect(report.uploads[0].analysis_id);
+          console.log("Initial camera data:", report.uploads[0]);
+
+          // Set the selected camera with valid data
+          setSelectedCamera(report.uploads[0]);
+          setSuspectImg(mock_suspectimage);
+        } catch (error) {
+          console.error("Error initializing video analysis:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        console.warn("Report or uploads not available");
+        setIsLoading(false);
+      }
+    };
+
+    initializeData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  //useEffect(() => {
+  //  websocket.connect(report.uploads[0].analysis_id);
+  //  console.log(report.uploads[0]);
+  //  setSelectedCamera(report.uploads[0]);
+  //  setSuspectImg(mock_suspectimage);
+  //}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!websocket.analysing) {
+    if (!websocket.analysing && selectedCamera) {
       changeCamera(selectedCamera.camera.id);
     }
   }, [websocket.analysing]); //eslint-disable-line react-hooks/exhaustive-deps
 
   const changeCamera = function (cameraId: UUID) {
-    const videoAnalysis: VideoAnalysis = report.uploads.find(
-      (analysis) => analysis.camera.id === cameraId
-    )!;
+    if (!report.uploads || !websocket.currentAnalysisId) {
+      console.warn(
+        "Cannot change camera: report uploads or analysisId not available"
+      );
+      return;
+    }
 
-    setSelectedCamera(videoAnalysis);
+    const videoAnalysis = report.uploads.find(
+      (analysis) =>
+        analysis.camera.id === cameraId &&
+        analysis.analysis_id === websocket.currentAnalysisId
+    );
+
+    if (videoAnalysis) {
+      console.log("Changing camera to:", videoAnalysis);
+      setSelectedCamera(videoAnalysis);
+    } else {
+      console.warn(`No video analysis found for camera ${cameraId}`);
+    }
   };
-
   const activateExtractSuspect = function () {
     setExtractingSuspect(true);
   };
 
-  const requestNewReanalysis = function (
-    x: number,
-    y: number,
-    timestamp: number
-  ) {
-    requestReanalysis(report.id, {
-      videoId: selectedCamera.camera.id,
-      frame: timestamp,
-      x: x,
-      y: y,
-    } as SelectedSuspectDTO);
-  };
+  const requestNewReanalysis = useCallback(
+    async function (x: number, y: number, timestamp: number) {
+      websocket.disconnect();
+      setExtractingSuspect(false);
+      console.log("x:", x, "y:", y, "ts:", timestamp);
+      const response = await requestReanalysis(report.id, {
+        videoId: selectedCamera!.camera.id,
+        frame: timestamp,
+        x: x,
+        y: y,
+      } as SelectedSuspectDTO);
+      console.log(response);
+
+      if (response.status !== 200)
+        alert("Something went wrong requesting reanalysis");
+
+      const data = response.data as { analysisId: string };
+      websocket.connect(data.analysisId);
+    },
+    [websocket] // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
   return {
     paramReportId,
@@ -68,5 +119,6 @@ export default function useVideoAnalysis() {
     extractingSuspect,
     activateExtractSuspect,
     requestNewReanalysis,
+    isLoading,
   };
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import ProgressBar from "./components/ProgressBar";
 import DetectionsBoxes from "./components/DetectionsBoxes";
@@ -9,14 +9,14 @@ interface IVideoPlayer {
   videoAnalysis: VideoAnalysis;
   controls: boolean;
   extractingSuspect: boolean;
-  requestReanalysis: (x: number, y: number, timestamp: number) => void;
+  requestNewReanalysis: (x: number, y: number, timestamp: number) => void;
 }
 
 function VideoPlayer({
   videoAnalysis,
   controls,
   extractingSuspect,
-  requestReanalysis,
+  requestNewReanalysis,
 }: IVideoPlayer) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -25,33 +25,43 @@ function VideoPlayer({
   const detections = videoAnalysis?.detections;
   const { setCurrentTime } = useReportStore();
 
-  useEffect(() => {
-    const videoElement = videoRef.current;
+  const handleClick = useCallback(
+    (event: MouseEvent) => {
+      const videoElement = videoRef.current!;
 
-    if (!videoElement) {
-      return;
-    }
-
-    videoElement.currentTime = videoAnalysis.currentTimestamp ?? 0;
-
-    const handleClick = (event: MouseEvent) => {
-      if (!videoElement || !extractingSuspect) {
-        return;
-      }
+      if (!extractingSuspect) return;
 
       const rect = videoElement.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      if (extractingSuspect) {
-        requestReanalysis(x, y, videoElement.currentTime);
-      }
-    };
+      requestNewReanalysis(x, y, videoElement.currentTime);
+    },
+    [extractingSuspect, videoRef, requestNewReanalysis]
+  );
 
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) {
+      return;
+    }
+    if (videoAnalysis.currentTimestamp) {
+      videoElement.currentTime = videoAnalysis.currentTimestamp;
+    }
     videoElement.addEventListener("click", handleClick);
     return () => {
       videoElement.removeEventListener("click", handleClick);
     };
-  }, [videoRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [videoAnalysis, videoRef]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const updateVideoCurrentTS = (time: number) => {
+    if (videoAnalysis && videoAnalysis.video_id) {
+      setCurrentTime(videoAnalysis.video_id, time);
+    } else {
+      console.warn(
+        "Cannot update time: videoAnalysis or video_id is undefined"
+      );
+    }
+  };
 
   return (
     <div className={styles.videoContainer}>
@@ -78,9 +88,7 @@ function VideoPlayer({
           detections={detections}
           playing={playing}
           setPlaying={setPlaying}
-          setCurrentTime={(time: number) =>
-            setCurrentTime(videoAnalysis.video_id, time)
-          }
+          setCurrentTime={updateVideoCurrentTS}
         />
       ) : (
         <></>

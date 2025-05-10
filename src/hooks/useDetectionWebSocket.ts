@@ -44,12 +44,22 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
   useEffect(() => {
     const unsubscribe = detectionWebSocket.onMessage(
       (newDetections, analysis_id) => {
-        console.log(newDetections);
-        setDetections(
-          newDetections[0].video_id,
-          analysis_id,
-          newDetections as Detection[]
+        console.log("New detections:", newDetections);
+        const groupedDetections = newDetections.reduce(
+          (acc: { [key: string]: Detection[] }, detection: Detection) => {
+            const { video_id } = detection;
+            if (!acc[video_id]) {
+              acc[video_id] = [];
+            }
+            acc[video_id].push(detection);
+            return acc;
+          },
+          {}
         );
+        for (const video_id in groupedDetections) {
+          const videoDetections = groupedDetections[video_id];
+          setDetections(video_id, analysis_id, videoDetections as Detection[]);
+        }
         setAnalysing(false);
       }
     );

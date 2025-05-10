@@ -17,16 +17,12 @@ class DetectionWebSocket {
   private ws: WebSocket | null = null;
   private messageHandlers: Set<MessageHandler> = new Set();
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
+  private maxReconnectAttempts = 10;
   private reconnectTimeout = 1000;
 
   constructor(private baseUrl: string = "ws://localhost:8001") {}
 
   connect(analysisId: string) {
-    if (this.ws?.readyState === WebSocket.OPEN) {
-      return;
-    }
-
     this.ws = new WebSocket(`${this.baseUrl}/api/v1/ws/${analysisId}`);
 
     this.ws.onopen = () => {
