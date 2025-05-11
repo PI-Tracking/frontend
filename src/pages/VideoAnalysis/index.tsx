@@ -24,7 +24,7 @@ type Image = string;
 function VideoAnalysisPage() {
   const { id: paramReportId } = useParams();
   const [suspectImg, setSuspectImg] = useState<Image>(noimg);
-  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis>(
+  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis[]>(
     {} as VideoAnalysis
   );
   const websocket = useDetectionWebSocket();
@@ -81,19 +81,27 @@ function VideoAnalysisPage() {
 
           <div className={styles.box}>
             <h3 className={styles.boxTitle}>Detections</h3>
-            <ListDetections detections={selectedCamera.detections} />
+            {report.uploads.map((analise: VideoAnalysis) =>
+              <>
+                <h5 style={{ color: "white" }}>{analise.camera.name}:</h5>
+                <ListDetections detections={analise.detections} />
+              </>
+            )}
+
           </div>
         </div>
+        {report.uploads.map((analise: VideoAnalysis) =>
+          <div className={styles.player}>
+            {websocket.analysing ? (
+              <h1 style={{ color: "white" }}>Video is being analysed...</h1>
+            ) : (
+              <></>
+            )}
 
-        <div className={styles.player}>
-          {websocket.analysing ? (
-            <h1 style={{ color: "white" }}>Video is being analysed...</h1>
-          ) : (
-            <></>
-          )}
-          <Player videoAnalysis={selectedCamera} controls={true} />
-        </div>
+            <Player videoAnalysis={analise} controls={true} />
 
+          </div>
+        )}
         <div className={styles.column}>
           <div className={styles.box} style={{ minWidth: "250px" }}>
             <h3 className={styles.boxTitle}>Cameras</h3>
