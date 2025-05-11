@@ -96,23 +96,8 @@ function LoginPage() {
     e.preventDefault();
     if (isEmptyString(resetForm.email)) return;
 
-    try {
-      const response = await auth.resetPassword(resetForm);
-      if (!response.success) {
-        setError(response.error);
-        return;
-      }
-    } catch (error) {
-      setError("Some unknown error occurred");
-      console.error("Error trying to resetPassword: " + error);
-    }
-
     setButtonDisabled(true);
     setTimer(30);
-    //setCodeSent(true);
-    //setEmail("");
-    setResetForm({ email: "" });
-
     const countdown = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
@@ -123,6 +108,21 @@ function LoginPage() {
         return prev - 1;
       });
     }, 1000);
+
+    try {
+      const response = await auth.resetPassword(resetForm);
+      setResetForm({ email: "" });
+      if (!response.success) {
+        setError(response.error);
+        return;
+      }
+    } catch (error) {
+      setResetForm({ email: "" });
+      setError("Some unknown error occurred");
+      console.error("Error trying to resetPassword: " + error);
+    }
+    //setCodeSent(true);
+    //setEmail("");
   };
 
   // const handleVerifyCode = () => {
@@ -207,7 +207,7 @@ function LoginPage() {
                 onClick={handleSendCode}
                 disabled={buttonDisabled}
               >
-                {buttonDisabled ? `Wait ${timer}s` : "Send Code"}
+                {buttonDisabled ? `Check your email ${timer}s` : "Send Code"}
               </button>
             </>
             {/* ) : (
