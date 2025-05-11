@@ -9,6 +9,7 @@ import styles from "./styles.module.css";
 import Curve from "./assets/Curve.svg";
 import Circles from "./assets/Circles.svg";
 import { useAuth } from "@hooks/useAuth";
+import { ResetDTO } from "@Types/ResetDTO";
 
 const isEmptyString = (string: string) => !string || string.trim() === "";
 
@@ -17,16 +18,19 @@ function LoginPage() {
     username: "",
     password: "",
   });
+  const [resetForm, setResetForm] = useState<ResetDTO>({
+    email: "",
+  });
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
   // Forgot Password Modal States
   const [showModal, setShowModal] = useState(false);
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  //const [email, setEmail] = useState("");
+  // const [code, setCode] = useState("");
   const [timer, setTimer] = useState(0);
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [codeSent, setCodeSent] = useState(false);
+  //const [codeSent, setCodeSent] = useState(false);
   const [showNewPasswordModal, setShowNewPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -66,16 +70,34 @@ function LoginPage() {
     }
   };
 
-  const handleSendCode = () => {
-    if (isEmptyString(email)) return;
+  // const handleSendCode = () => {
+  //   if (isEmptyString(email)) return;
 
-    console.log("Sending reset code to:", email);
+  //   console.log("Sending reset code to:", email);
+
+  //   setButtonDisabled(true);
+  //   setTimer(30);
+  //   setCodeSent(true);
+  //   setEmail("");
+
+  //   const countdown = setInterval(() => {
+  //     setTimer((prev) => {
+  //       if (prev <= 1) {
+  //         clearInterval(countdown);
+  //         setButtonDisabled(false);
+  //         return 0;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
+  // };
+
+  const handleSendCode = async (e: FormEvent) => {
+    e.preventDefault();
+    if (isEmptyString(resetForm.email)) return;
 
     setButtonDisabled(true);
     setTimer(30);
-    setCodeSent(true);
-    setEmail("");
-
     const countdown = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
@@ -86,13 +108,28 @@ function LoginPage() {
         return prev - 1;
       });
     }, 1000);
+
+    try {
+      const response = await auth.resetPassword(resetForm);
+      setResetForm({ email: "" });
+      if (!response.success) {
+        setError(response.error);
+        return;
+      }
+    } catch (error) {
+      setResetForm({ email: "" });
+      setError("Some unknown error occurred");
+      console.error("Error trying to resetPassword: " + error);
+    }
+    //setCodeSent(true);
+    //setEmail("");
   };
 
-  const handleVerifyCode = () => {
-    if (isEmptyString(code)) return;
-    setShowModal(false);
-    setShowNewPasswordModal(true);
-  };
+  // const handleVerifyCode = () => {
+  //   if (isEmptyString(code)) return;
+  //   setShowModal(false);
+  //   setShowNewPasswordModal(true);
+  // };
 
   const handlePasswordChange = () => {
     if (newPassword !== repeatPassword) {
@@ -155,23 +192,25 @@ function LoginPage() {
         <div className={styles.modal}>
           <div className={styles.modalContent}>
             <h3>Reset Password</h3>
-            {!codeSent ? (
-              <>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <button
-                  className={styles.loginBtn}
-                  onClick={handleSendCode}
-                  disabled={buttonDisabled}
-                >
-                  {buttonDisabled ? `Wait ${timer}s` : "Send Code"}
-                </button>
-              </>
-            ) : (
+            {/* {!codeSent ? ( */}
+            <>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={resetForm.email}
+                onChange={(e) =>
+                  setResetForm({ ...resetForm, email: e.target.value })
+                }
+              />
+              <button
+                className={styles.loginBtn}
+                onClick={handleSendCode}
+                disabled={buttonDisabled}
+              >
+                {buttonDisabled ? `Check your email ${timer}s` : "Send Code"}
+              </button>
+            </>
+            {/* ) : (
               <>
                 <input
                   type="text"
@@ -183,7 +222,7 @@ function LoginPage() {
                   Verify Code
                 </button>
               </>
-            )}
+            )} */}
             <button
               className={styles.closeBtn}
               onClick={() => setShowModal(false)}
