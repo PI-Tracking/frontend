@@ -24,18 +24,22 @@ type Image = string;
 function VideoAnalysisPage() {
   const { id: paramReportId } = useParams();
   const [suspectImg, setSuspectImg] = useState<Image>(noimg);
-  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis[]>([
-    {} as VideoAnalysis]
+  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis[]>(
+    [{} as VideoAnalysis]
   );
   const websocket = useDetectionWebSocket();
   const { report } = useReportStore();
 
   console.log(report);
   useEffect(() => {
-    websocket.connect(report.uploads[0].analysis_id);
-    setSelectedCamera(report.uploads[0]);
+    { report.uploads.map((camera: VideoAnalysis) => websocket.connect(camera.analysis_id)) }
+    setSelectedCamera(report.uploads);
     setSuspectImg(mock_suspectimage);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+  setSelectedCamera(report.uploads[0]);
+}, [report.uploads]);
 
   const changeCamera = function (cameraId: UUID) {
     const videoAnalysis: VideoAnalysis = report.uploads.find(
@@ -82,24 +86,22 @@ function VideoAnalysisPage() {
           <div className={styles.box}>
             <h3 className={styles.boxTitle}>Detections</h3>
             {report.uploads.map((analise: VideoAnalysis) =>
-              <>
+              <div key={analise.camera.id}>
                 <h5 style={{ color: "white" }}>{analise.camera.name}:</h5>
                 <ListDetections detections={analise.detections} />
-              </>
+              </div>
             )}
 
           </div>
         </div>
         {report.uploads.map((analise: VideoAnalysis) =>
-          <div className={styles.player}>
+          <div className={styles.player} key={analise.camera.id}>
             {websocket.analysing ? (
               <h1 style={{ color: "white" }}>Video is being analysed...</h1>
             ) : (
               <></>
             )}
-
             <Player videoAnalysis={analise} controls={true} />
-
           </div>
         )}
         <div className={styles.column}>
