@@ -37,7 +37,7 @@ async function logout() {
 
 async function resetPassword(
   dto: ResetDTO
-): Promise<AxiosResponse<User | ApiError>> {
+): Promise<AxiosResponse<string | ApiError>> {
   /**
    * PATCH /resetPassword
    */
