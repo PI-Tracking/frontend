@@ -24,8 +24,8 @@ type Image = string;
 function VideoAnalysisPage() {
   const { id: paramReportId } = useParams();
   const [suspectImg, setSuspectImg] = useState<Image>(noimg);
-  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis[]>(
-    {} as VideoAnalysis
+  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis[]>([
+    {} as VideoAnalysis]
   );
   const websocket = useDetectionWebSocket();
   const { report } = useReportStore();
@@ -39,7 +39,7 @@ function VideoAnalysisPage() {
 
   const changeCamera = function (cameraId: UUID) {
     const videoAnalysis: VideoAnalysis = report.uploads.find(
-      (analysis) => analysis.camera.id === cameraId
+      (analysis: VideoAnalysis) => analysis.camera.id === cameraId
     )!;
 
     setSelectedCamera(videoAnalysis);
