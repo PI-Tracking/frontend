@@ -26,7 +26,7 @@ function LoginPage() {
 
   // Forgot Password Modal States
   const [showModal, setShowModal] = useState(false);
-  const [email, setEmail] = useState("");
+  //const [email, setEmail] = useState("");
   // const [code, setCode] = useState("");
   const [timer, setTimer] = useState(0);
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -94,7 +94,7 @@ function LoginPage() {
 
   const handleSendCode = async (e: FormEvent) => {
     e.preventDefault();
-    if (isEmptyString(email)) return;
+    if (isEmptyString(resetForm.email)) return;
 
     try {
       const response = await auth.resetPassword(resetForm);
@@ -110,7 +110,8 @@ function LoginPage() {
     setButtonDisabled(true);
     setTimer(30);
     //setCodeSent(true);
-    setEmail("");
+    //setEmail("");
+    setResetForm({ email: "" });
 
     const countdown = setInterval(() => {
       setTimer((prev) => {
@@ -196,7 +197,7 @@ function LoginPage() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                value={email}
+                value={resetForm.email}
                 onChange={(e) =>
                   setResetForm({ ...resetForm, email: e.target.value })
                 }
