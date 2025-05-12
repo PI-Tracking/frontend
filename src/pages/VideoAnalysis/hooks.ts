@@ -2,7 +2,7 @@ import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
 import useReportStore from "@hooks/useReportStore";
 import { UUID } from "@Types/Base";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 /* MOCK DATA */
@@ -87,27 +87,28 @@ export default function useVideoAnalysis() {
     setExtractingSuspect(true);
   };
 
-  const requestNewReanalysis = useCallback(
-    async function (x: number, y: number, timestamp: number) {
-      websocket.disconnect();
-      setExtractingSuspect(false);
-      console.log("x:", x, "y:", y, "ts:", timestamp);
-      const response = await requestReanalysis(report.id, {
-        videoId: selectedCamera!.camera.id,
-        frame: timestamp,
-        x: x,
-        y: y,
-      } as SelectedSuspectDTO);
-      console.log(response);
+  const requestNewReanalysis = async function (
+    x: number,
+    y: number,
+    timestamp: number
+  ) {
+    websocket.disconnect();
+    setExtractingSuspect(false);
+    console.log("x:", x, "y:", y, "ts:", timestamp);
+    const response = await requestReanalysis(report.id, {
+      videoId: selectedCamera!.camera.id,
+      timestamp: timestamp * 1_000, // convert to ms
+      x: x,
+      y: y,
+    } as SelectedSuspectDTO);
+    console.log(response);
 
-      if (response.status !== 200)
-        alert("Something went wrong requesting reanalysis");
+    if (response.status !== 200)
+      alert("Something went wrong requesting reanalysis");
 
-      const data = response.data as { analysisId: string };
-      websocket.connect(data.analysisId);
-    },
-    [websocket] // eslint-disable-line react-hooks/exhaustive-deps
-  );
+    const data = response.data as { analysisId: string };
+    websocket.connect(data.analysisId);
+  };
 
   return {
     paramReportId,

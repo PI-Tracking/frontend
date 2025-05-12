@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import ProgressBar from "./components/ProgressBar";
 import DetectionsBoxes from "./components/DetectionsBoxes";
@@ -25,20 +25,7 @@ function VideoPlayer({
   const detections = videoAnalysis?.detections;
   const { setCurrentTime } = useReportStore();
 
-  const handleClick = useCallback(
-    (event: MouseEvent) => {
-      const videoElement = videoRef.current!;
-
-      if (!extractingSuspect) return;
-
-      const rect = videoElement.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      requestNewReanalysis(x, y, videoElement.currentTime);
-    },
-    [extractingSuspect, videoRef, requestNewReanalysis]
-  );
-
+  // Set timestamp of video to the current video
   useEffect(() => {
     const videoElement = videoRef.current;
     if (!videoElement) {
@@ -47,11 +34,24 @@ function VideoPlayer({
     if (videoAnalysis.currentTimestamp) {
       videoElement.currentTime = videoAnalysis.currentTimestamp;
     }
-    videoElement.addEventListener("click", handleClick);
-    return () => {
-      videoElement.removeEventListener("click", handleClick);
-    };
-  }, [videoAnalysis, videoRef]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [videoRef, videoAnalysis]);
+
+  const handleClick = (event: MouseEvent<HTMLVideoElement>) => {
+    const videoElement = videoRef.current!;
+    if (!extractingSuspect) return;
+
+    const rect = videoElement.getBoundingClientRect();
+    const scale_width = videoElement.videoWidth / rect.width;
+    const scale_height = videoElement.videoHeight / rect.height;
+    const x = (event.clientX - rect.left) * scale_width;
+    const y = (event.clientY - rect.top) * scale_height;
+
+    requestNewReanalysis(
+      Math.trunc(x),
+      Math.trunc(y),
+      videoElement.currentTime
+    );
+  };
 
   const updateVideoCurrentTS = (time: number) => {
     if (videoAnalysis && videoAnalysis.video_id) {
@@ -68,6 +68,7 @@ function VideoPlayer({
       <div className={styles.videoWrapper}>
         <video
           src={video}
+          onClick={handleClick}
           ref={videoRef}
           className={styles.videoElement}
         ></video>
