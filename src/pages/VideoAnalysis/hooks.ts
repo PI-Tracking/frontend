@@ -96,7 +96,7 @@ export default function useVideoAnalysis() {
     setExtractingSuspect(false);
     console.log("x:", x, "y:", y, "ts:", timestamp);
     const response = await requestReanalysis(report.id, {
-      videoId: selectedCamera!.camera.id,
+      videoId: selectedCamera!.video_id,
       timestamp: timestamp * 1_000, // convert to ms
       x: x,
       y: y,
