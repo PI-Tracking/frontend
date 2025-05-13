@@ -90,7 +90,7 @@ function MapTrackingPage() {
 
     fetchCameras();
     fetchDetections();
-  }, [report, cameras]);
+  }, [report]);
 
   return (
     <div className="container">
