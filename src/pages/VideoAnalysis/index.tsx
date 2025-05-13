@@ -78,7 +78,7 @@ function VideoAnalysisPage() {
       <Navbar />
       <main className={styles.main}>
         <div className={styles.column}>
-          <div className={styles.box}>
+          <div className={styles.box + " " + styles.padding}>
             <h3 className={styles.boxTitle}>Selected Suspect</h3>
             {suspectImg && (
               <img src={suspectImg} className={styles.suspectImage} />
