@@ -38,6 +38,7 @@ function ProfileDropdown({ isOpen, onClose }: ProfileDropdownProps) {
       </div>
     );
   }
+
   return (
     <div className="profile-dropdown">
       <ul>
@@ -45,9 +46,6 @@ function ProfileDropdown({ isOpen, onClose }: ProfileDropdownProps) {
           <Link to="/profile" onClick={onClose}>
             Profile
           </Link>
-        </li>
-        <li>
-          <Link to="/login" onClick={onClose}>
         </li>
         <li>
           <Link to="/" onClick={handleLogout}>

@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import { UserCircle } from "lucide-react";
 import "./ProfileDropdown.css";
+import ProfileDropdown from "../ProfileDropDown";
+import "./ProfileIcon.css";
 
-const ProfileDropdown = () => {
+const ProfileIcon = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const trigger = useRef<SVGSVGElement | null>(null);
@@ -35,19 +36,12 @@ const ProfileDropdown = () => {
         className={`profile-icon ${isDropdownOpen ? "active" : ""}`}
         onClick={toggleDropdown}
       />
-      {isDropdownOpen && (
-        <div ref={dropdown} className="profile-dropdown-menu">
-          <ul>
-            <li>
-              <Link to="/logout" onClick={() => console.log("Logging out...")}>
-                Logout
-              </Link>
-            </li>
-          </ul>
-        </div>
-      )}
+      <ProfileDropdown
+        isOpen={isDropdownOpen}
+        onClose={() => setIsDropdownOpen(false)}
+      />
     </div>
   );
 };
 
-export default ProfileDropdown;
+export default ProfileIcon;
