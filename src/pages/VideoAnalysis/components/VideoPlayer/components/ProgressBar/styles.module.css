@@ -1,4 +1,5 @@
 .controlsWrapper {
+  padding-top: 4px;
   padding: 10px 10px 10px 0px;
   width: 100%;
   height: 20px;
@@ -16,6 +17,14 @@
   width: 100%;
 }
 
+.buttonWrapper {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .playButton {
   width: 20px;
   height: 20px;
@@ -26,7 +35,7 @@
 }
 
 :root {
-  --progress-position: 0.25;
+  --progress-position: 0;
   --progressbar-height: 7px;
 }
 

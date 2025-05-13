@@ -1,37 +1,45 @@
-import logo from "@assets/logo.png";
-import "./LoginPage.css";
 import { FormEvent, useState } from "react";
-import Circles from "./assets/Circles.svg";
-import Curve from "./assets/Curve.svg";
-import login from "@api/auth";
-import { UserDTO } from "@Types/UserDTO";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+import { LoginDTO } from "@Types/LoginDTO";
+import logo from "@assets/logo.png";
+import styles from "./styles.module.css";
+
+import Curve from "./assets/Curve.svg";
+import Circles from "./assets/Circles.svg";
+import { useAuth } from "@hooks/useAuth";
+import { ResetDTO } from "@Types/ResetDTO";
 
 const isEmptyString = (string: string) => !string || string.trim() === "";
 
 function LoginPage() {
-  const [formData, setFormData] = useState<UserDTO>({
+  const [formData, setFormData] = useState<LoginDTO>({
     username: "",
     password: "",
+  });
+  const [resetForm, setResetForm] = useState<ResetDTO>({
+    email: "",
   });
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
   // Forgot Password Modal States
   const [showModal, setShowModal] = useState(false);
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  //const [email, setEmail] = useState("");
+  // const [code, setCode] = useState("");
   const [timer, setTimer] = useState(0);
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [codeSent, setCodeSent] = useState(false);
+  //const [codeSent, setCodeSent] = useState(false);
   const [showNewPasswordModal, setShowNewPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   // const [passwordMismatch, setPasswordMismatch] = useState(false);
+  const auth = useAuth();
 
-  // Since I commented the other code down there this was just placed here so I could commit with no errors
+  // Since I commented the other code down
+  // there this was just placed here so I could commit with no errors
   const setPasswordMismatch = (value: boolean) => {
     setPasswordMismatch(value);
   };
@@ -44,16 +52,14 @@ function LoginPage() {
       return;
 
     try {
-      const response = await login(formData);
+      const response = await auth.login(formData);
 
-      console.log("Login response:", response);
-
-      if (response.status !== 200) {
-        setError("Username/password combination is not valid");
+      if (!response.success) {
+        setError(response.error);
         return;
       }
-
-      if (response.data && response.data.admin) {
+      console.log(response.admin);
+      if (response.admin) {
         navigate("/admin/cameras");
       } else {
         navigate("/cameras");
@@ -64,16 +70,34 @@ function LoginPage() {
     }
   };
 
-  const handleSendCode = () => {
-    if (isEmptyString(email)) return;
+  // const handleSendCode = () => {
+  //   if (isEmptyString(email)) return;
 
-    console.log("Sending reset code to:", email);
+  //   console.log("Sending reset code to:", email);
+
+  //   setButtonDisabled(true);
+  //   setTimer(30);
+  //   setCodeSent(true);
+  //   setEmail("");
+
+  //   const countdown = setInterval(() => {
+  //     setTimer((prev) => {
+  //       if (prev <= 1) {
+  //         clearInterval(countdown);
+  //         setButtonDisabled(false);
+  //         return 0;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
+  // };
+
+  const handleSendCode = async (e: FormEvent) => {
+    e.preventDefault();
+    if (isEmptyString(resetForm.email)) return;
 
     setButtonDisabled(true);
     setTimer(30);
-    setCodeSent(true);
-    setEmail("");
-
     const countdown = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
@@ -84,13 +108,28 @@ function LoginPage() {
         return prev - 1;
       });
     }, 1000);
+
+    try {
+      const response = await auth.resetPassword(resetForm);
+      setResetForm({ email: "" });
+      if (!response.success) {
+        setError(response.error);
+        return;
+      }
+    } catch (error) {
+      setResetForm({ email: "" });
+      setError("Some unknown error occurred");
+      console.error("Error trying to resetPassword: " + error);
+    }
+    //setCodeSent(true);
+    //setEmail("");
   };
 
-  const handleVerifyCode = () => {
-    if (isEmptyString(code)) return;
-    setShowModal(false);
-    setShowNewPasswordModal(true);
-  };
+  // const handleVerifyCode = () => {
+  //   if (isEmptyString(code)) return;
+  //   setShowModal(false);
+  //   setShowNewPasswordModal(true);
+  // };
 
   const handlePasswordChange = () => {
     if (newPassword !== repeatPassword) {
@@ -103,17 +142,17 @@ function LoginPage() {
 
   return (
     <>
-      <div className="background">
+      <div className={styles.background}>
         <img src={Circles} />
         <img src={Curve} />
       </div>
       <section>
-        <div className="login-container">
-          <img src={logo} alt="Logo" className="login-logo" />
-          <div className="login-box">
+        <div className={styles.loginContainer}>
+          <img src={logo} alt="Logo" className={styles.loginLogo} />
+          <div className={styles.loginBox}>
             <h2>Dashboard Login</h2>
             <form onSubmit={handleLogin}>
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <input
                   type="text"
                   placeholder="Username"
@@ -133,14 +172,14 @@ function LoginPage() {
                   }
                 />
               </div>
-              {error && <span className="errorMessage">{error}</span>}
-              <button type="submit" className="login-btn">
+              {error && <span className={styles.errorMessage}>{error}</span>}
+              <button type="submit" className={styles.loginBtn}>
                 Login
               </button>
             </form>
             <a
               href="#"
-              className="forgot-password"
+              className={styles.forgotPassword}
               onClick={() => setShowModal(true)}
             >
               Forgot password?
@@ -150,26 +189,28 @@ function LoginPage() {
       </section>
 
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
             <h3>Reset Password</h3>
-            {!codeSent ? (
-              <>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <button
-                  className="login-btn"
-                  onClick={handleSendCode}
-                  disabled={buttonDisabled}
-                >
-                  {buttonDisabled ? `Wait ${timer}s` : "Send Code"}
-                </button>
-              </>
-            ) : (
+            {/* {!codeSent ? ( */}
+            <>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={resetForm.email}
+                onChange={(e) =>
+                  setResetForm({ ...resetForm, email: e.target.value })
+                }
+              />
+              <button
+                className={styles.loginBtn}
+                onClick={handleSendCode}
+                disabled={buttonDisabled}
+              >
+                {buttonDisabled ? `Check your email ${timer}s` : "Send Code"}
+              </button>
+            </>
+            {/* ) : (
               <>
                 <input
                   type="text"
@@ -177,12 +218,15 @@ function LoginPage() {
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                 />
-                <button className="login-btn" onClick={handleVerifyCode}>
+                <button className={styles.loginBtn} onClick={handleVerifyCode}>
                   Verify Code
                 </button>
               </>
-            )}
-            <button className="close-btn" onClick={() => setShowModal(false)}>
+            )} */}
+            <button
+              className={styles.closeBtn}
+              onClick={() => setShowModal(false)}
+            >
               Close
             </button>
           </div>
@@ -190,10 +234,10 @@ function LoginPage() {
       )}
 
       {showNewPasswordModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
             <h3>Set New Password</h3>
-            <div className="input-group">
+            <div className={styles.inputGroup}>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="New Password"
@@ -209,11 +253,11 @@ function LoginPage() {
               <button onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-              {/* {passwordMismatch && <span className="errorMessage">Passwords don't match</span>} */}
+              {/* {passwordMismatch && <span className={styles.errorMessage}>Passwords don't match</span>} */}
               {/* For some reason this is not working */}
             </div>
             <button
-              className="login-btn"
+              className={styles.loginBtn}
               onClick={handlePasswordChange}
               disabled={
                 newPassword !== repeatPassword || isEmptyString(newPassword)
@@ -222,7 +266,7 @@ function LoginPage() {
               Confirm New Password
             </button>
             <button
-              className="close-btn"
+              className={styles.closeBtn}
               onClick={() => setShowNewPasswordModal(false)}
             >
               Close

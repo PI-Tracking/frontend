@@ -18,7 +18,7 @@ body {
   margin: 0;
 }
 
-.login-container {
+.loginContainer {
   font-family: "montserrat";
   display: flex;
   flex-direction: column;
@@ -33,12 +33,12 @@ body {
   z-index: 1;
 }
 
-.login-logo {
+.loginLogo {
   width: 200px;
   margin-bottom: 140px;
 }
 
-.login-box {
+.loginBox {
   background: rgba(58, 58, 58, 0.9);
   padding: 20px;
   border-radius: 10px;
@@ -50,14 +50,14 @@ body {
   position: relative;
 }
 
-.input-group {
+.inputGroup {
   margin: 10px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.input-group > input {
+.inputGroup > input {
   width: 100%;
   padding: 10px;
   margin: 5px 0px;
@@ -67,7 +67,7 @@ body {
   color: white;
 }
 
-.login-btn {
+.loginBtn {
   width: 100%;
   padding: 10px;
   background-color: white;
@@ -77,7 +77,7 @@ body {
   cursor: pointer;
 }
 
-.forgot-password {
+.forgotPassword {
   display: block;
   margin-top: 10px;
   color: whitesmoke;
@@ -121,7 +121,7 @@ body {
   z-index: 1000;
 }
 
-.modal-content {
+.modalContent {
   background: #444 !important;
   padding: 20px;
   border-radius: 10px;
@@ -132,7 +132,7 @@ body {
   max-width: 400px;
 }
 
-.modal-content input {
+.modalContent input {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -142,7 +142,7 @@ body {
   color: white !important;
 }
 
-.login-btn {
+.loginBtn {
   width: 100%;
   padding: 10px;
   background-color: white;
@@ -152,12 +152,12 @@ body {
   cursor: pointer;
 }
 
-.login-btn:disabled {
+.loginBtn:disabled {
   background-color: grey;
   cursor: not-allowed;
 }
 
-.close-btn {
+.closeBtn {
   margin-top: 10px;
   background: #666 !important;
   color: white;
@@ -167,6 +167,6 @@ body {
   cursor: pointer;
 }
 
-.close-btn:hover {
+.closeBtn:hover {
   background: #777;
 }

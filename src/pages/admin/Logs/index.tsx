@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Navbar from "@components/Navbar2";
+import Navbar from "@components/Navbar";
 import "./AdminLogs.css";
 
 const initialUsers = [

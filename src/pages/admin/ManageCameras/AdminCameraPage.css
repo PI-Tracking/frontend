@@ -1,6 +1,5 @@
 .admin-manage-container {
   margin: 0 auto;
-
 }
 
 .camera-page-header {
@@ -37,8 +36,35 @@
 }
 
 .admin-table {
+  margin-top: 50px;
   width: 100%;
   border-collapse: collapse;
+}
+
+.admin-checkbox {
+  text-align: right;
+  padding: 15px;
+}
+
+.admin-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background-color: #8a8a8a;
+  appearance: none;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+}
+
+.admin-checkbox input[type="checkbox"]:checked::before {
+  content: "\2713";
+  font-size: 18px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .admin-row {
@@ -94,7 +120,7 @@
   cursor: pointer;
 }
 
-.add-camera-btn:after {
+.add-camera-btn::after {
   content: "+";
   margin-left: 10px;
   font-size: 1.2em;
@@ -117,8 +143,6 @@
   background-color: white;
   padding: 30px;
   border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -140,6 +164,7 @@
 .add-camera-form h2 {
   margin-bottom: 20px;
   text-align: center;
+  color: black;
 }
 
 .form-group {
@@ -170,28 +195,6 @@
   border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
-}
-
-.camera-preview-area {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #333;
-  padding: 50px;
-  display: flex;
-  opacity: 0.9;
-  justify-content: center;
-  align-items: center;
-  height: 400px;
-  width: 50%;
-  border-radius: 8px;
-  z-index: 999;
-}
-
-.preview-placeholder {
-  text-align: center;
-  color: white;
 }
 
 .loading-spinner {

@@ -5,6 +5,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 /* I was getting a border so I'm adding this */
 
 .container {
@@ -30,8 +31,7 @@
   transform: translate(-50%, -50%);
   width: 70%;
   height: 70%;
-  background-color: #414141;
-  opacity: 0.69;
+  background-color: #41414169;
   border-radius: 10px;
   gap: 20px;
   padding: 20px;

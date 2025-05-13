@@ -1,39 +1,66 @@
 import { Detection } from "@Types/Detection";
 import styles from "./styles.module.css";
 
-//function normalizeDetection(
-//  detection: Detection,
-//  width: number,
-//  height: number
-//): Detection {
-//  const norm_points = detection.Box.points.map((coords) => [
-//    coords[0] / width,
-//    coords[0] / height,
-//  ]);
-//  return {
-//    ...detection,
-//    Box: {
-//      points: norm_points,
-//    },
-//  };
-//}
+function normalizeDetection(
+  detection: Detection,
+  width: number,
+  height: number,
+  video_width: number,
+  video_height: number
+): Detection {
+  const norm_points = detection.coordinates.map((coords) => ({
+    x: (coords.x / video_width) * width,
+    y: (coords.y / video_height) * height,
+  }));
+  return {
+    ...detection,
+    coordinates: norm_points,
+  };
+}
 
 interface IDetectionBoxes {
   detections: Detection[];
+  width: number;
+  height: number;
+  currentTimestamp: number;
+  video_width: number;
+  video_height: number;
 }
 
-export default function DetectionBoxes({ detections }: IDetectionBoxes) {
-  return detections.map((detection, index) => (
-    <div
-      key={index}
-      className={styles.detectionBox}
-      style={{
-        left: `${detection.Box.points[0][0]}px`,
-        top: `${detection.Box.points[0][1]}px`,
-        width: `${detection.Box.points[1][0] - detection.Box.points[0][0]}px`,
-        height: `${detection.Box.points[1][1] - detection.Box.points[0][1]}px`,
-        borderColor: "red",
-      }}
-    ></div>
-  ));
+export default function DetectionBoxes({
+  detections,
+  width,
+  height,
+  currentTimestamp,
+  video_width,
+  video_height,
+}: IDetectionBoxes) {
+  if (!detections) {
+    return;
+  }
+
+  const DT = 200;
+
+  const normalizedDetections = detections.map((detection) =>
+    normalizeDetection(detection, width, height, video_width, video_height)
+  );
+
+  return normalizedDetections.map((detection, index) => {
+    if (Math.abs(detection.timestamp - currentTimestamp * 1000) < DT) {
+      console.log("Close enough!");
+      return (
+        <div
+          key={index}
+          className={styles.detectionBox}
+          style={{
+            left: `${detection.coordinates[0].x}px`,
+            top: `${detection.coordinates[0].y}px`,
+            width: `${detection.coordinates[1].x - detection.coordinates[0].x}px`,
+            height: `${detection.coordinates[1].y - detection.coordinates[0].y}px`,
+            borderColor: "red",
+          }}
+        ></div>
+      );
+    }
+  });
 }

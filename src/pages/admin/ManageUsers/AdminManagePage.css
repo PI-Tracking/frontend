@@ -13,6 +13,7 @@
 }
 
 .admin-table {
+  margin-top: 40px;
   width: 100%;
   border-collapse: collapse;
 }
@@ -28,6 +29,12 @@
   justify-content: flex-start;
   gap: 15px;
   padding: 15px;
+  /*width: 500px;*/
+}
+
+.admin-user span {
+  /*Width of 7 characters '[Admin]'*/
+  width: 7ch;
 }
 
 .admin-icon {
@@ -83,7 +90,7 @@
   border: none;
   cursor: pointer;
   margin-top: 20px;
-  position: absolute;
+  position: relative;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
@@ -94,7 +101,6 @@
 }
 
 .add-user-form {
-  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -132,7 +138,7 @@
 
 .modal-content {
   background-color: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 8px;
   width: 400px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

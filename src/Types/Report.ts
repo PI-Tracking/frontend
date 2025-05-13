@@ -1,7 +1,18 @@
 import { VideoAnalysis } from "@Types/VideoAnalysis";
+import { UUID } from "./Base";
+import { User } from "./User.ts";
 
+/**
+ * id: UUID;
+ * name: string;
+ * creator: User;
+ * uploads: VideoAnalysis[];
+ * createdAt: Date; // datetime
+ */
 export interface Report {
-  id: number;
-  reportAnalysis: VideoAnalysis[];
+  id: UUID;
+  name: string;
+  creator: User;
+  uploads: VideoAnalysis[];
+  createdAt: Date; // datetime
 }
-export { VideoAnalysis };

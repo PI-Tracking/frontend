@@ -1,17 +1,21 @@
-interface Polygon {
-  points: number[][];
-}
+type Point = {
+  x: number;
+  y: number;
+};
 
-enum DetectionType {
-  SUSPECT,
-  GUN,
-  HUMA,
-}
+/**
+ * timestamp: number;
+ * class_name: DetectionType;
+ * confidence: number;
+ * coordinates: Point[];
+ * type: DetectionType;
+ */
 
 interface Detection {
-  Box: Polygon;
-  type: DetectionType;
+  timestamp: number;
+  class_name: string;
+  confidence: number;
+  coordinates: Point[];
 }
 
-export { DetectionType };
-export type { Polygon, Detection };
+export type { Detection };
