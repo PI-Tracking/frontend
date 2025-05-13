@@ -4,6 +4,7 @@ import ProgressBar from "./components/ProgressBar";
 import DetectionsBoxes from "./components/DetectionsBoxes";
 import styles from "./styles.module.css";
 import useReportStore from "@hooks/useReportStore";
+import SegmentationBoxes from "./components/SegmentationBoxes";
 
 interface IVideoPlayer {
   videoAnalysis: VideoAnalysis;
@@ -23,6 +24,7 @@ function VideoPlayer({
 
   const video = videoAnalysis?.video;
   const detections = videoAnalysis?.detections;
+  const segmentations = videoAnalysis?.segmentations;
   const { setCurrentTime } = useReportStore();
 
   // Set timestamp of video to the current video
@@ -75,6 +77,14 @@ function VideoPlayer({
 
         <DetectionsBoxes
           detections={detections}
+          width={videoRef.current?.clientWidth ?? 0}
+          height={videoRef.current?.clientHeight ?? 0}
+          currentTimestamp={videoRef.current?.currentTime || 0}
+          video_width={videoRef.current?.videoWidth ?? 0}
+          video_height={videoRef.current?.videoHeight ?? 0}
+        />
+        <SegmentationBoxes
+          segmentations={segmentations}
           width={videoRef.current?.clientWidth ?? 0}
           height={videoRef.current?.clientHeight ?? 0}
           currentTimestamp={videoRef.current?.currentTime || 0}

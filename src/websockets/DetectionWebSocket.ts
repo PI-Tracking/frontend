@@ -1,4 +1,8 @@
-import { DetectionResult, ResultsRequest } from "@Types/WebSocketTypes";
+import {
+  DetectionResult,
+  ResultsRequest,
+  SegmentationResult,
+} from "@Types/WebSocketTypes";
 
 // websocket service
 // handles the connection to the websocket
@@ -10,6 +14,7 @@ import { DetectionResult, ResultsRequest } from "@Types/WebSocketTypes";
 
 type MessageHandler = (
   detections: DetectionResult[],
+  segmentations: SegmentationResult[],
   analysisId: string
 ) => void;
 
@@ -38,7 +43,7 @@ class DetectionWebSocket {
 
         this.messageHandlers.forEach((handler) => {
           console.log("Passed to handler");
-          handler(data.detections, data.analysis_id);
+          handler(data.detections, data.segmentations, data.analysis_id);
         });
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);

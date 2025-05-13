@@ -3,6 +3,7 @@ import detectionWebSocket from "../websockets/DetectionWebSocket";
 import useReportStore from "@hooks/useReportStore";
 import { UUID } from "@Types/Base";
 import { Detection } from "@Types/Detection";
+import { Segmentation } from "@Types/Segmentation";
 
 // hook da websocket de detecção
 // interface to use the websocket service
@@ -16,7 +17,7 @@ interface UseDetectionWebSocketResult {
 }
 
 export function useDetectionWebSocket(): UseDetectionWebSocketResult {
-  const { setDetections } = useReportStore();
+  const { setDetections, setSegmentation } = useReportStore();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [analysing, setAnalysing] = useState<boolean>(true);
   const [currentAnalysisId, setCurrentAnalysisId] = useState<UUID>("");
@@ -43,7 +44,7 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
 
   useEffect(() => {
     const unsubscribe = detectionWebSocket.onMessage(
-      (newDetections, analysis_id) => {
+      (newDetections, newSegmentation, analysis_id) => {
         console.log("New detections:", newDetections);
         const groupedDetections = newDetections.reduce(
           (acc: { [key: string]: Detection[] }, detection: Detection) => {
@@ -56,9 +57,29 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
           },
           {}
         );
+        const groupedSegmentation = newSegmentation.reduce(
+          (
+            acc: { [key: string]: Segmentation[] },
+            segmentation: Segmentation
+          ) => {
+            const { video_id } = segmentation;
+            if (!acc[video_id]) {
+              acc[video_id] = [];
+            }
+            acc[video_id].push(segmentation);
+            return acc;
+          },
+          {}
+        );
         for (const video_id in groupedDetections) {
           const videoDetections = groupedDetections[video_id];
+          const videoSegmentation = groupedSegmentation[video_id];
           setDetections(video_id, analysis_id, videoDetections as Detection[]);
+          setSegmentation(
+            video_id,
+            analysis_id,
+            videoSegmentation as Segmentation[]
+          );
         }
         setAnalysing(false);
       }
