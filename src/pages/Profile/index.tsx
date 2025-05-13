@@ -1,21 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@components/Navbar";
 import "./Profile.css";
-
-interface UserProfile {
-  username: string;
-  email: string;
-  role: string;
-  lastLogin: string;
-}
+import { getUser } from "@api/users";
+import { User } from "@Types/User";
 
 function ProfilePage() {
-  const [profile] = useState<UserProfile>({
-    username: "John Doe",
-    email: "john.doe@example.com",
-    role: "User",
-    lastLogin: "2024-03-18 14:30",
-  });
+  const [profile, setProfile] = useState<User | null>(null);
+  const [activeTime, setActiveTime] = useState(0);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await getUser("user-badge-id"); // Replace with actual badge ID
+        if (response.status === 200) {
+          setProfile(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveTime((prevTime) => prevTime + 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  if (!profile) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="profile-container">
@@ -35,11 +53,13 @@ function ProfilePage() {
             </div>
             <div className="info-item">
               <span className="label">Role:</span>
-              <span className="value">{profile.role}</span>
+              <span className="value">{profile.admin ? "Admin" : "User"}</span>
             </div>
             <div className="info-item">
-              <span className="label">Last Login:</span>
-              <span className="value">{profile.lastLogin}</span>
+              <span className="label">Active Time:</span>
+              <span className="value">
+                {Math.floor(activeTime / 60)} minutes
+              </span>
             </div>
           </div>
         </div>
