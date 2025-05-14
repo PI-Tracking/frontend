@@ -68,6 +68,9 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 .report-card {
@@ -76,7 +79,10 @@
   padding: 15px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
+  text-align: left;
+  flex-direction: column;
+  width: 100%;
 }
 
 .report-info {
@@ -102,33 +108,54 @@
   font-weight: medium;
 }
 
-.report-reviewers {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.reviewer-label {
-  font-size: 14px;
-  color: #aaa;
-  margin-bottom: 5px;
-}
-
-.reviewer-avatars {
-  display: flex;
-  gap: 5px;
-}
-
-.reviewer-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-}
-
 .menu-options {
   margin-top: auto;
+}
+.report-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #ffffff;
+}
+
+.report-creator {
+  font-size: 0.95rem;
+  color: #ffffff;
+  margin-bottom: 0.15rem;
+}
+
+.report-date {
+  font-size: 0.95rem;
+  color: #ffffff;
+  margin-bottom: 0.15rem;
+}
+
+.uploads-size {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  margin-top: 0.25rem;
+}
+
+.view-report-button {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background-color: #282828;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.view-report-button:hover {
+  background-color: #3b3b3b;
+}
+
+.view-report-button:active {
+  transform: scale(0.98);
 }

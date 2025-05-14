@@ -1,84 +1,124 @@
-import { useState } from "react";
 import CameraMenuOptions from "@components/CameraMenuOptions";
 import Navbar from "@components/Navbar";
 import "./ReportsPage.css";
+import useReport from "@hooks/useReportStore";
+import { useNavigate } from "react-router-dom";
+import { Report } from "@Types/Report";
+import { useState, useEffect } from "react";
+import { getAllReports, getReport } from "@api/report";
+import { ReportResponseDTO } from "@Types/ReportResponseDTO";
+
+//To surpass error of reportData being ApiError or ReportResponseDTO
+function isReportResponseDTO(data: unknown): data is ReportResponseDTO {
+  if (!data || typeof data !== "object") return false;
+
+  const report = data as Record<string, unknown>;
+
+  return (
+    typeof report.id === "string" &&
+    typeof report.name === "string" &&
+    Array.isArray(report.uploads)
+  );
+}
 
 function ReportsPage() {
-  const [activeTab, setActiveTab] = useState("weapon");
+  const { setReport } = useReport();
+  const navigate = useNavigate();
+  const [reports, setReports] = useState<ReportResponseDTO[]>([]);
 
-  const weaponReports = [
-    {
-      id: 132,
-      location: "Rua do Mac",
-      reviewers: [
-        { id: 1, initial: "A", color: "grey" },
-        { id: 2, initial: "A", color: "grey" },
-      ],
-    },
-    {
-      id: 133,
-      location: "Rua do Mac",
-      reviewers: [
-        { id: 1, initial: "A", color: "grey" },
-        { id: 2, initial: "A", color: "grey" },
-      ],
-    },
-  ];
+  const selectReport = (report: ReportResponseDTO) => {
+    if (!report) return;
+    console.log("Selected report ID:", report.id);
+    //Transform the report to match the Report type
+    const transformedReport: Report = {
+      id: report.id,
+      name: report.name,
+      creator: {
+        badgeId: "",
+        username: "",
+        email: "",
+        active: false,
+        reports: [],
+        admin: false,
+        credentialsNonExpired: false,
+        accountNonExpired: false,
+        accountNonLocked: false,
+        authorities: [],
+        enabled: false,
+      },
+      createdAt: new Date(),
+      uploads: [],
+    };
+    setReport(transformedReport);
+    navigate(`/map-tracking`);
+  };
+
+  useEffect(() => {
+    const fectchReports = async () => {
+      // Fetch reports from the API
+      setReports([]);
+      const response = await getAllReports();
+      console.log("Reports response:", response);
+      if (response.status === 200) {
+        if (Array.isArray(response.data)) {
+          for (const report of response.data) {
+            // Call getReport for each report
+            const reportResponse = await getReport(report.id);
+            console.log("Report response:", reportResponse);
+            if (reportResponse.status === 200) {
+              const reportData = reportResponse.data;
+              if (reportData && isReportResponseDTO(reportData)) {
+                setReports((prevReports) => [...prevReports, reportData]);
+              } else {
+                console.error("No data found for report:", report.id);
+              }
+            } else {
+              console.error(
+                "Failed to fetch report details:",
+                reportResponse.data
+              );
+            }
+          }
+        } else {
+          console.error("Unexpected response data format:", response.data);
+        }
+      } else {
+        console.error("Failed to fetch reports:", response.data);
+      }
+    };
+    if (reports.length === 0) {
+      // Fetch reports only if the reports array is empty
+      fectchReports();
+    }
+  }, [reports.length]);
+
+  useEffect(() => {
+    console.log("Fetched reports:", reports);
+  }, [reports]);
 
   return (
     <div className="container">
       <Navbar />
       <section className="reports-section">
         <h1 className="reports-title">Reports</h1>
-
-        <div className="tabs">
-          <button
-            className={`tab ${activeTab === "weapon" ? "active" : ""}`}
-            onClick={() => setActiveTab("weapon")}
-          >
-            Weapon Detections
-          </button>
-          <button
-            className={`tab ${activeTab === "other" ? "active" : ""}`}
-            onClick={() => setActiveTab("other")}
-          >
-            Other reports
-          </button>
-        </div>
-
         <div className="reports-content">
-          {activeTab === "weapon" && (
-            <div className="reports-list">
-              {weaponReports.map((report) => (
-                <div key={report.id} className="report-card">
-                  <div className="report-info">
-                    <div className="report-id">{report.id}</div>
-                    <div className="report-location">{report.location}</div>
-                  </div>
-                  <div className="report-reviewers">
-                    <div className="reviewer-label">Reviewed by</div>
-                    <div className="reviewer-avatars">
-                      {report.reviewers.map((reviewer) => (
-                        <div
-                          key={reviewer.id}
-                          className="reviewer-avatar"
-                          style={{ backgroundColor: reviewer.color }}
-                        >
-                          {reviewer.initial}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {activeTab === "other" && (
-            <div className="reports-list">
-              <p>Other repotrs will be displayed here</p>
-            </div>
-          )}
+          <div className="reports-list">
+            {reports.map((report) => (
+              <div key={report.id} className="report-card">
+                <h2 className="report-name">{report.id}</h2>
+                <p className="report-date">Created at: {report.name}</p>
+                <p className="report-uploads">
+                  Uploads: {report.uploads.length}
+                </p>
+                <button
+                  className="view-report-button"
+                  onClick={() => selectReport(report)}
+                >
+                  View Movements
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -142,11 +142,11 @@ function MapTrackingPage() {
                       <br />
                       <strong>Time Interval:</strong>
                       <br />
-                      {new Date(detection.initialTimestamp).toLocaleString()}
+                      {String(detection.initialTimestamp)}
                       <br />
                       to
                       <br />
-                      {new Date(detection.finalTimestamp).toLocaleString()}
+                      {String(detection.finalTimestamp)}
                     </div>
                   </Popup>
                 </Marker>
