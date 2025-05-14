@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@components/Navbar";
 import "./Profile.css";
-
-interface UserProfile {
-  username: string;
-  email: string;
-  role: string;
-  lastLogin: string;
-}
+import { useAuth } from "@hooks/useAuth";
 
 function ProfilePage() {
-  const [profile] = useState<UserProfile>({
-    username: "John Doe",
-    email: "john.doe@example.com",
-    role: "User",
-    lastLogin: "2024-03-18 14:30",
-  });
+  const [activeTime, setActiveTime] = useState(0);
+  const auth = useAuth();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveTime((prevTime) => prevTime + 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  if (!auth.user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="profile-container">
@@ -24,22 +26,26 @@ function ProfilePage() {
         <div className="profile-card">
           <div className="profile-header">
             <div className="profile-avatar">
-              {profile.username.charAt(0).toUpperCase()}
+              {auth.user.username.charAt(0).toUpperCase()}
             </div>
-            <h2>{profile.username}</h2>
+            <h2>{auth.user.username}</h2>
           </div>
           <div className="profile-info">
             <div className="info-item">
               <span className="label">Email:</span>
-              <span className="value">{profile.email}</span>
+              <span className="value">{auth.user.email}</span>
             </div>
             <div className="info-item">
               <span className="label">Role:</span>
-              <span className="value">{profile.role}</span>
+              <span className="value">
+                {auth.user.admin ? "Admin" : "User"}
+              </span>
             </div>
             <div className="info-item">
-              <span className="label">Last Login:</span>
-              <span className="value">{profile.lastLogin}</span>
+              <span className="label">Active Time:</span>
+              <span className="value">
+                {Math.floor(activeTime / 60)} minutes
+              </span>
             </div>
           </div>
         </div>

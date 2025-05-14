@@ -14,8 +14,9 @@
 }
 
 .profile-card {
-  background-color: #414141;
-  opacity: 0.69;
+  background-color: #414141a1;
+  /*background-color: #414141;*/
+  /*opacity: 0.69;*/
   border-radius: 10px;
   padding: 2rem;
   width: 100%;
@@ -64,7 +65,7 @@
 }
 
 .label {
-  color: #bbb;
+  color: #ffffff;
   font-weight: 500;
 }
 
