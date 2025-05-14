@@ -1,6 +1,7 @@
 import { useState, useEffect, ReactNode } from "react";
 
 import {
+  getCurrentUser,
   login as LoginAPI,
   logout as LogoutAPI,
   resetPassword as ResetAPI,
@@ -22,11 +23,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check if user is logged in on first render
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
+    const fetchUser = async () => {
+      const response = await getCurrentUser();
+      // Invalid token
+      if (response.status !== 200) {
+        logout();
+      }
+
+      setUser(response.data);
+      setLoading(false);
+    };
+
+    fetchUser();
   }, []);
 
   const login = async (user: LoginDTO): Promise<ILogin> => {
@@ -36,7 +44,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: (response.data as ApiError).message };
       }
 
-      localStorage.setItem("user", JSON.stringify(response.data));
       setUser(response.data as User);
       const userData = response.data as User;
       return { success: true, error: "", admin: userData.admin } as ILogin;
@@ -58,10 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    const response = await LogoutAPI(); // BE autoclears cookies
-    if (response.status === 200) {
-      localStorage.removeItem("user");
-    }
+    await LogoutAPI(); // BE autoclears cookies
   };
 
   const resetPassword = async (
@@ -73,7 +77,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: "", error: (response.data as ApiError).message };
       }
 
-      localStorage.setItem("user", JSON.stringify(response.data));
       return { success: response.data, error: "" } as IResetPassword;
     } catch (error) {
       if (error instanceof AxiosError) {
