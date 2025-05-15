@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json ./
  
 # Install dependencies
-RUN npm install --force --loglevel verbose
+RUN npm install
  
 # Copy the rest of your application files
 COPY . .

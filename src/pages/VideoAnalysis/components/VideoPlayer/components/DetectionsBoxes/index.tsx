@@ -47,7 +47,6 @@ export default function DetectionBoxes({
 
   return normalizedDetections.map((detection, index) => {
     if (Math.abs(detection.timestamp - currentTimestamp * 1000) < DT) {
-      console.log("Close enough!");
       return (
         <div
           key={index}

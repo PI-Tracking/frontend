@@ -45,6 +45,8 @@ function RequireAuth({ admin }: { admin: boolean }) {
   return <Outlet />;
 }
 
+import ProfilePage from "@pages/Profile";
+
 function App() {
   return (
     <AuthProvider>
@@ -53,6 +55,8 @@ function App() {
           {/* GENERALLY ACCESSIBLE PAGES */}
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+          
 
           {/* USERS PAGES */}
           <Route element={<RequireAuth admin={false} />}>

@@ -25,20 +25,19 @@ async function requestNewAnalysis(
   return apiClient.get(endpoint);
 }
 
+/**
+ * POST /analysis/{reportId}
+ * Return:
+ *    SUCCESS
+ *     { data: analysisId; status: OK }
+ *
+ *    FAILURE
+ *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
+ */
 async function requestReanalysis(
   reportId: UUID,
   selectedSuspect?: SelectedSuspectDTO
 ): Promise<AxiosResponse<{ analysisId: string } | ApiError>> {
-  /**
-   * POST /analysis/{reportId}
-   * Return:
-   *    SUCCESS
-   *     { data: string[]; status: OK }
-   *     string[] is an array of UUID of the new analysis (idk why its a fkn list)
-   *
-   *    FAILURE
-   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
-   */
   const endpoint = `${baseEndpoint}/${reportId}`;
   return apiClient.post(endpoint, selectedSuspect);
 }

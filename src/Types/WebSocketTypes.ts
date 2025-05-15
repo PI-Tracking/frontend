@@ -15,6 +15,7 @@ export interface DetectionResult {
 }
 
 export interface SegmentationResult {
+  id: number;
   video_id: string;
   timestamp: number;
   polygon: number[][];
