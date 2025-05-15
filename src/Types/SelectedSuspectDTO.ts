@@ -1,6 +1,6 @@
 export default interface SelectedSuspectDTO {
   videoId: string;
-  frame: number; // timestamp
+  timestamp: number;
   //coordinates
   x: number;
   y: number;
