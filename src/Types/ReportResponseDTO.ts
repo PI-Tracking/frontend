@@ -1,4 +1,5 @@
 import { UUID } from "./Base";
+import { User } from "./User";
 
 export interface UploadData {
   id: UUID;
@@ -10,4 +11,5 @@ export interface ReportResponseDTO {
   id: UUID;
   name: string;
   uploads: UploadData[];
+  creator: User;
 }

@@ -83,6 +83,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
             video: URL.createObjectURL(video.file),
             currentTimestamp: 0,
             detections: [],
+            segmentations: [],
           } as VideoAnalysis;
         }),
       };

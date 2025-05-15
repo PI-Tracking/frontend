@@ -107,6 +107,9 @@ function ReportsPage() {
               <div key={report.id} className="report-card">
                 <h2 className="report-name">{report.id}</h2>
                 <p className="report-date">Created at: {report.name}</p>
+                <p className="report-creator">
+                  Creator: {report.creator.badgeId}
+                </p>
                 <p className="report-uploads">
                   Uploads: {report.uploads.length}
                 </p>
