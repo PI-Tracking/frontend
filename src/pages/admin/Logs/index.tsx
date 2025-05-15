@@ -37,7 +37,6 @@ function AdminLogs() {
         console.error("Error fetching users:", error);
       }
     }
-
     fetchData();
     fetchUsers();
   }, []);
@@ -66,13 +65,12 @@ function AdminLogs() {
 
         <select onChange={(e) => setSelectedFilter(e.target.value)} value={selectedFilter}>
           <option value="">Filter by Type</option>
-          <option value="live_follow">Followed (Live)</option>
-          <option value="video_follow">Followed (Video)</option>
-          <option value="video_upload">Uploaded Video</option>
-          <option value="weapon_detection">Weapon Detection</option>
-          <option value="session_start">User Logged In</option>
-          <option value="session_end">User Logged Out</option>
-          <option value="camera_added">Camera Added</option>
+          <option value="Select_Suspect">Select Suspect</option>
+          <option value="Access_logs">Access Logs</option>
+          <option value="Start_detection">Analysis</option>
+          <option value="Upload_video">Video Upload</option>
+          <option value="Login">Login</option>
+          <option value="Logout">Logout</option>
         </select>
       </div>
 
