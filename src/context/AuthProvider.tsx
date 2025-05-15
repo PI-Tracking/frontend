@@ -21,22 +21,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Check if user is logged in on first render
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await getCurrentUser();
-      // Invalid token
-      if (response.status !== 200) {
-        logout();
-      }
-
-      setUser(response.data);
-      setLoading(false);
-    };
-
-    fetchUser();
-  }, []);
-
   const login = async (user: LoginDTO): Promise<ILogin> => {
     try {
       const response = await LoginAPI(user);
@@ -99,6 +83,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAdmin = () => {
     return user ? user.admin : false;
   };
+
+  // Check if user is logged in on first render
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getCurrentUser();
+        setUser(response.data);
+      } catch (error) {
+        if (error instanceof AxiosError) setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const value: IAuthContext = {
     user: user,

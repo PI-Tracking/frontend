@@ -37,7 +37,7 @@ async function logout() {
 
 async function getCurrentUser(): Promise<AxiosResponse<User>> {
   const selfEndpoint = "/users/self";
-  return apiClient.get(selfEndpoint);
+  return await apiClient.get(selfEndpoint);
 }
 
 async function resetPassword(
