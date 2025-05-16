@@ -90,8 +90,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const response = await getCurrentUser();
         setUser(response.data);
+        setLoading(false);
       } catch (error) {
-        if (error instanceof AxiosError) setLoading(false);
+        setLoading(false);
+        if (error instanceof AxiosError) console.log(error);
       }
     };
     fetchUser();
