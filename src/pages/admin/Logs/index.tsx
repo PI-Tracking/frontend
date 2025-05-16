@@ -85,12 +85,20 @@ function AdminLogs() {
             </tr>
           </thead>
           <tbody>
-            {filteredLogs.map((log) => (
+            {filteredLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+            .map((log) => (
               <tr key={log.id}>
                 <td>{log.id}</td>
                 <td>{users.find((u) => u.userBadge === log.userBadge)?.userBadge || "Unknown"}</td>
                 <td>{log.action.replace("_", " ")}</td>
-                <td>{log.timestamp}</td>
+                <td>{new Date(log.timestamp).toLocaleString(undefined, {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false
+                })}</td>
               </tr>
             ))}
           </tbody>
