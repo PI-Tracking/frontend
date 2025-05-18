@@ -32,9 +32,6 @@ function ListCameras({ analysis, changeCamera }: IListCameras) {
             <div
               className={styles.cameraInfo}
               onClick={() => {
-                /* Open Accordion */
-              }}
-              onDoubleClick={() => {
                 changeCamera(camera.id);
               }}
             >
