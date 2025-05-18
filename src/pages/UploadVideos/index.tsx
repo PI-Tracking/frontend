@@ -7,6 +7,16 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { BsPinMap } from "react-icons/bs";
+import { toast } from "react-toastify";
+// import {
+//   Box,
+//   Button,
+//   Container,
+//   Typography,
+//   CircularProgress,
+// } from "@mui/material";
+// import { styled } from "@mui/material/styles";
+// import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 import SubmitFilesButton from "./components/SubmitFilesButton";
 import CameraMenuOptions from "@components/CameraMenuOptions";
@@ -18,6 +28,7 @@ import { CamerasVideo } from "@Types/CamerasVideo";
 
 import { getAllCameras } from "@api/camera";
 import { ApiError } from "@api/ApiError";
+import { validateFace, detectFaceInVideo } from "@api/faceDetection";
 
 import "./UploadVideosPage.css";
 
@@ -33,11 +44,15 @@ const COIMBRA: [number, number] = [40.202852, -8.410192];
 function UploadVideosPage() {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [videos, setVideos] = useState<CamerasVideo[]>([]);
+  const [referenceImage, setReferenceImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isProcessingFace, setIsProcessingFace] = useState(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [duplicateFile, setDuplicateFile] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const [showMap, setShowMap] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string>("");
@@ -161,6 +176,92 @@ function UploadVideosPage() {
     setDuplicateFile("");
   };
 
+  const handleReferenceImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // First create a preview
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+
+      try {
+        const response = await validateFace(file);
+        const data = response.data;
+
+        if ("hasFace" in data) {
+          if (data.hasFace) {
+            setReferenceImage(file);
+            toast.success(
+              `Face detected in the reference image (${data.faceCount} faces found)`
+            );
+          } else {
+            setReferenceImage(null);
+            setPreviewUrl(null);
+            toast.error(
+              "No face detected in the selected image. Please select an image containing a face."
+            );
+          }
+        } else {
+          setReferenceImage(null);
+          setPreviewUrl(null);
+          toast.error(data.message || "Error validating image");
+        }
+      } catch (error) {
+        setReferenceImage(null);
+        setPreviewUrl(null);
+        if (error instanceof AxiosError) {
+          const axiosError = error as AxiosError<ApiError>;
+          toast.error(
+            axiosError.response?.data.message || "Error validating image"
+          );
+        } else {
+          toast.error("Error validating image: " + (error as Error).message);
+        }
+      }
+    }
+  };
+
+  const handleFaceDetection = async (videoFile: File) => {
+    if (!referenceImage) {
+      toast.error("Please select a reference image first");
+      return;
+    }
+
+    setIsProcessingFace(true);
+    try {
+      const response = await detectFaceInVideo(referenceImage, videoFile);
+      const data = response.data;
+
+      if ("faceDetected" in data) {
+        if (data.faceDetected) {
+          toast.success("Face detected in the video!");
+        } else {
+          toast.warning("No matching face found in the video");
+        }
+      } else {
+        toast.error(data.message || "Error processing video");
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const axiosError = error as AxiosError<ApiError>;
+        toast.error(
+          axiosError.response?.data.message || "Error processing video"
+        );
+      } else {
+        toast.error("Error processing video: " + (error as Error).message);
+      }
+    } finally {
+      setIsProcessingFace(false);
+    }
+  };
+
+  const handleAddImageClick = () => {
+    if (imageInputRef.current) {
+      imageInputRef.current.click();
+    }
+  };
+
   return (
     <div className="container">
       <Navbar />
@@ -229,6 +330,54 @@ function UploadVideosPage() {
             </div>
           )}
           <SubmitFilesButton files={videos} setError={setErrorMessage} />
+
+          <div className="face-detection-section">
+            <h3>Face Detection</h3>
+            <div className="reference-image-container">
+              <button
+                className="upload-videos-button"
+                onClick={handleAddImageClick}
+              >
+                <AiOutlineFileAdd />
+                {referenceImage
+                  ? "Change Reference Image"
+                  : "Select Reference Image"}
+                <MdKeyboardArrowDown />
+              </button>
+              <input
+                type="file"
+                ref={imageInputRef}
+                onChange={handleReferenceImageChange}
+                accept="image/*"
+                style={{ display: "none" }}
+              />
+              {previewUrl && (
+                <div className="reference-image-preview">
+                  <img
+                    src={previewUrl}
+                    alt="Reference"
+                    style={{ maxWidth: "200px", maxHeight: "200px" }}
+                  />
+                </div>
+              )}
+            </div>
+            {videos.length > 0 && (
+              <div className="face-detect-buttons">
+                {videos.map((video) => (
+                  <button
+                    key={video.file.name}
+                    className="face-detect-button"
+                    onClick={() => handleFaceDetection(video.file)}
+                    disabled={isProcessingFace || !referenceImage}
+                  >
+                    {isProcessingFace
+                      ? "Processing..."
+                      : `Detect Face in ${video.file.name}`}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
       <div className="menu-options">

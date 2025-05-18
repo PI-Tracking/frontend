@@ -156,3 +156,65 @@
 .close-modal-button2:hover {
   background-color: #303030;
 }
+
+.face-detection-section {
+  background-color: #41414169;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  width: 90%;
+}
+
+.face-detection-section h3 {
+  margin: 0 0 1rem 0;
+  color: #fff;
+  text-align: center;
+}
+
+.reference-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.reference-image-preview {
+  border: 2px dashed #777;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background-color: #333;
+}
+
+.reference-image-preview img {
+  display: block;
+  border-radius: 4px;
+}
+
+.face-detect-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.face-detect-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.face-detect-button:hover {
+  background-color: #45a049;
+}
+
+.face-detect-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
