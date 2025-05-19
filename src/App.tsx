@@ -21,6 +21,7 @@ import LoginPage from "@pages/Login";
 
 /* User */
 import ReportsPage from "@pages/Reports";
+import ReportDetailPage from "@pages/ReportDetail";
 import UploadVideosPage from "@pages/UploadVideos";
 import VideoAnalysisPage from "@pages/VideoAnalysis";
 import CamerasPageMap from "@pages/Cameras2";
@@ -55,7 +56,7 @@ function App() {
           {/* GENERALLY ACCESSIBLE PAGES */}
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           
 
           {/* USERS PAGES */}
@@ -63,8 +64,8 @@ function App() {
             <Route path="/cameras" element={<CamerasPageMap />} />
             <Route path="/upload-videos" element={<UploadVideosPage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/reports/:reportId" element={<ReportDetailPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
             <Route path="/report/:id" element={<VideoAnalysisPage />} />
             <Route path="/map-tracking" element={<MapTrackingPage />} />
           </Route>

@@ -137,25 +137,39 @@
   margin-top: 0.25rem;
 }
 
-.view-report-button {
-  margin-top: 0.75rem;
+.report-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.view-report-button,
+.view-details-button {
   padding: 0.5rem 1rem;
-  background-color: #282828;
-  color: #fff;
   border: none;
   border-radius: 6px;
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.view-report-button:hover {
+.view-report-button {
+  background-color: #282828;
+  color: #fff;
+}
+
+.view-details-button {
   background-color: #3b3b3b;
+  color: #fff;
 }
 
-.view-report-button:active {
+.view-report-button:hover,
+.view-details-button:hover {
+  background-color: #4a4a4a;
+}
+
+.view-report-button:active,
+.view-details-button:active {
   transform: scale(0.98);
 }

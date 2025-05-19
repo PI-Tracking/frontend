@@ -8,6 +8,60 @@ import { useState, useEffect } from "react";
 import { getAllReports, getReport } from "@api/report";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
 
+// Mock data for testing
+const mockReports: ReportResponseDTO[] = [
+  {
+    id: "mock-report-1",
+    name: "Test Report 1",
+    creator: {
+      badgeId: "12345",
+      username: "testuser1",
+      email: "test1@example.com",
+      active: true,
+      reports: [],
+      admin: false,
+      credentialsNonExpired: true,
+      accountNonExpired: true,
+      accountNonLocked: true,
+      authorities: [],
+      enabled: true
+    },
+    uploads: [
+      {
+        id: "upload-1",
+        cameraId: "camera-1",
+        uploadUrl: "https://example.com/video1.mp4",
+        uploaded: true
+      }
+    ]
+  },
+  {
+    id: "mock-report-2",
+    name: "Test Report 2",
+    creator: {
+      badgeId: "67890",
+      username: "testuser2",
+      email: "test2@example.com",
+      active: true,
+      reports: [],
+      admin: false,
+      credentialsNonExpired: true,
+      accountNonExpired: true,
+      accountNonLocked: true,
+      authorities: [],
+      enabled: true
+    },
+    uploads: [
+      {
+        id: "upload-2",
+        cameraId: "camera-2",
+        uploadUrl: "https://example.com/image1.jpg",
+        uploaded: true
+      }
+    ]
+  }
+];
+
 //To surpass error of reportData being ApiError or ReportResponseDTO
 function isReportResponseDTO(data: unknown): data is ReportResponseDTO {
   if (!data || typeof data !== "object") return false;
@@ -25,6 +79,7 @@ function ReportsPage() {
   const { setReport } = useReport();
   const navigate = useNavigate();
   const [reports, setReports] = useState<ReportResponseDTO[]>([]);
+  const [useMockData, setUseMockData] = useState(true); // Toggle for mock data
 
   const selectReport = (report: ReportResponseDTO) => {
     if (!report) return;
@@ -53,8 +108,23 @@ function ReportsPage() {
     navigate(`/map-tracking`);
   };
 
+  const handleViewDetails = (report: ReportResponseDTO) => {
+    if (useMockData) {
+      // For mock data, use the mock-report-1 or mock-report-2 ID
+      navigate(`/reports/${report.id}`);
+    } else {
+      navigate(`/reports/${report.id}`);
+    }
+  };
+
   useEffect(() => {
-    const fectchReports = async () => {
+    const fetchReports = async () => {
+      if (useMockData) {
+        // Use mock data for testing
+        setReports(mockReports);
+        return;
+      }
+
       // Fetch reports from the API
       setReports([]);
       const response = await getAllReports();
@@ -89,11 +159,12 @@ function ReportsPage() {
         console.error("Failed to fetch reports:", response.data);
       }
     };
+
     if (reports.length === 0) {
       // Fetch reports only if the reports array is empty
-      fectchReports();
+      fetchReports();
     }
-  }, []);
+  }, [useMockData]); // Add useMockData to dependencies
 
   useEffect(() => {
     console.log("Fetched reports:", reports);
@@ -108,20 +179,28 @@ function ReportsPage() {
           <div className="reports-list">
             {reports.map((report) => (
               <div key={report.id} className="report-card">
-                <h2 className="report-name">{report.id}</h2>
-                <p className="report-date">Created at: {report.name}</p>
+                <h2 className="report-name">{report.name}</h2>
+                <p className="report-date">Created by: {report.creator.username}</p>
                 <p className="report-creator">
-                  Creator: {report.creator.badgeId}
+                  Badge ID: {report.creator.badgeId}
                 </p>
                 <p className="report-uploads">
                   Uploads: {report.uploads.length}
                 </p>
-                <button
-                  className="view-report-button"
-                  onClick={() => selectReport(report)}
-                >
-                  View Movements
-                </button>
+                <div className="report-actions">
+                  <button
+                    className="view-report-button"
+                    onClick={() => selectReport(report)}
+                  >
+                    View Movements
+                  </button>
+                  <button
+                    className="view-details-button"
+                    onClick={() => handleViewDetails(report)}
+                  >
+                    View Details
+                  </button>
+                </div>
               </div>
             ))}
           </div>
