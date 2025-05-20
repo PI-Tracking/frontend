@@ -1,70 +1,74 @@
-import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 
 /* Default page components */
 import Navbar from "@components/Navbar";
 import CameraMenuOptions from "@components/CameraMenuOptions";
-import noimg from "@assets/noimg.png";
 
 /* Page components */
 import ListDetections from "./components/ListDetections";
 import ListCameras from "./components/ListCameras";
 import Player from "./components/VideoPlayer";
-import { VideoAnalysis } from "@Types/VideoAnalysis";
+import useVideoAnalysis from "./hooks";
 
-import { UUID } from "@Types/Base";
-import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
-import { useParams } from "react-router-dom";
-import useReportStore from "@hooks/useReportStore";
-
-/* MOCK DATA */
-import mock_suspectimage from "./mock_data/suspect.png";
-
-type Image = string;
 function VideoAnalysisPage() {
-  const { id: paramReportId } = useParams();
-  const [suspectImg, setSuspectImg] = useState<Image>(noimg);
-  const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis>(
-    {} as VideoAnalysis
-  );
-  const websocket = useDetectionWebSocket();
-  const { report } = useReportStore();
-
-  console.log(report);
-  useEffect(() => {
-    websocket.connect(report.uploads[0].analysis_id);
-    setSelectedCamera(report.uploads[0]);
-    setSuspectImg(mock_suspectimage);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const changeCamera = function (cameraId: UUID) {
-    const videoAnalysis: VideoAnalysis = report.uploads.find(
-      (analysis) => analysis.camera.id === cameraId
-    )!;
-
-    setSelectedCamera(videoAnalysis);
-  };
-
-  useEffect(() => {
-    if (!websocket.analysing) {
-      changeCamera(selectedCamera.camera.id);
-    }
-  }, [websocket.analysing]); //eslint-disable-line react-hooks/exhaustive-deps
+  const {
+    // data
+    paramReportId,
+    report,
+    selectedCamera,
+    suspectImg,
+    websocket,
+    extractingSuspect,
+    isLoading,
+    // functions
+    changeCamera,
+    activateExtractSuspect,
+    requestNewReanalysis,
+  } = useVideoAnalysis();
 
   if (!paramReportId) {
     return (
       <div className={styles.content}>
         <Navbar />
-        <h1>No report id given!</h1>;
+        <main className={styles.main}>
+          <h1>Invalid reportId!</h1>;
+        </main>
+      </div>
+    );
+  }
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className={styles.content}>
+        <Navbar />
+        <main className={styles.main}>
+          <h1>Loading video analysis data...</h1>
+        </main>
       </div>
     );
   }
 
-  if (report.id !== paramReportId) {
+  // Handle case where no camera is selected yet
+  if (!selectedCamera) {
     return (
       <div className={styles.content}>
         <Navbar />
-        <h1>Report id does not match upload id received!</h1>;
+        <main className={styles.main}>
+          <h1>No camera data available</h1>
+          {report && report.uploads && report.uploads.length > 0 ? (
+            <div className={styles.column}>
+              <div className={styles.box} style={{ minWidth: "250px" }}>
+                <h3 className={styles.boxTitle}>Available Cameras</h3>
+                <ListCameras
+                  analysis={report.uploads}
+                  changeCamera={changeCamera}
+                />
+              </div>
+            </div>
+          ) : (
+            <p>No camera uploads found in this report.</p>
+          )}
+        </main>
       </div>
     );
   }
@@ -74,24 +78,46 @@ function VideoAnalysisPage() {
       <Navbar />
       <main className={styles.main}>
         <div className={styles.column}>
-          <div className={styles.box}>
+          <div className={styles.box + " " + styles.padding}>
             <h3 className={styles.boxTitle}>Selected Suspect</h3>
-            <img src={suspectImg} className={styles.suspectImage} />
+            {suspectImg && (
+              <img src={suspectImg} className={styles.suspectImage} />
+            )}
+            <button
+              className={styles.actionButton}
+              onClick={activateExtractSuspect}
+            >
+              Track new suspect
+            </button>
           </div>
 
           <div className={styles.box}>
             <h3 className={styles.boxTitle}>Detections</h3>
-            <ListDetections detections={selectedCamera.detections} />
+            <ListDetections detections={selectedCamera?.detections} />
           </div>
         </div>
 
         <div className={styles.player}>
           {websocket.analysing ? (
-            <h1 style={{ color: "white" }}>Video is being analysed...</h1>
+            <h1 style={{ color: "white", textAlign: "center" }}>
+              Video is being analysed...
+            </h1>
           ) : (
             <></>
           )}
-          <Player videoAnalysis={selectedCamera} controls={true} />
+          {extractingSuspect ? (
+            <h1 style={{ color: "white", textAlign: "center" }}>
+              Select on the suspect to request analysis
+            </h1>
+          ) : (
+            <></>
+          )}
+          <Player
+            videoAnalysis={selectedCamera}
+            controls={true}
+            extractingSuspect={extractingSuspect}
+            requestNewReanalysis={requestNewReanalysis}
+          />
         </div>
 
         <div className={styles.column}>

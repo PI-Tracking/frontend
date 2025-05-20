@@ -9,10 +9,10 @@
 
 .content {
   width: 100%;
-  height: 100vh;
-  background-color: #282828;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  background-color: #282828;
   gap: 10px;
 }
 
@@ -47,4 +47,32 @@
 .suspectImage {
   margin: 0px 10px 5px 10px;
   width: 100%;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 4px;
+
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+
+  font-size: 1.2rem;
+  background-color: rgba(0, 34, 255, 0.75);
+  color: white;
+  cursor: pointer;
+}
+
+.actionButton:hover {
+  background-color: rgba(0, 34, 255, 0.8);
+  transform: translateY(-1px);
+}
+
+.padding {
+  padding: 7px;
 }

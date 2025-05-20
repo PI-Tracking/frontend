@@ -1,6 +1,7 @@
 import { UUID } from "@Types/Base";
 import { Detection } from "@Types/Detection";
 import { Report } from "@Types/Report";
+import { Segmentation } from "@Types/Segmentation";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { create } from "zustand";
 
@@ -19,6 +20,12 @@ interface ReportStore {
     video_id: UUID,
     analysis_id: UUID,
     newDetections: Detection[]
+  ) => void;
+
+  setSegmentation: (
+    video_id: UUID,
+    analysis_id: UUID,
+    newSegmentation: Segmentation[]
   ) => void;
 
   setCurrentTime: (videoId: UUID, newDetectionTime: number) => void;
@@ -133,6 +140,36 @@ const useReportStore = create<ReportStore>((set) => ({
           return {
             ...analysis,
             detections: newDetections,
+          };
+        }
+      );
+
+      return {
+        report: {
+          ...state.report,
+          uploads: newAnalysis,
+        },
+      };
+    });
+  },
+
+  setSegmentation: (
+    video_id: UUID,
+    analysis_id: UUID,
+    newSegmentation: Segmentation[]
+  ) => {
+    set((state) => {
+      const newAnalysis: VideoAnalysis[] = state.report.uploads.map(
+        (analysis) => {
+          if (
+            analysis.video_id !== video_id ||
+            analysis.analysis_id !== analysis_id
+          ) {
+            return analysis;
+          }
+          return {
+            ...analysis,
+            segmentations: newSegmentation,
           };
         }
       );

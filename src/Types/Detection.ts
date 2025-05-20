@@ -16,6 +16,7 @@ interface Detection {
   class_name: string;
   confidence: number;
   coordinates: Point[];
+  video_id: string;
 }
 
 export type { Detection };

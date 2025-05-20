@@ -105,8 +105,10 @@ export default function ProgressBar({
           }}
         >
           <div className={styles.progressBarBubble}></div>
-          {detections
-            ? detections.map((detection) => (detection ? <></> : <></>))
+          {detections !== null && detections !== undefined && detections.length
+            ? detections.map((detection) => (
+                <div key={detection.timestamp}></div>
+              ))
             : null}
         </div>
       </div>

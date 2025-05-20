@@ -24,6 +24,11 @@ function MapTrackingPage() {
     40.202852, -8.410192,
   ]);
 
+  const formatTime = (timestamp: number): string => {
+    const date = new Date(timestamp);
+    return date.toISOString().substr(11, 8);
+  };
+
   const coordinates = useMemo(() => {
     return realDetections
       .map((detection) => {
@@ -142,11 +147,11 @@ function MapTrackingPage() {
                       <br />
                       <strong>Time Interval:</strong>
                       <br />
-                      {String(detection.initialTimestamp)}
+                      {formatTime(detection.initialTimestamp)}
                       <br />
                       to
                       <br />
-                      {String(detection.finalTimestamp)}
+                      {formatTime(detection.finalTimestamp)}
                     </div>
                   </Popup>
                 </Marker>
