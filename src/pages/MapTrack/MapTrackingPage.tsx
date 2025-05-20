@@ -72,19 +72,6 @@ function MapTrackingPage() {
           const detections = response.data as CameraTimeIntervalDTO[];
           setRealDetections(detections);
           console.log("Detections response:", detections);
-          const firstDetection = detections[0];
-
-          if (firstDetection) {
-            const lat = cameras.find(
-              (camera) => camera.id === firstDetection.cameraId
-            )?.latitude;
-            const lng = cameras.find(
-              (camera) => camera.id === firstDetection.cameraId
-            )?.longitude;
-            if (lat && lng) {
-              setCenter([lat, lng]);
-            }
-          }
         } else {
           console.error("Invalid response format:", analysis);
         }
@@ -96,6 +83,23 @@ function MapTrackingPage() {
     fetchCameras();
     fetchDetections();
   }, [report]);
+
+  useEffect(() => {
+    if (realDetections.length > 0 && cameras.length > 0) {
+      const firstDetection = realDetections[0];
+      const firstCamera = cameras.find(
+        (camera) => camera.id === firstDetection.cameraId
+      );
+
+      if (firstCamera) {
+        setCenter([firstCamera.latitude, firstCamera.longitude]);
+        console.log("Center set to first detection:", [
+          firstCamera.latitude,
+          firstCamera.longitude,
+        ]);
+      }
+    }
+  }, [realDetections, cameras]);
 
   return (
     <div className="container">
