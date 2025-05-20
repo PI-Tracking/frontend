@@ -1,7 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import CameraMenuOptions from "@components/CameraMenuOptions";
 import Navbar from "@components/Navbar";
-import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Polyline,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
 import useReportStore from "@hooks/useReportStore";
 import "./MapTrackingPage.css";
@@ -101,6 +107,18 @@ function MapTrackingPage() {
     }
   }, [realDetections, cameras]);
 
+  function MapCenterUpdate({ center }: { center: [number, number] }) {
+    const map = useMap();
+
+    useEffect(() => {
+      if (center) {
+        map.setView(center);
+      }
+    }, [center, map]);
+
+    return null;
+  }
+
   return (
     <div className="container">
       <Navbar />
@@ -115,6 +133,7 @@ function MapTrackingPage() {
             zoom={13}
             style={{ height: "500px", width: "100%" }}
           >
+            <MapCenterUpdate center={center} />
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; OpenStreetMap contributors"
