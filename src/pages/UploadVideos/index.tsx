@@ -184,41 +184,7 @@ function UploadVideosPage() {
       // First create a preview
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
-
-      try {
-        const response = await validateFace(file);
-        const data = response.data;
-
-        if ("hasFace" in data) {
-          if (data.hasFace) {
-            setReferenceImage(file);
-            toast.success(
-              `Face detected in the reference image (${data.faceCount} faces found)`
-            );
-          } else {
-            setReferenceImage(null);
-            setPreviewUrl(null);
-            toast.error(
-              "No face detected in the selected image. Please select an image containing a face."
-            );
-          }
-        } else {
-          setReferenceImage(null);
-          setPreviewUrl(null);
-          toast.error(data.message || "Error validating image");
-        }
-      } catch (error) {
-        setReferenceImage(null);
-        setPreviewUrl(null);
-        if (error instanceof AxiosError) {
-          const axiosError = error as AxiosError<ApiError>;
-          toast.error(
-            axiosError.response?.data.message || "Error validating image"
-          );
-        } else {
-          toast.error("Error validating image: " + (error as Error).message);
-        }
-      }
+      setReferenceImage(file);
     }
   };
 
@@ -362,7 +328,7 @@ function UploadVideosPage() {
               )}
             </div>
             {videos.length > 0 && (
-              <div className="face-detect-buttons">
+                  <div className="face-detect-buttons">
                 {videos.map((video) => (
                   <button
                     key={video.file.name}
