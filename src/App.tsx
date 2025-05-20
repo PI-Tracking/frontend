@@ -55,8 +55,7 @@ function App() {
           {/* GENERALLY ACCESSIBLE PAGES */}
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-          
+          <Route path="/profile" element={<ProfilePage />} />
 
           {/* USERS PAGES */}
           <Route element={<RequireAuth admin={false} />}>

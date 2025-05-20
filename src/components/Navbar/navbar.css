@@ -61,6 +61,7 @@
   cursor: pointer;
   transition: color 0.3s ease;
   z-index: 1000;
+  color: white;
 }
 
 .navbar-profile:hover {
