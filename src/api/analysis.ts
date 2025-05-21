@@ -36,11 +36,27 @@ async function requestNewAnalysis(
  */
 async function requestReanalysis(
   reportId: UUID,
-  selectedSuspect?: SelectedSuspectDTO
+  selectedSuspect?: SelectedSuspectDTO,
+  faceImage?: File
 ): Promise<AxiosResponse<{ analysisId: string } | ApiError>> {
   const endpoint = `${baseEndpoint}/${reportId}`;
-  return apiClient.post(endpoint, selectedSuspect);
+  const formData = new FormData();
+    
+  if (selectedSuspect) {
+    formData.append("selectedSuspect", JSON.stringify(selectedSuspect));
+  }
+
+  if (faceImage) {
+    formData.append("faceImage", faceImage);
+  }
+
+  return apiClient.post(endpoint, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 }
+
 
 async function stopAnalysis(analysisId: UUID): Promise<AxiosResponse> {
   /**

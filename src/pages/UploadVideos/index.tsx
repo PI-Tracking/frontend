@@ -16,7 +16,7 @@ import { Camera } from "@Types/Camera";
 import { UUID } from "@Types/Base";
 import { CamerasVideo } from "@Types/CamerasVideo";
 
-import { getAllCameras } from "@api/camera";
+import { getAllCameras } from "@api/camera";3
 import { ApiError } from "@api/ApiError";
 
 import "./UploadVideosPage.css";
@@ -29,10 +29,16 @@ const Modal = ({ children }: { children: ReactNode }) => {
   );
 };
 
+
+
 const COIMBRA: [number, number] = [40.202852, -8.410192];
 function UploadVideosPage() {
+
+  const [uploadedImage, setUploadedImage] = useState<string>("");
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [videos, setVideos] = useState<CamerasVideo[]>([]);
+  const [faceImage, setFaceImage] = useState<File | undefined>();
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [duplicateFile, setDuplicateFile] = useState<string>("");
@@ -59,7 +65,7 @@ function UploadVideosPage() {
 
           setErrorMessage(
             axiosError.response?.data.message ||
-              `Failed to fetch cameras (error${axiosError.status})`
+            `Failed to fetch cameras (error${axiosError.status})`
           );
         }
       }
@@ -184,6 +190,55 @@ function UploadVideosPage() {
             {videos.length ? "Add more files" : "Select file"}
             <MdKeyboardArrowDown />
           </button>
+          <div className="image-upload-section">
+
+          <input
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setUploadedImage(imageUrl);
+      setFaceImage(file); // <-- Store the original file
+    }
+  }}
+  style={{ display: "none" }}
+  ref={imageInputRef}
+/>
+  <button
+    className="upload-videos-button"
+    onClick={() => imageInputRef.current?.click()}
+  >
+    Upload Image
+  </button>
+
+  {uploadedImage && (
+    <div className="uploaded-image-preview">
+      <img src={uploadedImage} alt="Uploaded" style={{ maxWidth: "100%", marginTop: "10px" }} />
+      <button
+        className="remove-image-button"
+        onClick={() => setUploadedImage("")}
+        style={{
+          marginTop: "10px",
+          display: "block",
+          marginInline: "auto",
+          backgroundColor: "#ff4d4f",
+          color: "white",
+          padding: "0.5rem 1rem",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer"
+        }}
+      >
+        Remove Image
+      </button>
+    </div>
+  )}
+</div>
+
+
+
           {videos.length > 0 && (
             <div className="uploaded-files-container">
               {videos.map((video) => (
@@ -228,7 +283,7 @@ function UploadVideosPage() {
               ))}
             </div>
           )}
-          <SubmitFilesButton files={videos} setError={setErrorMessage} />
+          <SubmitFilesButton files={videos} setError={setErrorMessage} faceImage={faceImage} />
         </div>
       </section>
       <div className="menu-options">

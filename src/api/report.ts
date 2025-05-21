@@ -23,7 +23,7 @@ async function getAllReports(): Promise<AxiosResponse<Report[] | ApiError>> {
   return apiClient.get(endpoint);
 }
 
-async function createNewReport(
+async function    createNewReport(
   report: NewReportDTO
 ): Promise<AxiosResponse<ReportResponseDTO | ApiError>> {
   /**

@@ -18,10 +18,13 @@ import { requestReanalysis } from "@api/analysis";
 interface SubmitFilesButtonProps {
   files: CamerasVideo[];
   setError: Dispatch<SetStateAction<string>>;
+  faceImage?: File;
 }
-function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
+function SubmitFilesButton({ files, setError, faceImage }: SubmitFilesButtonProps) {
   const minio = useMinIO();
   const [uploadingFile, setUploadingFile] = useState<File | null>(null);
+  // const [faceImage, setFaceImage] = useState<File | undefined>();
+
   const { setReport, setInitialAnalysisId } = useReport();
   const auth = useAuth();
   const navigate = useNavigate();
@@ -40,10 +43,11 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
     }
 
     try {
-      /* Create a new Report Request */
+      /* Create a new Report Request */ 
       const request: NewReportDTO = {
         cameras: files.map((file) => file.camera.id),
         name: new Date().toUTCString(),
+        hasSuspect: !!faceImage,
       };
       const response = await createNewReport(request);
 
@@ -89,7 +93,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
       };
       setReport(newReport);
 
-      const requestAnalysisResponse = await requestReanalysis(id);
+      const requestAnalysisResponse = await requestReanalysis(id, undefined, faceImage);
       if (requestAnalysisResponse.status !== 200) {
         setError((requestAnalysisResponse.data as ApiError).message);
         return;
