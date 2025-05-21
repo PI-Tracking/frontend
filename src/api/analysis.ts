@@ -41,7 +41,7 @@ async function requestReanalysis(
 ): Promise<AxiosResponse<{ analysisId: string } | ApiError>> {
   const endpoint = `${baseEndpoint}/${reportId}`;
   const formData = new FormData();
-    
+
   if (selectedSuspect) {
     formData.append("selectedSuspect", JSON.stringify(selectedSuspect));
   }
@@ -56,7 +56,6 @@ async function requestReanalysis(
     },
   });
 }
-
 
 async function stopAnalysis(analysisId: UUID): Promise<AxiosResponse> {
   /**
@@ -94,3 +93,4 @@ export {
   stopAnalysis,
   getAnalysisDetections,
 };
+  

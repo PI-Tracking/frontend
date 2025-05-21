@@ -54,7 +54,7 @@ function SubmitFilesButton({ files, setError, faceImage }: SubmitFilesButtonProp
       if (response.status !== 201) {
         setError((response.data as ApiError).message);
       }
-
+        
       /* Upload Files to MinIO */
       const { id, name, uploads } = response.data as ReportResponseDTO;
       for (const upload of uploads) {
