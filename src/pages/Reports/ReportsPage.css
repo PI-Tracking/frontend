@@ -21,9 +21,9 @@
 
 .reports-title {
   font-size: 24px;
-  margin-bottom: 20px;
   font-weight: bold;
-  color: #f9ba08;
+  color: #ffffff;
+  margin-bottom: 20px;
 }
 
 .tabs {
@@ -76,7 +76,7 @@
 }
 
 .report-card {
-  background-color: #333;
+  background-color: #616060;
   border-radius: 8px;
   padding: 15px;
   display: flex;
@@ -124,12 +124,22 @@
   font-size: 0.95rem;
   color: #ffffff;
   margin-bottom: 0.15rem;
+  font-weight: 500;
+}
+
+.report-number {
+  color: #ffffff;
+  margin-bottom: 0.15rem;
+  font-weight: 600;
+  font-style: bold;
+  font-size: 1.2rem;
 }
 
 .report-date {
   font-size: 0.95rem;
   color: #ffffff;
   margin-bottom: 0.15rem;
+  font-weight: 500;
 }
 
 .uploads-size {
@@ -137,6 +147,7 @@
   font-weight: 500;
   color: #ffffff;
   margin-top: 0.25rem;
+  font-weight: 500;
 }
 
 .view-report-button {
@@ -150,13 +161,15 @@
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
+  font-weight: 500;
   transition:
     background-color 0.2s ease,
     transform 0.1s ease;
 }
 
 .view-report-button:hover {
-  background-color: #f9ba08;
+  background-color: #282828;
+  color: #ffffff;
 }
 
 .view-report-button:active {

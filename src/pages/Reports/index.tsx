@@ -112,12 +112,13 @@ function ReportsPage() {
         <h1 className="reports-title">Reports</h1>
         <div className="reports-content">
           <div className="reports-list">
-            {reports.map((report) => (
+            {reports.map((report, index) => (
               <div key={report.id} className="report-card">
-                <h2 className="report-date">{report.name}</h2>
+                <p className="report-number">Report {reports.length - index}</p>
                 <p className="report-creator">
                   Creator: {report.creator.badgeId}
                 </p>
+                <p className="report-date">{report.name}</p>
                 <p className="report-uploads">
                   Uploads: {report.uploads.length}
                 </p>

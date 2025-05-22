@@ -1,7 +1,7 @@
 .admin-container {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background-color: #181818;
+    background-color: #ffffff;
     color: #f1f1f1;
     min-height: 100vh;
   }
@@ -30,12 +30,14 @@
   
   .log-container {
     overflow-x: auto;
+    border-radius: 10px;
   }
   
   .log-table {
     width: 100%;
     border-collapse: collapse;
     background-color: #222;
+    
   }
   
   .log-table th, .log-table td {
