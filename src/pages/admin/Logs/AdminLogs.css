@@ -10,19 +10,22 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    font-weight: 600;
   }
-  
+
   .filters select {
     padding: 10px;
     border-radius: 5px;
     border: none;
-    background-color: #252525;
-    color: #f1f1f1;
+    background-color: #f9ba08;
+    color: #000000;
     cursor: pointer;
+    font-weight: 600;
+    
   }
   
   .filters select:hover {
-    background-color: #333;
+    background-color: #ffffff;
   }
   
   .log-container {
@@ -41,8 +44,8 @@
   }
   
   .log-table th {
-    background-color: #333;
-    color: #f1f1f1;
+    background-color: #f9ba08;
+    color: #000000;
   }
   
   .log-table tbody tr:nth-child(odd) {

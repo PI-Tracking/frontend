@@ -67,10 +67,16 @@ function ReportsPage() {
             console.log("Report response:", reportResponse);
             if (reportResponse.status === 200) {
               const reportData = reportResponse.data;
-              if (reportData && isReportResponseDTO(reportData) && !reports.includes(reportData)) {
+              if (
+                reportData &&
+                isReportResponseDTO(reportData) &&
+                !reports.includes(reportData)
+              ) {
                 setReports((prevReports) =>
-                  [reportData, ...prevReports].filter((report, index, self) =>
-                    index === self.findIndex(r => r.id === report.id))
+                  [reportData, ...prevReports].filter(
+                    (report, index, self) =>
+                      index === self.findIndex((r) => r.id === report.id)
+                  )
                 );
               } else {
                 console.error("No data found for report:", report.id);
@@ -103,13 +109,12 @@ function ReportsPage() {
     <div className="container">
       <Navbar />
       <section className="reports-section">
-        <h1 className="reports-title">Reports {reports.length}</h1>
+        <h1 className="reports-title">Reports</h1>
         <div className="reports-content">
           <div className="reports-list">
             {reports.map((report) => (
               <div key={report.id} className="report-card">
-                <h2 className="report-name">{report.id}</h2>
-                <p className="report-date">Created at: {report.name}</p>
+                <h2 className="report-date">{report.name}</h2>
                 <p className="report-creator">
                   Creator: {report.creator.badgeId}
                 </p>

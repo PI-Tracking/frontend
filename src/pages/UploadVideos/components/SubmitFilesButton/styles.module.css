@@ -9,15 +9,17 @@
 .submitButton {
   width: 200px;
   height: 40px;
-  background-color: rgba(0, 34, 255, 0.75);
+  background-color: #f9ba08;
   border-radius: 8px;
   border: none;
-  color: white;
+  color: rgb(0, 0, 0);
+  font-size: medium;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .submitButton:hover {
-  background-color: rgba(0, 34, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.8);
   transform: translateY(-1px);
 }
 

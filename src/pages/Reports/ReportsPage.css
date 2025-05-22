@@ -22,6 +22,8 @@
 .reports-title {
   font-size: 24px;
   margin-bottom: 20px;
+  font-weight: bold;
+  color: #f9ba08;
 }
 
 .tabs {
@@ -140,8 +142,9 @@
 .view-report-button {
   margin-top: 0.75rem;
   padding: 0.5rem 1rem;
-  background-color: #282828;
-  color: #fff;
+  background-color: #ffffff;
+  color: #242527;
+  font-style: bold;
   border: none;
   border-radius: 6px;
   font-size: 0.95rem;
@@ -153,7 +156,7 @@
 }
 
 .view-report-button:hover {
-  background-color: #3b3b3b;
+  background-color: #f9ba08;
 }
 
 .view-report-button:active {
