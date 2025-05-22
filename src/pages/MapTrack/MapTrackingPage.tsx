@@ -97,12 +97,13 @@ function MapTrackingPage() {
         (camera) => camera.id === firstDetection.cameraId
       );
 
-      if (firstCamera) {
-        setCenter([firstCamera.latitude, firstCamera.longitude]);
-        console.log("Center set to first detection:", [
+      if (firstCamera && firstCamera.latitude && firstCamera.longitude) {
+        const newCenter: [number, number] = [
           firstCamera.latitude,
           firstCamera.longitude,
-        ]);
+        ];
+        setCenter(newCenter);
+        console.log("Center set to first detection:", newCenter);
       }
     }
   }, [realDetections, cameras]);
@@ -111,10 +112,11 @@ function MapTrackingPage() {
     const map = useMap();
 
     useEffect(() => {
-      if (center) {
-        map.setView(center);
+      if (map && center) {
+        map.flyTo(center, map.getZoom());
+        console.log("Map flying to new center:", center);
       }
-    }, [center, map]);
+    }, [center]);
 
     return null;
   }
