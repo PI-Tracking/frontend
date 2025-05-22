@@ -28,7 +28,6 @@ import { CamerasVideo } from "@Types/CamerasVideo";
 
 import { getAllCameras } from "@api/camera";
 import { ApiError } from "@api/ApiError";
-import { validateFace, detectFaceInVideo } from "@api/faceDetection";
 
 import "./UploadVideosPage.css";
 
@@ -44,9 +43,10 @@ const COIMBRA: [number, number] = [40.202852, -8.410192];
 function UploadVideosPage() {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [videos, setVideos] = useState<CamerasVideo[]>([]);
-  const [referenceImage, setReferenceImage] = useState<File | null>(null);
+  const [referenceImage, setReferenceImage] = useState<File | undefined>(
+    undefined
+  );
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isProcessingFace, setIsProcessingFace] = useState(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [duplicateFile, setDuplicateFile] = useState<string>("");
@@ -74,7 +74,7 @@ function UploadVideosPage() {
 
           setErrorMessage(
             axiosError.response?.data.message ||
-              `Failed to fetch cameras (error${axiosError.status})`
+            `Failed to fetch cameras (error${axiosError.status})`
           );
         }
       }
@@ -188,40 +188,6 @@ function UploadVideosPage() {
     }
   };
 
-  const handleFaceDetection = async (videoFile: File) => {
-    if (!referenceImage) {
-      toast.error("Please select a reference image first");
-      return;
-    }
-
-    setIsProcessingFace(true);
-    try {
-      const response = await detectFaceInVideo(referenceImage, videoFile);
-      const data = response.data;
-
-      if ("faceDetected" in data) {
-        if (data.faceDetected) {
-          toast.success("Face detected in the video!");
-        } else {
-          toast.warning("No matching face found in the video");
-        }
-      } else {
-        toast.error(data.message || "Error processing video");
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const axiosError = error as AxiosError<ApiError>;
-        toast.error(
-          axiosError.response?.data.message || "Error processing video"
-        );
-      } else {
-        toast.error("Error processing video: " + (error as Error).message);
-      }
-    } finally {
-      setIsProcessingFace(false);
-    }
-  };
-
   const handleAddImageClick = () => {
     if (imageInputRef.current) {
       imageInputRef.current.click();
@@ -295,7 +261,11 @@ function UploadVideosPage() {
               ))}
             </div>
           )}
-          <SubmitFilesButton files={videos} setError={setErrorMessage} />
+          <SubmitFilesButton
+            files={videos}
+            suspect={referenceImage}
+            setError={setErrorMessage}
+          />
 
           <div className="face-detection-section">
             <h3>Face Detection</h3>
@@ -327,22 +297,6 @@ function UploadVideosPage() {
                 </div>
               )}
             </div>
-            {videos.length > 0 && (
-                  <div className="face-detect-buttons">
-                {videos.map((video) => (
-                  <button
-                    key={video.file.name}
-                    className="face-detect-button"
-                    onClick={() => handleFaceDetection(video.file)}
-                    disabled={isProcessingFace || !referenceImage}
-                  >
-                    {isProcessingFace
-                      ? "Processing..."
-                      : `Detect Face in ${video.file.name}`}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </section>

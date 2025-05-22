@@ -1,8 +1,9 @@
 import apiClient from "./api";
 import { AxiosResponse } from "axios";
 import { ApiError } from "./ApiError";
+import { UUID } from "@Types/Base";
 
-const baseEndpoint = "/face-detection";
+const baseEndpoint = "/analysis/face-detection";
 
 interface FaceValidationResponse {
   hasFace: boolean;
@@ -48,14 +49,13 @@ async function validateFace(
  *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
  */
 async function detectFaceInVideo(
-  referenceImage: File,
-  video: File
+  reportId: UUID,
+  referenceImage: File
 ): Promise<AxiosResponse<FaceDetectionResponse | ApiError>> {
   const formData = new FormData();
-  formData.append("referenceImage", referenceImage);
-  formData.append("video", video);
+  formData.append("faceImage", referenceImage);
 
-  const endpoint = `${baseEndpoint}/detect`;
+  const endpoint = `${baseEndpoint}/${reportId}`;
   return apiClient.post(endpoint, formData, {
     headers: {
       "Content-Type": "multipart/form-data",

@@ -14,12 +14,18 @@ import { User } from "@Types/User";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { useNavigate } from "react-router-dom";
 import { requestReanalysis } from "@api/analysis";
+import { detectFaceInVideo } from "@api/faceDetection";
 
 interface SubmitFilesButtonProps {
   files: CamerasVideo[];
+  suspect: File | undefined;
   setError: Dispatch<SetStateAction<string>>;
 }
-function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
+function SubmitFilesButton({
+  files,
+  suspect,
+  setError,
+}: SubmitFilesButtonProps) {
   const minio = useMinIO();
   const [uploadingFile, setUploadingFile] = useState<File | null>(null);
   const { setReport, setInitialAnalysisId } = useReport();
@@ -71,6 +77,7 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
       const newReport: Report = {
         id: id,
         name: name,
+        suspectImg: suspect,
         creator: auth.user || ({} as User),
         createdAt: new Date(request.name), // TODO if this changes, this HAS to change
         uploads: files.map((video) => {
@@ -89,7 +96,13 @@ function SubmitFilesButton({ files, setError }: SubmitFilesButtonProps) {
       };
       setReport(newReport);
 
-      const requestAnalysisResponse = await requestReanalysis(id);
+      let requestAnalysisResponse;
+      if (!suspect) {
+        requestAnalysisResponse = await requestReanalysis(id);
+      } else {
+        requestAnalysisResponse = await detectFaceInVideo(id, suspect);
+      }
+
       if (requestAnalysisResponse.status !== 200) {
         setError((requestAnalysisResponse.data as ApiError).message);
         return;
