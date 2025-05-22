@@ -1,7 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import CameraMenuOptions from "@components/CameraMenuOptions";
 import Navbar from "@components/Navbar";
-import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Polyline,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
 import useReportStore from "@hooks/useReportStore";
 import "./MapTrackingPage.css";
@@ -72,19 +78,6 @@ function MapTrackingPage() {
           const detections = response.data as CameraTimeIntervalDTO[];
           setRealDetections(detections);
           console.log("Detections response:", detections);
-          const firstDetection = detections[0];
-
-          if (firstDetection) {
-            const lat = cameras.find(
-              (camera) => camera.id === firstDetection.cameraId
-            )?.latitude;
-            const lng = cameras.find(
-              (camera) => camera.id === firstDetection.cameraId
-            )?.longitude;
-            if (lat && lng) {
-              setCenter([lat, lng]);
-            }
-          }
         } else {
           console.error("Invalid response format:", analysis);
         }
@@ -96,6 +89,37 @@ function MapTrackingPage() {
     fetchCameras();
     fetchDetections();
   }, [report]);
+
+  useEffect(() => {
+    if (realDetections.length > 0 && cameras.length > 0) {
+      const firstDetection = realDetections[0];
+      const firstCamera = cameras.find(
+        (camera) => camera.id === firstDetection.cameraId
+      );
+
+      if (firstCamera && firstCamera.latitude && firstCamera.longitude) {
+        const newCenter: [number, number] = [
+          firstCamera.latitude,
+          firstCamera.longitude,
+        ];
+        setCenter(newCenter);
+        console.log("Center set to first detection:", newCenter);
+      }
+    }
+  }, [realDetections, cameras]);
+
+  function MapCenterUpdate({ center }: { center: [number, number] }) {
+    const map = useMap();
+
+    useEffect(() => {
+      if (map && center) {
+        map.flyTo(center, map.getZoom());
+        console.log("Map flying to new center:", center);
+      }
+    }, [center]);
+
+    return null;
+  }
 
   return (
     <div className="container">
@@ -111,6 +135,7 @@ function MapTrackingPage() {
             zoom={13}
             style={{ height: "500px", width: "100%" }}
           >
+            <MapCenterUpdate center={center} />
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; OpenStreetMap contributors"
