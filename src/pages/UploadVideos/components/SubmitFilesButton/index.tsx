@@ -77,7 +77,8 @@ function SubmitFilesButton({
       const newReport: Report = {
         id: id,
         name: name,
-        suspectImg: suspect,
+        suspectImg:
+          suspect !== undefined ? URL.createObjectURL(suspect) : undefined,
         creator: auth.user || ({} as User),
         createdAt: new Date(request.name), // TODO if this changes, this HAS to change
         uploads: files.map((video) => {

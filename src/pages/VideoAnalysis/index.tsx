@@ -80,7 +80,9 @@ function VideoAnalysisPage() {
         <div className={styles.column}>
           <div className={styles.box + " " + styles.padding}>
             <h3 className={styles.boxTitle}>Selected Suspect</h3>
-            {suspectImg && (
+            {suspectImg === undefined ? (
+              <span>Not following a suspect</span>
+            ) : (
               <img src={suspectImg} className={styles.suspectImage} />
             )}
             <button
