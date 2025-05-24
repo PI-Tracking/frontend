@@ -99,7 +99,7 @@ function ReportsPage() {
       // Fetch reports only if the reports array is empty
       fectchReports();
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     console.log("Fetched reports:", reports);
