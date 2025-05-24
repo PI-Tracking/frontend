@@ -182,7 +182,7 @@ function ReportDetails() {
                   <div key={upload.id} className="upload-card">
                     <div className="upload-preview">
                       <video 
-                        src={upload.uploadUrl} 
+                        src={`http://localhost:8080/api/v1/reports/${reportId}/uploads/${upload.id}/video`} 
                         controls 
                         className="upload-video"
                       />
@@ -221,7 +221,7 @@ function ReportDetails() {
                       <div className="no-results-message">No detections found</div>
                     )}
                   </div>
-                </div>
+                    </div>
 
                 <div className="segmentations-list">
                   <h3>Segmentations</h3>
