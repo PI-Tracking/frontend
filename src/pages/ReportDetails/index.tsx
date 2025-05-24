@@ -73,7 +73,7 @@ function ReportDetails() {
           }
           
           // Fetch analysis IDs for the report
-          const analysisResponse = await getAnalysisByReportId(reportId);
+        const analysisResponse = await getAnalysisByReportId(reportId);
           if (analysisResponse.status === 200 && analysisResponse.data.analysisIds.length > 0) {
             // Fetch the latest analysis results
             const latestAnalysisId = analysisResponse.data.analysisIds[0];
@@ -195,7 +195,7 @@ function ReportDetails() {
                   </div>
                 );
               })}
-            </div>
+          </div>
           </section>
 
           <section className="report-section">
@@ -203,48 +203,46 @@ function ReportDetails() {
             {analysisResults ? (
               <div className="analysis-results">
                 <div className="detections-list">
-                  <h3>Detections ({analysisResults.detections.length})</h3>
-                  {analysisResults.detections.length > 0 ? (
-                    <div className="scrollable-list">
-                      {analysisResults.detections.map((detection, index) => (
-                        <div 
-                          key={index} 
-                          className="detection-item"
+                  <h3>Detections</h3>
+                  <div className="scrollable-list">
+                    {analysisResults.detections.length > 0 ? (
+                      analysisResults.detections.map((detection, index) => (
+                        <div
+                          key={index}
+                          className={`detection-item ${
+                            index === 0 ? "first-detection" : ""
+                          }`}
                           onClick={() => setSelectedDetection(detection)}
                         >
                           <p>Type: {detection.class_name}</p>
+                          <p>Time: {format(new Date(detection.timestamp), "PPpp")}</p>
                           <p>Confidence: {(detection.confidence * 100).toFixed(2)}%</p>
-                          <p>Video Time: {formatVideoTime(detection.timestamp)}</p>
                         </div>
-                      ))}
+                      ))
+                    ) : (
+                      <div className="no-results-message">No detections found</div>
+                    )}
+                  </div>
                     </div>
-                  ) : (
-                    <div className="no-results-message">
-                      No detections found in this report
-                    </div>
-                  )}
-                </div>
 
                 <div className="segmentations-list">
-                  <h3>Suspect Segmentations ({analysisResults.segmentations.length})</h3>
-                  {analysisResults.segmentations.length > 0 ? (
-                    <div className="scrollable-list">
-                      {analysisResults.segmentations.map((segmentation, index) => (
+                  <h3>Segmentations</h3>
+                  <div className="scrollable-list">
+                    {analysisResults.segmentations.length > 0 ? (
+                      analysisResults.segmentations.map((segmentation, index) => (
                         <div key={index} className="segmentation-item">
-                          <img 
-                            src={`data:image/png;base64,${segmentation.polygon}`} 
+                          <img
+                            src={`data:image/png;base64,${segmentation.polygon}`}
                             alt={`Segmentation ${index + 1}`}
                             className="segmentation-image"
                           />
-                          <p>Video Time: {formatVideoTime(segmentation.timestamp)}</p>
+                          <p>Time: {formatVideoTime(segmentation.timestamp)}</p>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="no-results-message">
-                      No segmentations found in this report
-                    </div>
-                  )}
+                      ))
+                    ) : (
+                      <div className="no-results-message">No segmentations found</div>
+                    )}
+                  </div>
                 </div>
               </div>
             ) : (
@@ -275,16 +273,16 @@ function ReportDetails() {
                       <div>
                         <h3>{camera.name}</h3>
                         <p>Location: {camera.latitude}, {camera.longitude}</p>
-                      </div>
+                </div>
                     </Popup>
                   </Marker>
-                ))}
+              ))}
               </MapContainer>
             </div>
             {(!analysisResults || analysisResults.detections.length === 0) && (
               <div className="no-results-message">
                 No detections found in this report
-              </div>
+          </div>
             )}
           </section>
         </div>
