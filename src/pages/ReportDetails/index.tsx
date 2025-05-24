@@ -209,13 +209,11 @@ function ReportDetails() {
                       analysisResults.detections.map((detection, index) => (
                         <div
                           key={index}
-                          className={`detection-item ${
-                            index === 0 ? "first-detection" : ""
-                          }`}
+                          className="detection-item"
                           onClick={() => setSelectedDetection(detection)}
                         >
                           <p>Type: {detection.class_name}</p>
-                          <p>Time: {format(new Date(detection.timestamp), "PPpp")}</p>
+                          <p>Time: {formatVideoTime(detection.timestamp)}</p>
                           <p>Confidence: {(detection.confidence * 100).toFixed(2)}%</p>
                         </div>
                       ))
@@ -223,7 +221,7 @@ function ReportDetails() {
                       <div className="no-results-message">No detections found</div>
                     )}
                   </div>
-                    </div>
+                </div>
 
                 <div className="segmentations-list">
                   <h3>Segmentations</h3>
