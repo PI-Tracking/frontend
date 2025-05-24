@@ -98,10 +98,10 @@ function SubmitFilesButton({
       setReport(newReport);
 
       let requestAnalysisResponse;
-      if (!suspect) {
-        requestAnalysisResponse = await requestReanalysis(id);
-      } else {
+      if (suspect) {
         requestAnalysisResponse = await detectFaceInVideo(id, suspect);
+      } else {
+        requestAnalysisResponse = await requestReanalysis(id);
       }
 
       if (requestAnalysisResponse.status !== 200) {
