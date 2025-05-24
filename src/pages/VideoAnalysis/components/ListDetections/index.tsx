@@ -21,11 +21,13 @@ function ListDetections(props: IListDetections) {
 
   return (
     <div className={styles.list}>
-      {props.detections.map(detection => (
-        <div className={styles.listElement}>{detection.class_name} - {formatTime(detection.timestamp / 1000)}
+      {props.detections.map((detection) => (
+        <div className={styles.listElement}>
+          {detection.class_name} - {formatTime(detection.timestamp / 1000)}
         </div>
       ))}
-    </div>);
+    </div>
+  );
 }
 
 export default ListDetections;

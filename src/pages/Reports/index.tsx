@@ -67,10 +67,16 @@ function ReportsPage() {
             console.log("Report response:", reportResponse);
             if (reportResponse.status === 200) {
               const reportData = reportResponse.data;
-              if (reportData && isReportResponseDTO(reportData) && !reports.includes(reportData)) {
+              if (
+                reportData &&
+                isReportResponseDTO(reportData) &&
+                !reports.includes(reportData)
+              ) {
                 setReports((prevReports) =>
-                  [reportData, ...prevReports].filter((report, index, self) =>
-                    index === self.findIndex(r => r.id === report.id))
+                  [reportData, ...prevReports].filter(
+                    (report, index, self) =>
+                      index === self.findIndex((r) => r.id === report.id)
+                  )
                 );
               } else {
                 console.error("No data found for report:", report.id);
@@ -93,7 +99,7 @@ function ReportsPage() {
       // Fetch reports only if the reports array is empty
       fectchReports();
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     console.log("Fetched reports:", reports);

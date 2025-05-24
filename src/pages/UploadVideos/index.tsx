@@ -33,11 +33,16 @@ const COIMBRA: [number, number] = [40.202852, -8.410192];
 function UploadVideosPage() {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [videos, setVideos] = useState<CamerasVideo[]>([]);
+  const [referenceImage, setReferenceImage] = useState<File | undefined>(
+    undefined
+  );
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [duplicateFile, setDuplicateFile] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const [showMap, setShowMap] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string>("");
@@ -161,6 +166,24 @@ function UploadVideosPage() {
     setDuplicateFile("");
   };
 
+  const handleReferenceImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // First create a preview
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      setReferenceImage(file);
+    }
+  };
+
+  const handleAddImageClick = () => {
+    if (imageInputRef.current) {
+      imageInputRef.current.click();
+    }
+  };
+
   return (
     <div className="container">
       <Navbar />
@@ -228,7 +251,43 @@ function UploadVideosPage() {
               ))}
             </div>
           )}
-          <SubmitFilesButton files={videos} setError={setErrorMessage} />
+          <SubmitFilesButton
+            files={videos}
+            suspect={referenceImage}
+            setError={setErrorMessage}
+          />
+
+          <div className="face-detection-section">
+            <h3>Face Detection</h3>
+            <div className="reference-image-container">
+              <button
+                className="upload-videos-button"
+                onClick={handleAddImageClick}
+              >
+                <AiOutlineFileAdd />
+                {referenceImage
+                  ? "Change Reference Image"
+                  : "Select Reference Image"}
+                <MdKeyboardArrowDown />
+              </button>
+              <input
+                type="file"
+                ref={imageInputRef}
+                onChange={handleReferenceImageChange}
+                accept="image/*"
+                style={{ display: "none" }}
+              />
+              {previewUrl && (
+                <div className="reference-image-preview">
+                  <img
+                    src={previewUrl}
+                    alt="Reference"
+                    style={{ maxWidth: "200px", maxHeight: "200px" }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
       <div className="menu-options">

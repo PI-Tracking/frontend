@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 /* MOCK DATA */
-import mock_suspectimage from "./mock_data/suspect.png";
-import noimg from "@assets/noimg.png";
 import { requestReanalysis } from "@api/analysis";
 import SelectedSuspectDTO from "@Types/SelectedSuspectDTO";
 
@@ -15,7 +13,7 @@ export default function useVideoAnalysis() {
   const { id: paramReportId } = useParams();
   const websocket = useDetectionWebSocket();
   const { report, setInitialAnalysisId } = useReportStore();
-  const [suspectImg, setSuspectImg] = useState<string>(noimg);
+  const [suspectImg, setSuspectImg] = useState<string | undefined>(undefined);
   const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis | null>(
     null
   );
@@ -35,7 +33,7 @@ export default function useVideoAnalysis() {
 
           // Set the selected camera with valid data
           setSelectedCamera(report.uploads[0]);
-          setSuspectImg(mock_suspectimage);
+          setSuspectImg(report.suspectImg);
         } catch (error) {
           console.error("Error initializing video analysis:", error);
         } finally {
@@ -49,12 +47,6 @@ export default function useVideoAnalysis() {
 
     initializeData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  //useEffect(() => {
-  //  websocket.connect(report.uploads[0].analysis_id);
-  //  console.log(report.uploads[0]);
-  //  setSelectedCamera(report.uploads[0]);
-  //  setSuspectImg(mock_suspectimage);
-  //}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!websocket.analysing && selectedCamera) {
