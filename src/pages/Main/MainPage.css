@@ -166,7 +166,7 @@
 }
 
 .detect-weapons {
-  background: url("./components/detectweapons.svg") no-repeat right;
+  background: url("./components/detectweapons.png") no-repeat right;
   background-size: 40%;
   position: absolute;
   right: 50px;
@@ -222,7 +222,7 @@
 }
 
 .track-subject-image {
-  background: url("./components/track.svg") no-repeat left;
+  background: url("./components/track.png") no-repeat left;
   background-size: 40%;
   position: absolute;
   left: 50px;
