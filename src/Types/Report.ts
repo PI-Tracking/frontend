@@ -12,6 +12,7 @@ import { User } from "./User.ts";
 export interface Report {
   id: UUID;
   name: string;
+  suspectImg?: string | undefined;
   creator: User;
   uploads: VideoAnalysis[];
   createdAt: Date; // datetime

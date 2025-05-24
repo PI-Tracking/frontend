@@ -10,6 +10,7 @@
   padding: 20px;
   max-width: 100%;
   margin: 0 auto;
+  margin-bottom: 20px;
 }
 
 .admin-table {
@@ -84,16 +85,21 @@
 }
 
 .add-user-btn {
-  background-color: #919191;
-  color: white;
   padding: 10px 15px;
   border: none;
   cursor: pointer;
   margin-top: 20px;
   position: relative;
-  bottom: 20px;
   left: 50%;
-  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background-color: #f9ba08;
+  border: none;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .add-user-btn:hover {

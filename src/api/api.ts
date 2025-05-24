@@ -14,7 +14,7 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
-axios.interceptors.response.use(
+apiClient.interceptors.response.use(
   (response) => {
     return response;
   },

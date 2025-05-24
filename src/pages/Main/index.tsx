@@ -1,7 +1,6 @@
 import Footer from "@components/Footer";
 import Navbar from "@components/Navbar";
 import "./MainPage.css";
-import logo from "@assets/logo.png";
 
 function MainPage() {
   return (
@@ -144,13 +143,6 @@ function MainPage() {
         </section>
         <section className="symbol-asthetics"></section>
       </main>
-      <div className="break">
-        <div className="logo">
-          <img src={logo} className="logo-image" />
-          <h1 style={{ color: "white" }}>Tracking</h1>
-          <button className="link-button">Link</button>
-        </div>
-      </div>
       <Footer />
     </>
   );

@@ -35,6 +35,11 @@ async function logout() {
   return apiClient.post(loginEndpoint);
 }
 
+async function getCurrentUser(): Promise<AxiosResponse<User>> {
+  const selfEndpoint = "/users/self";
+  return await apiClient.get(selfEndpoint);
+}
+
 async function resetPassword(
   dto: ResetDTO
 ): Promise<AxiosResponse<string | ApiError>> {
@@ -46,4 +51,4 @@ async function resetPassword(
   return apiClient.patch(resetEndpoint, dto);
 }
 
-export { login, logout, resetPassword };
+export { login, logout, resetPassword, getCurrentUser };

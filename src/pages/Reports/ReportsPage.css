@@ -21,131 +21,52 @@
 
 .reports-title {
   font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.tabs {
-  display: flex;
-  border-bottom: 1px solid #444;
-  margin-bottom: 20px;
-}
-
-.tab {
-  padding: 12px 20px;
-  /* Why daheck isnt background color changing */
-  background-color: #444;
-  border: none;
-  /* color: rgb(0, 0, 0); */
-  font-size: 16px;
-  cursor: pointer;
-  position: relative;
-  color: white;
-}
-
-.tab:hover {
-  background-color: rgb(35, 35, 35);
-}
-
-.tab.active {
   font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 20px;
 }
 
-.tab.active::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background-color: white;
+.reports-content {
+  overflow-x: auto;
 }
 
-.tab.active:hover {
-  background-color: rgb(35, 35, 35);
-}
-
-.reports-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  max-height: 70vh;
-  overflow-y: auto;
-  padding-right: 10px;
-}
-
-.report-card {
-  background-color: #333;
-  border-radius: 8px;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: left;
-  text-align: left;
-  flex-direction: column;
+/* New table styles */
+.reports-table {
   width: 100%;
+  border-collapse: collapse;
+  background-color: #383838;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.report-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+.reports-table thead {
+  background-color: #f9ba08;
 }
 
-.report-id {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  background-color: orange;
-  color: black;
-  border-radius: 50%;
-  font-weight: bold;
+.reports-table th,
+.reports-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #555;
 }
 
-.report-location {
-  font-size: 16px;
-  font-weight: medium;
-}
-
-.menu-options {
-  margin-top: auto;
-}
-.report-name {
-  font-size: 1.5rem;
+.reports-table th {
   font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: #ffffff;
+  color: #000000;
 }
 
-.report-creator {
-  font-size: 0.95rem;
-  color: #ffffff;
-  margin-bottom: 0.15rem;
-}
-
-.report-date {
-  font-size: 0.95rem;
-  color: #ffffff;
-  margin-bottom: 0.15rem;
-}
-
-.uploads-size {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #ffffff;
-  margin-top: 0.25rem;
+.reports-table td {
+  color: #dddddd;
 }
 
 .view-report-button {
-  margin-top: 0.75rem;
   padding: 0.5rem 1rem;
-  background-color: #282828;
-  color: #fff;
+  background-color: #ffffff;
+  color: #242527;
   border: none;
   border-radius: 6px;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   transition:
     background-color 0.2s ease,
@@ -153,9 +74,28 @@
 }
 
 .view-report-button:hover {
-  background-color: #3b3b3b;
+  background-color: #f9ba08;
 }
 
 .view-report-button:active {
   transform: scale(0.98);
+}
+
+.menu-options {
+  margin-top: auto;
+}
+
+/* Optional: Style scrollbars for dark theme */
+.reports-content::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.reports-content::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 4px;
+}
+
+.reports-content::-webkit-scrollbar-track {
+  background-color: transparent;
 }
