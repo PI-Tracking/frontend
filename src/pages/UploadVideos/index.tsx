@@ -7,16 +7,6 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { BsPinMap } from "react-icons/bs";
-import { toast } from "react-toastify";
-// import {
-//   Box,
-//   Button,
-//   Container,
-//   Typography,
-//   CircularProgress,
-// } from "@mui/material";
-// import { styled } from "@mui/material/styles";
-// import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 import SubmitFilesButton from "./components/SubmitFilesButton";
 import CameraMenuOptions from "@components/CameraMenuOptions";
@@ -74,7 +64,7 @@ function UploadVideosPage() {
 
           setErrorMessage(
             axiosError.response?.data.message ||
-            `Failed to fetch cameras (error${axiosError.status})`
+              `Failed to fetch cameras (error${axiosError.status})`
           );
         }
       }
