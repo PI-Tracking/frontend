@@ -53,6 +53,11 @@ function ReportsPage() {
     navigate(`/map-tracking`);
   };
 
+  const viewReportDetails = (report: ReportResponseDTO) => {
+    if (!report) return;
+    navigate(`/report-details/${report.id}`);
+  };
+
   useEffect(() => {
     const fectchReports = async () => {
       // Fetch reports from the API
@@ -122,12 +127,20 @@ function ReportsPage() {
                 <p className="report-uploads">
                   Uploads: {report.uploads.length}
                 </p>
-                <button
-                  className="view-report-button"
-                  onClick={() => selectReport(report)}
-                >
-                  View Movements
-                </button>
+                <div className="report-actions">
+                  <button
+                    className="view-report-button"
+                    onClick={() => selectReport(report)}
+                  >
+                    View Movements
+                  </button>
+                  <button
+                    className="view-details-button"
+                    onClick={() => viewReportDetails(report)}
+                  >
+                    View Details
+                  </button>
+                </div>
               </div>
             ))}
           </div>

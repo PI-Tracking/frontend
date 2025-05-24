@@ -4,6 +4,7 @@ import { AxiosResponse } from "axios";
 import SelectedSuspectDTO from "@Types/SelectedSuspectDTO";
 import { ApiError } from "./ApiError";
 import { CameraTimeIntervalDTO } from "@Types/CameraTimeIntervalDTO";
+import { AnalysisResponseDTO } from "@Types/AnalysisResponseDTO";
 
 const baseEndpoint = "/analysis";
 
@@ -72,9 +73,26 @@ async function getAnalysisDetections(
   return apiClient.get(endpoint);
 }
 
+async function getAnalysisResultsByAnalysisId(
+  analysisId: UUID
+): Promise<AxiosResponse<AnalysisResponseDTO | ApiError>> {
+  /**
+   * GET /analysis/{analysisId}
+   * Return:
+   *    SUCCESS
+   *     { data: AnalysisResponseDTO; status: OK }
+   *
+   *    FAILURE
+   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN | NOT_FOUND
+   */
+  const endpoint = `${baseEndpoint}/${analysisId}`;
+  return apiClient.get(endpoint);
+}
+
 export {
   requestNewAnalysis,
   requestReanalysis,
   stopAnalysis,
   getAnalysisDetections,
+  getAnalysisResultsByAnalysisId
 };
