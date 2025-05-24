@@ -36,6 +36,8 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
   const connect = useCallback((analysis_id: UUID) => {
     setCurrentAnalysisId(analysis_id);
     detectionWebSocket.connect(analysis_id);
+
+    setAnalysing(true);
   }, []);
 
   const disconnect = useCallback(() => {
@@ -73,8 +75,16 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
         );
         for (const video_id in groupedDetections) {
           const videoDetections = groupedDetections[video_id];
-          const videoSegmentation = groupedSegmentation[video_id];
+          // const videoSegmentation = groupedSegmentation[video_id];
           setDetections(video_id, analysis_id, videoDetections as Detection[]);
+          // setSegmentation(
+          //   video_id,
+          //   analysis_id,
+          //   videoSegmentation as Segmentation[]
+          // );
+        }
+        for (const video_id in groupedSegmentation) {
+          const videoSegmentation = groupedSegmentation[video_id];
           setSegmentation(
             video_id,
             analysis_id,

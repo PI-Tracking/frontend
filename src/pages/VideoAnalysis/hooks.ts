@@ -12,7 +12,7 @@ import SelectedSuspectDTO from "@Types/SelectedSuspectDTO";
 export default function useVideoAnalysis() {
   const { id: paramReportId } = useParams();
   const websocket = useDetectionWebSocket();
-  const { report } = useReportStore();
+  const { report, setInitialAnalysisId } = useReportStore();
   const [suspectImg, setSuspectImg] = useState<string | undefined>(undefined);
   const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis | null>(
     null
@@ -94,6 +94,8 @@ export default function useVideoAnalysis() {
       y: y,
     } as SelectedSuspectDTO);
     console.log(response);
+
+    setInitialAnalysisId((response.data as { analysisId: string }).analysisId);
 
     if (response.status !== 200)
       alert("Something went wrong requesting reanalysis");

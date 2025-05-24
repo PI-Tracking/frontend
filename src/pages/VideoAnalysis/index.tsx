@@ -78,7 +78,10 @@ function VideoAnalysisPage() {
       <Navbar />
       <main className={styles.main}>
         <div className={styles.column}>
-          <div className={styles.box + " " + styles.padding}>
+          <div
+            className={styles.box + " " + styles.padding}
+            style={{ minWidth: "250px" }}
+          >
             <h3 className={styles.boxTitle}>Selected Suspect</h3>
             {suspectImg === undefined ? (
               <span>Not following a suspect</span>
@@ -93,7 +96,7 @@ function VideoAnalysisPage() {
             </button>
           </div>
 
-          <div className={styles.box}>
+          <div className={styles.box} style={{ minWidth: "250px" }}>
             <h3 className={styles.boxTitle}>Detections</h3>
             <ListDetections detections={selectedCamera?.detections} />
           </div>
