@@ -79,7 +79,7 @@ function ReportDetails() {
             const latestAnalysisId = analysisResponse.data.analysisIds[0];
             const analysisResultsResponse = await getAnalysisResultsByAnalysisId(latestAnalysisId);
             if (analysisResultsResponse.status === 200) {
-              const results = analysisResultsResponse.data;
+              const results = analysisResultsResponse.data as AnalysisResponseDTO;
               setAnalysisResults(results);
               
               // Set first detection
@@ -182,7 +182,7 @@ function ReportDetails() {
                   <div key={upload.id} className="upload-card">
                     <div className="upload-preview">
                       <video 
-                        src={`/api/v1/reports/${reportId}/uploads/${upload.id}`} 
+                        src={upload.uploadUrl} 
                         controls 
                         className="upload-video"
                       />
