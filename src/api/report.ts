@@ -38,6 +38,7 @@ async function createNewReport(
   const endpoint = baseEndpoint;
   return apiClient.post(endpoint, report);
 }
+
 async function getReport(
   report_id: UUID
 ): Promise<AxiosResponse<ReportResponseDTO | ApiError>> {
@@ -70,4 +71,20 @@ async function getAnalysisByReportId(
   return apiClient.get(endpoint);
 }
 
-export { getAllReports, createNewReport, getReport, getAnalysisByReportId };
+async function getSuspectImage(
+  report_id: UUID
+): Promise<AxiosResponse<string | ApiError>> {
+  /**
+   * GET /reports/{report_id}/suspect-image
+   * Return:
+   *    SUCCESS
+   *     { data: string (base64 image), status: OK }
+   *
+   *    FAILURE
+   *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN | NOT_FOUND
+   */
+  const endpoint = `${baseEndpoint}/${report_id}/suspect-image`;
+  return apiClient.get(endpoint);
+}
+
+export { getAllReports, createNewReport, getReport, getAnalysisByReportId, getSuspectImage };

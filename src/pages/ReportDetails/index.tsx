@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "@components/Navbar";
-import { getReport, getAnalysisByReportId } from "@api/report";
+import { getReport, getAnalysisByReportId, getSuspectImage } from "@api/report";
 import { getAnalysisResultsByAnalysisId } from "@api/analysis";
+import { getAllCameras } from "@api/camera";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
 import { AnalysisResponseDTO } from "@Types/AnalysisResponseDTO";
+import { Camera } from "@Types/Camera";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -29,6 +31,8 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+const COIMBRA: [number, number] = [40.202852, -8.410192];
+
 function ReportDetails() {
   const { reportId } = useParams<{ reportId: string }>();
   const navigate = useNavigate();
@@ -36,17 +40,37 @@ function ReportDetails() {
   const [analysisResults, setAnalysisResults] = useState<AnalysisResponseDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedDetection, setSelectedDetection] = useState<any>(null);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([0, 0]);
+  const [mapCenter, setMapCenter] = useState<[number, number]>(COIMBRA);
+  const [firstDetection, setFirstDetection] = useState<any>(null);
+  const [cameras, setCameras] = useState<Camera[]>([]);
+  const [suspectImage, setSuspectImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchReportAndAnalysis = async () => {
       try {
         if (!reportId) return;
 
+        // Fetch cameras first
+        const camerasResponse = await getAllCameras();
+        if (camerasResponse.status === 200) {
+          setCameras(camerasResponse.data as Camera[]);
+        }
+
         // Fetch report details
         const reportResponse = await getReport(reportId);
         if (reportResponse.status === 200) {
-          setReport(reportResponse.data as ReportResponseDTO);
+          const reportData = reportResponse.data as ReportResponseDTO;
+          setReport(reportData);
+          
+          // Fetch suspect image
+          try {
+            const suspectImageResponse = await getSuspectImage(reportId);
+            if (suspectImageResponse.status === 200) {
+              setSuspectImage(suspectImageResponse.data as string);
+            }
+          } catch (error) {
+            console.log("No suspect image available");
+          }
           
           // Fetch analysis IDs for the report
           const analysisResponse = await getAnalysisByReportId(reportId);
@@ -55,13 +79,27 @@ function ReportDetails() {
             const latestAnalysisId = analysisResponse.data.analysisIds[0];
             const analysisResultsResponse = await getAnalysisResultsByAnalysisId(latestAnalysisId);
             if (analysisResultsResponse.status === 200) {
-              setAnalysisResults(analysisResultsResponse.data);
+              const results = analysisResultsResponse.data;
+              setAnalysisResults(results);
               
-              // Set map center based on first detection if available
-              if (analysisResultsResponse.data.detections.length > 0) {
-                const firstDetection = analysisResultsResponse.data.detections[0];
-                if (firstDetection.coordinates && firstDetection.coordinates.length > 0) {
-                  setMapCenter([firstDetection.coordinates[0].y, firstDetection.coordinates[0].x]);
+              // Set first detection
+              if (results.detections.length > 0) {
+                setFirstDetection(results.detections[0]);
+              }
+              
+              // Set map center based on first detection's camera location
+              if (results.detections.length > 0 && reportData.uploads.length > 0) {
+                const firstUpload = reportData.uploads.find(
+                  upload => upload.id === results.detections[0].video_id
+                );
+                if (firstUpload && firstUpload.cameraId) {
+                  // Use camera location for map center
+                  const camera = cameras.find(
+                    cam => cam.id === firstUpload.cameraId
+                  );
+                  if (camera) {
+                    setMapCenter([camera.latitude, camera.longitude]);
+                  }
                 }
               }
             }
@@ -81,6 +119,11 @@ function ReportDetails() {
       fetchReportAndAnalysis();
     }
   }, [reportId]);
+
+  const formatVideoTime = (timestamp: number): string => {
+    const date = new Date(timestamp);
+    return date.toISOString().substr(11, 8);
+  };
 
   if (loading) {
     return (
@@ -114,52 +157,78 @@ function ReportDetails() {
 
         <div className="report-sections">
           <section className="report-section">
-            <h2>Uploads ({report.uploads.length})</h2>
-            <div className="uploads-grid">
-              {report.uploads.map((upload) => (
-                <div key={upload.id} className="upload-card">
-                  <div className="upload-preview">
-                    {upload.uploadUrl && (
-                      upload.uploadUrl.endsWith('.mp4') ? (
-                        <video src={upload.uploadUrl} controls />
-                      ) : (
-                        <img src={upload.uploadUrl} alt={`Upload ${upload.id}`} />
-                      )
-                    )}
-                  </div>
-                  <div className="upload-info">
-                    <h3>Upload {upload.id}</h3>
-                    <p>Camera ID: {upload.cameraId}</p>
-                    <p>Status: {upload.uploaded ? 'Uploaded' : 'Pending'}</p>
-                  </div>
+            <h2>Suspect Image</h2>
+            <div className="suspect-image-container">
+              {suspectImage ? (
+                <img 
+                  src={`data:image/jpeg;base64,${suspectImage}`} 
+                  alt="Suspect" 
+                  className="suspect-image"
+                />
+              ) : (
+                <div className="no-suspect-image">
+                  No suspect image uploaded
                 </div>
-              ))}
+              )}
             </div>
           </section>
 
-          {analysisResults && (
-            <>
-              <section className="report-section">
-                <h2>Analysis Results</h2>
-                <div className="analysis-results">
-                  <div className="detections-list">
-                    <h3>Detections ({analysisResults.detections.length})</h3>
-                    {analysisResults.detections.map((detection, index) => (
-                      <div 
-                        key={index} 
-                        className="detection-item"
-                        onClick={() => setSelectedDetection(detection)}
-                      >
-                        <p>Type: {detection.class_name}</p>
-                        <p>Confidence: {(detection.confidence * 100).toFixed(2)}%</p>
-                        <p>Timestamp: {format(new Date(detection.timestamp), 'PPpp')}</p>
-                      </div>
-                    ))}
+          <section className="report-section">
+            <h2>Uploads ({report.uploads.length})</h2>
+            <div className="uploads-grid">
+              {report.uploads.map((upload) => {
+                const camera = cameras.find(c => c.id === upload.cameraId);
+                return (
+                  <div key={upload.id} className="upload-card">
+                    <div className="upload-preview">
+                      <video 
+                        src={`/api/v1/reports/${reportId}/uploads/${upload.id}`} 
+                        controls 
+                        className="upload-video"
+                      />
+                    </div>
+                    <div className="upload-info">
+                      <h3>Camera: {camera?.name || 'Unknown'}</h3>
+                      <p>Location: {camera ? `${camera.latitude}, ${camera.longitude}` : 'Unknown'}</p>
+                      <p>Status: {upload.uploaded ? 'Uploaded' : 'Pending'}</p>
+                    </div>
                   </div>
+                );
+              })}
+            </div>
+          </section>
 
-                  {analysisResults.segmentations.length > 0 && (
-                    <div className="segmentations-list">
-                      <h3>Suspect Segmentations ({analysisResults.segmentations.length})</h3>
+          <section className="report-section">
+            <h2>Analysis Results</h2>
+            {analysisResults ? (
+              <div className="analysis-results">
+                <div className="detections-list">
+                  <h3>Detections ({analysisResults.detections.length})</h3>
+                  {analysisResults.detections.length > 0 ? (
+                    <div className="scrollable-list">
+                      {analysisResults.detections.map((detection, index) => (
+                        <div 
+                          key={index} 
+                          className="detection-item"
+                          onClick={() => setSelectedDetection(detection)}
+                        >
+                          <p>Type: {detection.class_name}</p>
+                          <p>Confidence: {(detection.confidence * 100).toFixed(2)}%</p>
+                          <p>Video Time: {formatVideoTime(detection.timestamp)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="no-results-message">
+                      No detections found in this report
+                    </div>
+                  )}
+                </div>
+
+                <div className="segmentations-list">
+                  <h3>Suspect Segmentations ({analysisResults.segmentations.length})</h3>
+                  {analysisResults.segmentations.length > 0 ? (
+                    <div className="scrollable-list">
                       {analysisResults.segmentations.map((segmentation, index) => (
                         <div key={index} className="segmentation-item">
                           <img 
@@ -167,50 +236,57 @@ function ReportDetails() {
                             alt={`Segmentation ${index + 1}`}
                             className="segmentation-image"
                           />
-                          <p>Timestamp: {format(new Date(segmentation.timestamp), 'PPpp')}</p>
+                          <p>Video Time: {formatVideoTime(segmentation.timestamp)}</p>
                         </div>
                       ))}
                     </div>
+                  ) : (
+                    <div className="no-results-message">
+                      No segmentations found in this report
+                    </div>
                   )}
                 </div>
-              </section>
+              </div>
+            ) : (
+              <div className="no-results-message">
+                No analysis results available for this report
+              </div>
+            )}
+          </section>
 
-              <section className="report-section">
-                <h2>Detection Map</h2>
-                <div className="map-container">
-                  <MapContainer 
-                    center={mapCenter} 
-                    zoom={13} 
-                    style={{ height: "400px", width: "100%" }}
+          <section className="report-section">
+            <h2>Detection Map</h2>
+            <div className="map-container">
+              <MapContainer 
+                center={mapCenter} 
+                zoom={13} 
+                style={{ height: "400px", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                {cameras.map((camera) => (
+                  <Marker
+                    key={camera.id}
+                    position={[camera.latitude, camera.longitude]}
                   >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    {analysisResults.detections.map((detection, index) => (
-                      detection.coordinates && detection.coordinates.length > 0 && (
-                        <Marker
-                          key={index}
-                          position={[detection.coordinates[0].y, detection.coordinates[0].x]}
-                          eventHandlers={{
-                            click: () => setSelectedDetection(detection)
-                          }}
-                        >
-                          <Popup>
-                            <div>
-                              <h4>{detection.class_name}</h4>
-                              <p>Confidence: {(detection.confidence * 100).toFixed(2)}%</p>
-                              <p>Time: {format(new Date(detection.timestamp), 'PPpp')}</p>
-                            </div>
-                          </Popup>
-                        </Marker>
-                      )
-                    ))}
-                  </MapContainer>
-                </div>
-              </section>
-            </>
-          )}
+                    <Popup>
+                      <div>
+                        <h3>{camera.name}</h3>
+                        <p>Location: {camera.latitude}, {camera.longitude}</p>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+            </div>
+            {(!analysisResults || analysisResults.detections.length === 0) && (
+              <div className="no-results-message">
+                No detections found in this report
+              </div>
+            )}
+          </section>
         </div>
 
         <div className="report-actions">
