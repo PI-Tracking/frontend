@@ -9,7 +9,7 @@
 }
 
 .background {
-  background: #2d2d2d;
+  background: #f9ba08;
 }
 
 html,
@@ -57,7 +57,7 @@ body {
 }
 
 .loginLogo {
-  width: 200px;
+  width: 150px;
   margin-bottom: 140px;
 }
 
@@ -98,6 +98,11 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: 600;
+}
+
+.loginBtn:hover {
+  background-color: #f9ba08;
 }
 
 .forgotPassword {

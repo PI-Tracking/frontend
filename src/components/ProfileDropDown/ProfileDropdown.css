@@ -2,8 +2,8 @@
   position: absolute;
   top: 60px;
   right: 20px;
-  background: white;
-  border: 1px solid #ccc;
+  background: #f9ba08;
+  border: 2px solid #41414169;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   padding: 10px;
@@ -27,5 +27,5 @@
 }
 
 .profile-dropdown li a:hover {
-  background-color: #f0f0f0;
+  color: #ffffff;
 }
