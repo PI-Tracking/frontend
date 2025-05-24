@@ -118,6 +118,10 @@ function ReportsPage() {
         <div className="reports-section">
           <div className="loading-message">Loading reports...</div>
         </div>
+
+        <div className="menu-options">
+          <CameraMenuOptions />
+        </div>
       </div>
     );
   }
@@ -133,7 +137,7 @@ function ReportsPage() {
               <div key={report.id} className="report-card">
                 <h2 className="report-name">{report.name}</h2>
                 <p className="report-date">
-                  Created: {format(new Date(report.name), 'PPpp')}
+                  Created: {format(new Date(report.name), "PPpp")}
                 </p>
                 <p className="report-creator">
                   Creator: {report.creator.username}
