@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import L from "leaflet";
+import L, { latLng } from "leaflet";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet-routing-machine";
 import { useMap } from "react-leaflet";
@@ -13,14 +13,14 @@ type props = {
   positions: [number, number][]
 }
 
-export default function Routing({positions}:props) {
+export default function Routing({ positions }: props) {
   const map = useMap();
 
   useEffect(() => {
     if (!map) return;
 
     L.Routing.control({
-      waypoints: positions,
+      waypoints: positions.map(([lat, lng]) => L.latLng(lat, lng)),
       routeWhileDragging: false,
       show: false
     }).addTo(map);
