@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import L, { latLng } from "leaflet";
+import L from "leaflet";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet-routing-machine";
 import { useMap } from "react-leaflet";
@@ -25,8 +25,8 @@ export default function Routing({ positions }: props) {
       show: false
     }).addTo(map);
 
-    // return () => map.removeControl(routingControl);
-  }, [map]);
+    return;
+  }, [map, positions]);
 
   return null;
 }
