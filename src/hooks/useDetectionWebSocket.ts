@@ -6,6 +6,7 @@ import { Detection } from "@Types/Detection";
 import { Segmentation } from "@Types/Segmentation";
 import { DetectionResult, SegmentationResult } from "@Types/WebSocketTypes";
 import apiClient from "@api/api";
+import { useParams } from "react-router-dom";
 
 // hook da websocket de detecção
 // interface to use the websocket service
@@ -20,6 +21,7 @@ interface UseDetectionWebSocketResult {
 }
 
 export function useDetectionWebSocket(): UseDetectionWebSocketResult {
+  const { reportId } = useParams<{ reportId: string }>();
   const { setDetections, setSegmentation } = useReportStore();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [analysing, setAnalysing] = useState<boolean>(true);
@@ -88,16 +90,60 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
             videoId: s.video_id
           }));
           setSegmentation(video_id, analysis_id, videoSegmentation);
-          if (videoSegmentation.length > 0) {
-            // Get the suspect image from the backend
+          if (videoSegmentation.length > 0 && reportId) {
+            // Convert polygon to image and save it
             try {
-              const response = await apiClient.get(`/reports/${analysis_id}/suspect-image`);
-              if (response.status === 200) {
-                const base64Image = response.data;
-                setSuspectImg(`data:image/png;base64,${base64Image}`);
+              const polygon = videoSegmentation[0].polygon;
+              if (polygon && polygon.length > 0) {
+                // Create a canvas to draw the polygon
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                  // Set canvas size (adjust as needed)
+                  canvas.width = 640;
+                  canvas.height = 480;
+                  
+                  // Draw the polygon
+                  ctx.beginPath();
+                  ctx.moveTo(polygon[0][0], polygon[0][1]);
+                  for (let i = 1; i < polygon.length; i++) {
+                    ctx.lineTo(polygon[i][0], polygon[i][1]);
+                  }
+                  ctx.closePath();
+                  ctx.fillStyle = 'white';
+                  ctx.fill();
+                  
+                  // Convert canvas to blob
+                  canvas.toBlob(async (blob) => {
+                    if (blob) {
+                      // Create a file from the blob
+                      const file = new File([blob], 'suspect.png', { type: 'image/png' });
+                      
+                      // Create form data
+                      const formData = new FormData();
+                      formData.append('faceImage', file);
+                      
+                      // Save the suspect image
+                      const response = await apiClient.post(`/analysis/face-detection/${reportId}`, formData, {
+                        headers: {
+                          'Content-Type': 'multipart/form-data',
+                        },
+                      });
+                      
+                      if (response.status === 200) {
+                        // Get the suspect image from the backend
+                        const imageResponse = await apiClient.get(`/reports/${reportId}/suspect-image`);
+                        if (imageResponse.status === 200) {
+                          const base64Image = imageResponse.data;
+                          setSuspectImg(`data:image/png;base64,${base64Image}`);
+                        }
+                      }
+                    }
+                  }, 'image/png');
+                }
               }
             } catch (error) {
-              console.error('Error fetching suspect image:', error);
+              console.error('Error saving suspect image:', error);
             }
           }
         }
@@ -108,7 +154,7 @@ export function useDetectionWebSocket(): UseDetectionWebSocketResult {
     return () => {
       unsubscribe();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [reportId]); // Add reportId to dependencies
 
   return {
     isConnected,
