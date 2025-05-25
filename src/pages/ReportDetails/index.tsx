@@ -239,7 +239,11 @@ function ReportDetails() {
                   <div className="scrollable-list">
                     {analysisResults.segmentations.length > 0 ? (
                       analysisResults.segmentations.map((segmentation, index) => (
-                        <div key={index} className="segmentation-item">
+                        <div 
+                          key={index} 
+                          className="segmentation-item"
+                          onClick={() => setSelectedDetection(segmentation)}
+                        >
                           <img
                             src={`data:image/png;base64,${segmentation.polygon}`}
                             alt={`Segmentation ${index + 1}`}
@@ -253,7 +257,6 @@ function ReportDetails() {
                                 return cameras.find(c => c.id === upload?.cameraId)?.name || 'Unknown';
                               })()
                             }</p>
-                            <p>Video: {report.uploads.find(u => u.id === segmentation.videoId)?.uploadUrl || 'Unknown'}</p>
                           </div>
                         </div>
                       ))
@@ -268,6 +271,34 @@ function ReportDetails() {
                 No analysis results available for this report
               </div>
             )}
+          </section>
+
+          <section className="report-section">
+            <h2>Selected Person</h2>
+            <div className="suspect-image-container">
+              {selectedDetection ? (
+                <div>
+                  <img 
+                    src={`data:image/png;base64,${selectedDetection.polygon}`}
+                    alt="Selected Person" 
+                    className="suspect-image"
+                  />
+                  <div className="detection-info">
+                    <p>Time: {formatVideoTime(selectedDetection.timestamp)}</p>
+                    <p>Camera: {
+                      (() => {
+                        const upload = report.uploads.find(u => u.id === selectedDetection.videoId);
+                        return cameras.find(c => c.id === upload?.cameraId)?.name || 'Unknown';
+                      })()
+                    }</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="no-suspect-image">
+                  Click on a segmentation to view person
+                </div>
+              )}
+            </div>
           </section>
 
           <section className="report-section">

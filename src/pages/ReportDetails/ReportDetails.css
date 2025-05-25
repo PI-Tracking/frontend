@@ -188,7 +188,12 @@
 }
 
 .segmentation-item {
-  cursor: default;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.segmentation-item:hover {
+  transform: translateY(-2px);
 }
 
 .segmentation-image {
@@ -290,4 +295,21 @@
   .uploads-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.detection-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #333;
+  border-radius: 4px;
+}
+
+.detection-info p {
+  margin: 0.5rem 0;
+  color: #aaa;
+}
+
+.detection-info p:first-child {
+  color: #fff;
+  font-weight: 500;
 } 
