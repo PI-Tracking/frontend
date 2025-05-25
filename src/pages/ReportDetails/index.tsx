@@ -90,7 +90,7 @@ function ReportDetails() {
               // Set map center based on first detection's camera location
               if (results.detections.length > 0 && reportData.uploads.length > 0) {
                 const firstUpload = reportData.uploads.find(
-                  upload => upload.id === results.detections[0].video_id
+                  upload => upload.id === results.detections[0].videoId
                 );
                 if (firstUpload && firstUpload.cameraId) {
                   // Use camera location for map center
@@ -212,9 +212,20 @@ function ReportDetails() {
                           className="detection-item"
                           onClick={() => setSelectedDetection(detection)}
                         >
-                          <p>Type: {detection.class_name}</p>
+                          <p>Type: {
+                            detection.className === 'weapon' ? 'Weapon' :
+                            detection.className === 'knife' ? 'Knife' :
+                            detection.className === 'face' ? 'Face' :
+                            detection.className
+                          }</p>
                           <p>Time: {formatVideoTime(detection.timestamp)}</p>
                           <p>Confidence: {(detection.confidence * 100).toFixed(2)}%</p>
+                          <p>Camera: {
+                            (() => {
+                              const upload = report.uploads.find(u => u.id === detection.videoId);
+                              return cameras.find(c => c.id === upload?.cameraId)?.name || 'Unknown';
+                            })()
+                          }</p>
                         </div>
                       ))
                     ) : (
@@ -234,7 +245,16 @@ function ReportDetails() {
                             alt={`Segmentation ${index + 1}`}
                             className="segmentation-image"
                           />
-                          <p>Time: {formatVideoTime(segmentation.timestamp)}</p>
+                          <div className="segmentation-info">
+                            <p>Time: {formatVideoTime(segmentation.timestamp)}</p>
+                            <p>Camera: {
+                              (() => {
+                                const upload = report.uploads.find(u => u.id === segmentation.videoId);
+                                return cameras.find(c => c.id === upload?.cameraId)?.name || 'Unknown';
+                              })()
+                            }</p>
+                            <p>Video: {report.uploads.find(u => u.id === segmentation.videoId)?.uploadUrl || 'Unknown'}</p>
+                          </div>
                         </div>
                       ))
                     ) : (

@@ -7,7 +7,7 @@
 interface Segmentation {
   id: number;
   polygon: Array<Array<number>>;
-  video_id: string;
+  videoId: string;
   timestamp: number;
 }
 
