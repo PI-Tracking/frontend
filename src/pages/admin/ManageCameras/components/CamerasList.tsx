@@ -1,6 +1,4 @@
 import {
-  ArrowDownTrayIcon,
-  DocumentTextIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 
@@ -39,12 +37,6 @@ export default function CamerasList({
           </div>
         </td>
         <td className="admin-actions flex gap-2">
-          <button>
-            <ArrowDownTrayIcon className="w-6 h-6 text-gray-500 hover:text-gray-800" />
-          </button>
-          <button>
-            <DocumentTextIcon className="w-6 h-6 text-gray-500 hover:text-gray-800" />
-          </button>
           <button onClick={() => handleEditCamera()}>
             <PencilSquareIcon className="w-6 h-6 text-gray-500 hover:text-gray-800" />
           </button>
