@@ -83,10 +83,10 @@ function VideoAnalysisPage() {
             style={{ minWidth: "250px" }}
           >
             <h3 className={styles.boxTitle}>Selected Suspect</h3>
-            {suspectImg === undefined ? (
+            {websocket.suspectImg === undefined && suspectImg === undefined ? (
               <span>Not following a suspect</span>
             ) : (
-              <img src={suspectImg} className={styles.suspectImage} />
+              <img src={websocket.suspectImg || suspectImg} className={styles.suspectImage} />
             )}
             <button
               className={styles.actionButton}
