@@ -8,6 +8,7 @@ import {
   VideoCameraIcon,
 } from "@heroicons/react/24/outline";
 import "./cameraMenuOptions.css";
+import useReportStore from "@hooks/useReportStore";
 
 type MenuOption = {
   id: string;
@@ -19,6 +20,7 @@ function CameraMenuOptions() {
   const [selectedOption, setSelectedOption] = useState<string>("camera");
   const navigate = useNavigate();
   const location = useLocation();
+  const { report } = useReportStore();
 
   const menuOptions: MenuOption[] = [
     { id: "document", icon: <DocumentIcon />, label: "Document" },
@@ -52,6 +54,7 @@ function CameraMenuOptions() {
 
   const handleOptionClick = (id: string) => {
     setSelectedOption(id);
+    const reportId = report?.id || "";
     switch (id) {
       case "document":
         navigate("/reports");
@@ -66,6 +69,11 @@ function CameraMenuOptions() {
         navigate("/upload-videos");
         break;
       case "video":
+        if (reportId) {
+          navigate(`/report/${reportId}`);
+        } else {
+          console.error("No report selected for video navigation");
+        }
         break;
       default:
         break;
