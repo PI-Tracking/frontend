@@ -22,7 +22,7 @@ async function requestNewAnalysis(
    *     status: BAD_REQUEST | UNAUTHORIZED | FORBIDDEN
    */
 
-  const endpoint = `${baseEndpoint}/live/camerasId=${camerasId.join(",")}`;
+  const endpoint = `${baseEndpoint}/live?camerasId=${encodeURIComponent(camerasId.join(","))}`;
   return apiClient.get(endpoint);
 }
 
