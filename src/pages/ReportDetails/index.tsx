@@ -366,7 +366,7 @@ function ReportDetails() {
           </section>
 
           <section className="report-section">
-            <h2>Detection Map</h2>
+            <h2>Camera Map</h2>
             <div className="map-container">
               <MapContainer 
                 center={mapCenter} 
@@ -392,12 +392,7 @@ function ReportDetails() {
               ))}
               </MapContainer>
             </div>
-            {(!currentAnalysisResults || currentAnalysisResults.detections.length === 0) && (
-              <div className="no-results-message">
-                No detections found in this report
-          </div>
-            )}
-          </section>
+            </section>
         </div>
 
         <div className="report-actions">
@@ -411,7 +406,7 @@ function ReportDetails() {
             className="view-map-button"
             onClick={() => navigate(`/map-tracking?reportId=${report.id}`)}
           >
-            View on Map
+            View Detections on Map
           </button>
         </div>
       </div>
