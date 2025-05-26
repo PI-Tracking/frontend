@@ -274,7 +274,7 @@
 }
 
 .draw-path-image {
-  background: url("./components/path.svg") no-repeat right;
+  background: url("./components/map.jpeg") no-repeat right;
   background-size: 40%;
   position: absolute;
   right: 50px;
