@@ -13,6 +13,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "./ReportDetails.css";
+import Select from "@components/Select";
 
 // Fix for default marker icon in Leaflet
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -37,13 +38,56 @@ function ReportDetails() {
   const { reportId } = useParams<{ reportId: string }>();
   const navigate = useNavigate();
   const [report, setReport] = useState<ReportResponseDTO | null>(null);
-  const [analysisResults, setAnalysisResults] = useState<AnalysisResponseDTO | null>(null);
+  const [allAnalysisResults, setAllAnalysisResults] = useState<Map<string, AnalysisResponseDTO>>(new Map());
+  const [selectedAnalysisId, setSelectedAnalysisId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedDetection, setSelectedDetection] = useState<any>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>(COIMBRA);
   const [firstDetection, setFirstDetection] = useState<any>(null);
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [suspectImage, setSuspectImage] = useState<string | null>(null);
+  const [processedAnalysisIds, setProcessedAnalysisIds] = useState<Set<string>>(new Set());
+
+  // Get current analysis results based on selection
+  const currentAnalysisResults = selectedAnalysisId ? allAnalysisResults.get(selectedAnalysisId) : null;
+
+  // Function to add new analysis results
+  const addNewAnalysisResults = (newResults: AnalysisResponseDTO) => {
+    setAllAnalysisResults(prev => {
+      const newMap = new Map(prev);
+      newMap.set(newResults.analysisId, newResults);
+      return newMap;
+    });
+  };
+
+  // Function to check for new analyses
+  const checkForNewAnalyses = async () => {
+    if (!reportId) return;
+
+    try {
+      const analysisResponse = await getAnalysisByReportId(reportId);
+      if (analysisResponse.status === 200) {
+        const newAnalysisIds = analysisResponse.data.analysisIds.filter(
+          id => !processedAnalysisIds.has(id)
+        );
+
+        for (const analysisId of newAnalysisIds) {
+          const resultsResponse = await getAnalysisResultsByAnalysisId(analysisId);
+          if (resultsResponse.status === 200) {
+            addNewAnalysisResults(resultsResponse.data as AnalysisResponseDTO);
+            setProcessedAnalysisIds(prev => new Set([...prev, analysisId]));
+            
+            // Set the first analysis as selected if none is selected
+            if (!selectedAnalysisId) {
+              setSelectedAnalysisId(analysisId);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error checking for new analyses:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchReportAndAnalysis = async () => {
@@ -72,38 +116,8 @@ function ReportDetails() {
             console.log("No suspect image available");
           }
           
-          // Fetch analysis IDs for the report
-        const analysisResponse = await getAnalysisByReportId(reportId);
-          if (analysisResponse.status === 200 && analysisResponse.data.analysisIds.length > 0) {
-            // Fetch the latest analysis results
-            const latestAnalysisId = analysisResponse.data.analysisIds[0];
-            const analysisResultsResponse = await getAnalysisResultsByAnalysisId(latestAnalysisId);
-            if (analysisResultsResponse.status === 200) {
-              const results = analysisResultsResponse.data as AnalysisResponseDTO;
-              setAnalysisResults(results);
-              
-              // Set first detection
-              if (results.detections.length > 0) {
-                setFirstDetection(results.detections[0]);
-              }
-              
-              // Set map center based on first detection's camera location
-              if (results.detections.length > 0 && reportData.uploads.length > 0) {
-                const firstUpload = reportData.uploads.find(
-                  upload => upload.id === results.detections[0].videoId
-                );
-                if (firstUpload && firstUpload.cameraId) {
-                  // Use camera location for map center
-                  const camera = cameras.find(
-                    cam => cam.id === firstUpload.cameraId
-                  );
-                  if (camera) {
-                    setMapCenter([camera.latitude, camera.longitude]);
-                  }
-                }
-              }
-            }
-          }
+          // Initial check for analyses
+          await checkForNewAnalyses();
         } else {
           toast.error("Failed to fetch report details");
         }
@@ -119,6 +133,34 @@ function ReportDetails() {
       fetchReportAndAnalysis();
     }
   }, [reportId]);
+
+  // Set up polling for new analyses
+  useEffect(() => {
+    if (!reportId) return;
+
+    const pollInterval = setInterval(checkForNewAnalyses, 5000); // Check every 5 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [reportId, processedAnalysisIds]);
+
+  // Update first detection and map center when new detections are added
+  useEffect(() => {
+    if (currentAnalysisResults && currentAnalysisResults.detections.length > 0 && !firstDetection && report) {
+      setFirstDetection(currentAnalysisResults.detections[0]);
+      
+      if (report.uploads && report.uploads.length > 0) {
+        const firstUpload = report.uploads.find(
+          upload => upload.id === currentAnalysisResults.detections[0].videoId
+        );
+        if (firstUpload?.cameraId) {
+          const camera = cameras.find(cam => cam.id === firstUpload.cameraId);
+          if (camera) {
+            setMapCenter([camera.latitude, camera.longitude]);
+          }
+        }
+      }
+    }
+  }, [currentAnalysisResults, firstDetection, report, cameras]);
 
   const formatVideoTime = (timestamp: number): string => {
     const date = new Date(timestamp);
@@ -200,72 +242,94 @@ function ReportDetails() {
 
           <section className="report-section">
             <h2>Analysis Results</h2>
-            {analysisResults ? (
-              <div className="analysis-results">
-                <div className="detections-list">
-                  <h3>Detections</h3>
-                  <div className="scrollable-list">
-                    {analysisResults.detections.length > 0 ? (
-                      analysisResults.detections.map((detection, index) => (
-                        <div
-                          key={index}
-                          className="detection-item"
-                          onClick={() => setSelectedDetection(detection)}
-                        >
-                          <p>Type: {
-                            detection.className === 'weapon' ? 'Weapon' :
-                            detection.className === 'knife' ? 'Knife' :
-                            detection.className === 'face' ? 'Face' :
-                            detection.className
-                          }</p>
-                          <p>Time: {formatVideoTime(detection.timestamp)}</p>
-                          <p>Confidence: {(detection.confidence * 100).toFixed(2)}%</p>
-                          <p>Camera: {
-                            (() => {
-                              const upload = report.uploads.find(u => u.id === detection.videoId);
-                              return cameras.find(c => c.id === upload?.cameraId)?.name || 'Unknown';
-                            })()
-                          }</p>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="no-results-message">No detections found</div>
-                    )}
-                  </div>
+            {allAnalysisResults.size > 0 ? (
+              <>
+                <div className="analysis-filter" style={{ marginBottom: '24px' }}>
+                  <Select
+                    value={selectedAnalysisId || ''}
+                    onChange={(e) => {
+                      setSelectedAnalysisId(e.target.value);
+                      // Don't clear selectedDetection when changing analysis
+                    }}
+                    options={Array.from(allAnalysisResults.keys()).map(id => ({
+                      value: id,
+                      label: `Analysis ${id.slice(0, 8)}...`
+                    }))}
+                    placeholder="Select Analysis"
+                  />
+                </div>
+                {currentAnalysisResults ? (
+                  <div className="analysis-results">
+                    <div className="detections-list">
+                      <h3>Detections</h3>
+                      <div className="scrollable-list">
+                        {currentAnalysisResults.detections.length > 0 ? (
+                          currentAnalysisResults.detections.map((detection, index) => (
+                            <div
+                              key={index}
+                              className="detection-item"
+                              onClick={() => setSelectedDetection(detection)}
+                            >
+                              <p>Type: {
+                                detection.className === 'weapon' ? 'Weapon' :
+                                detection.className === 'knife' ? 'Knife' :
+                                detection.className === 'face' ? 'Face' :
+                                detection.className
+                              }</p>
+                              <p>Time: {formatVideoTime(detection.timestamp)}</p>
+                              <p>Confidence: {(detection.confidence * 100).toFixed(2)}%</p>
+                              <p>Camera: {
+                                (() => {
+                                  const upload = report.uploads.find(u => u.id === detection.videoId);
+                                  return cameras.find(c => c.id === upload?.cameraId)?.name || 'Unknown';
+                                })()
+                              }</p>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="no-results-message">No detections found</div>
+                        )}
+                      </div>
                     </div>
 
-                <div className="segmentations-list">
-                  <h3>Segmentations</h3>
-                  <div className="scrollable-list">
-                    {analysisResults.segmentations.length > 0 ? (
-                      analysisResults.segmentations.map((segmentation, index) => (
-                        <div 
-                          key={index} 
-                          className="segmentation-item"
-                          onClick={() => setSelectedDetection(segmentation)}
-                        >
-                          <img
-                            src={`data:image/png;base64,${segmentation.polygon}`}
-                            alt={`Segmentation ${index + 1}`}
-                            className="segmentation-image"
-                          />
-                          <div className="segmentation-info">
-                            <p>Time: {formatVideoTime(segmentation.timestamp)}</p>
-                            <p>Camera: {
-                              (() => {
-                                const upload = report.uploads.find(u => u.id === segmentation.videoId);
-                                return cameras.find(c => c.id === upload?.cameraId)?.name || 'Unknown';
-                              })()
-                            }</p>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="no-results-message">No segmentations found</div>
-                    )}
+                    <div className="segmentations-list">
+                      <h3>Segmentations</h3>
+                      <div className="scrollable-list">
+                        {currentAnalysisResults.segmentations.length > 0 ? (
+                          currentAnalysisResults.segmentations.map((segmentation, index) => (
+                            <div 
+                              key={index} 
+                              className="segmentation-item"
+                              onClick={() => setSelectedDetection(segmentation)}
+                            >
+                              <img
+                                src={`data:image/png;base64,${segmentation.polygon}`}
+                                alt={`Segmentation ${index + 1}`}
+                                className="segmentation-image"
+                              />
+                              <div className="segmentation-info">
+                                <p>Time: {formatVideoTime(segmentation.timestamp)}</p>
+                                <p>Camera: {
+                                  (() => {
+                                    const upload = report.uploads.find(u => u.id === segmentation.videoId);
+                                    return cameras.find(c => c.id === upload?.cameraId)?.name || 'Unknown';
+                                  })()
+                                }</p>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="no-results-message">No segmentations found</div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                ) : (
+                  <div className="no-results-message">
+                    Select an analysis to view results
+                  </div>
+                )}
+              </>
             ) : (
               <div className="no-results-message">
                 No analysis results available for this report
@@ -328,7 +392,7 @@ function ReportDetails() {
               ))}
               </MapContainer>
             </div>
-            {(!analysisResults || analysisResults.detections.length === 0) && (
+            {(!currentAnalysisResults || currentAnalysisResults.detections.length === 0) && (
               <div className="no-results-message">
                 No detections found in this report
           </div>
