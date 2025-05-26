@@ -36,6 +36,7 @@ function UploadVideosPage() {
   const [referenceImage, setReferenceImage] = useState<File | undefined>(
     undefined
   );
+  const [reportName, setReportName] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -46,6 +47,10 @@ function UploadVideosPage() {
 
   const [showMap, setShowMap] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string>("");
+
+  const handleChange = (e) => {
+    setReportName(e.target.value);
+  };
 
   useEffect(() => {
     const fetchCameras = async () => {
@@ -190,6 +195,14 @@ function UploadVideosPage() {
       <section className="upload-videos">
         <div {...getRootProps()} className="video-uploader-container">
           <input {...getInputProps()} ref={inputRef} />
+          <span className="report-name-text">Create Report</span>
+          <input
+            type="text"
+            placeholder="Please enter a report name"
+            className="report-name-input"
+            value={reportName}
+            onChange={handleChange}
+          />
           {!videos.length && (
             <div className="upload-videos-icon">
               <MdUpload />
@@ -202,6 +215,7 @@ function UploadVideosPage() {
               {errorMessage || "Drop to upload or analyze"}
             </p>
           )}
+
           <button className="upload-videos-button" onClick={handleAddFileClick}>
             <AiOutlineFileAdd />
             {videos.length ? "Add more files" : "Select file"}
@@ -254,6 +268,7 @@ function UploadVideosPage() {
           <SubmitFilesButton
             files={videos}
             suspect={referenceImage}
+            reportName={reportName}
             setError={setErrorMessage}
           />
 

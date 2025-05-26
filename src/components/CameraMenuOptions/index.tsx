@@ -39,7 +39,7 @@ function CameraMenuOptions() {
       case "/upload-videos":
         setSelectedOption("share");
         break;
-      case "/report/*":
+      case location.pathname.startsWith("/report/") ? location.pathname : "":
         setSelectedOption("video");
         break;
       case "/map-tracking":
