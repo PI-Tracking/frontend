@@ -7,6 +7,7 @@ import { Report } from "@Types/Report";
 import { useState, useEffect } from "react";
 import { getAllReports, getReport } from "@api/report";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
+import { format } from "date-fns";
 
 //To surpass error of reportData being ApiError or ReportResponseDTO
 function isReportResponseDTO(data: unknown): data is ReportResponseDTO {
@@ -25,6 +26,7 @@ function ReportsPage() {
   const { setReport } = useReport();
   const navigate = useNavigate();
   const [reports, setReports] = useState<ReportResponseDTO[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const selectReport = (report: ReportResponseDTO) => {
     if (!report) return;
@@ -53,93 +55,113 @@ function ReportsPage() {
     navigate(`/map-tracking`);
   };
 
-  useEffect(() => {
-    const fectchReports = async () => {
-      // Fetch reports from the API
-      setReports([]);
-      const response = await getAllReports();
-      console.log("Reports response:", response);
-      if (response.status === 200) {
-        if (Array.isArray(response.data)) {
-          for (const report of response.data) {
-            // Call getReport for each report
-            const reportResponse = await getReport(report.id);
-            console.log("Report response:", reportResponse);
-            if (reportResponse.status === 200) {
-              const reportData = reportResponse.data;
-              if (
-                reportData &&
-                isReportResponseDTO(reportData) &&
-                !reports.includes(reportData)
-              ) {
-                setReports((prevReports) =>
-                  [reportData, ...prevReports].filter(
-                    (report, index, self) =>
-                      index === self.findIndex((r) => r.id === report.id)
-                  )
-                );
-              } else {
-                console.error("No data found for report:", report.id);
-              }
-            } else {
-              console.error(
-                "Failed to fetch report details:",
-                reportResponse.data
-              );
-            }
-          }
-        } else {
-          console.error("Unexpected response data format:", response.data);
-        }
-      } else {
-        console.error("Failed to fetch reports:", response.data);
-      }
-    };
-    if (reports.length === 0) {
-      // Fetch reports only if the reports array is empty
-      fectchReports();
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const viewReportDetails = (report: ReportResponseDTO) => {
+    if (!report) return;
+    navigate(`/report-details/${report.id}`);
+  };
 
   useEffect(() => {
-    console.log("Fetched reports:", reports);
-  }, [reports]);
+    const fetchReports = async () => {
+      setLoading(true);
+      try {
+        // Fetch reports from the API
+        const response = await getAllReports();
+        console.log("Reports response:", response);
+        if (response.status === 200) {
+          if (Array.isArray(response.data)) {
+            const reportsData: ReportResponseDTO[] = [];
+            for (const report of response.data) {
+              // Call getReport for each report
+              const reportResponse = await getReport(report.id);
+              console.log("Report response:", reportResponse);
+              if (reportResponse.status === 200) {
+                const reportData = reportResponse.data;
+                if (reportData && isReportResponseDTO(reportData)) {
+                  reportsData.push(reportData);
+                } else {
+                  console.error("No data found for report:", report.id);
+                }
+              } else {
+                console.error(
+                  "Failed to fetch report details:",
+                  reportResponse.data
+                );
+              }
+            }
+            // Sort reports by creation date (newest first)
+            reportsData.sort((a, b) => {
+              const dateA = new Date(a.name);
+              const dateB = new Date(b.name);
+              return dateB.getTime() - dateA.getTime();
+            });
+            setReports(reportsData);
+          } else {
+            console.error("Unexpected response data format:", response.data);
+          }
+        } else {
+          console.error("Failed to fetch reports:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="container">
+        <Navbar />
+        <div className="reports-section">
+          <div className="loading-message">Loading reports...</div>
+        </div>
+
+        <div className="menu-options">
+          <CameraMenuOptions />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
       <Navbar />
       <section className="reports-section">
-        <h1 className="reports-title">Reports</h1>
+        <h1 className="reports-title">Reports ({reports.length})</h1>
         <div className="reports-content">
-          <table className="reports-table">
-            <thead>
-              <tr className="dont_change">
-                <th>#</th>
-                <th>Creator</th>
-                <th>Date</th>
-                <th>Uploads</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reports.map((report, index) => (
-                <tr key={report.id}>
-                  <td>{reports.length - index}</td>
-                  <td>{report.creator.badgeId}</td>
-                  <td>{report.name}</td>
-                  <td>{report.uploads.length}</td>
-                  <td>
-                    <button
-                      className="view-report-button"
-                      onClick={() => selectReport(report)}
-                    >
-                      View Movements
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="reports-list">
+            {reports.map((report) => (
+              <div key={report.id} className="report-card">
+                <h2 className="report-name">{report.name}</h2>
+                <p className="report-date">
+                  Created: {format(new Date(report.name), "PPpp")}
+                </p>
+                <p className="report-creator">
+                  Creator: {report.creator.username}
+                </p>
+                <p className="report-uploads">
+                  Uploads: {report.uploads.length}
+                </p>
+                <div className="report-actions">
+                  <button
+                    className="view-report-button"
+                    onClick={() => selectReport(report)}
+                  >
+                    View Movements
+                  </button>
+                  <button
+                    className="view-details-button"
+                    onClick={() => viewReportDetails(report)}
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

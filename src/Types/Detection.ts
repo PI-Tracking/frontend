@@ -13,10 +13,10 @@ type Point = {
 
 interface Detection {
   timestamp: number;
-  class_name: string;
+  className: string;
   confidence: number;
   coordinates: Point[];
-  video_id: string;
+  videoId: string;
 }
 
 export type { Detection };
