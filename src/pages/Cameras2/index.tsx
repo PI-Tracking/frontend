@@ -128,9 +128,11 @@ function CamerasPageMap() {
         </section>
       )}
 
-      {selectedCameras.map((camera) => (
-        <VideoViewer key={camera.id} frame={frames[camera.id]} />
-      ))}
+      <div className="viewer-wrapper">
+        {selectedCameras.map((camera) => (
+          <VideoViewer key={camera.id} frame={frames[camera.id]} />
+        ))}
+      </div>
 
       <div className="menu-options">
         <CameraMenuOptions />
