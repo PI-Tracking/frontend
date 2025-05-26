@@ -5,7 +5,7 @@ import {
   MapContainer,
   TileLayer,
   Marker,
-  Polyline,
+  //Polyline,
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
@@ -18,6 +18,7 @@ import { getAllCameras } from "@api/camera";
 import { ApiError } from "@api/ApiError";
 import { Camera } from "@Types/Camera";
 import { Popup } from "react-leaflet";
+import Routing from "../MapTrack/components/Routing";
 
 function MapTrackingPage() {
   const [cameras, setCameras] = useState<Camera[]>([]);
@@ -183,10 +184,11 @@ function MapTrackingPage() {
               );
             })}
             {coordinates.length > 1 && (
-              <Polyline
-                positions={coordinates}
-                pathOptions={{ color: "blue" }}
-              />
+              // <Polyline
+              //   positions={coordinates}
+              //   pathOptions={{ color: "blue" }}
+              // />
+              <Routing positions={coordinates}/>
             )}
           </MapContainer>
         </section>

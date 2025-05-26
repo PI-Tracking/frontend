@@ -1,19 +1,9 @@
-import { useState, useEffect } from "react";
 import Navbar from "@components/Navbar";
 import "./Profile.css";
 import { useAuth } from "@hooks/useAuth";
 
 function ProfilePage() {
-  const [activeTime, setActiveTime] = useState(0);
   const auth = useAuth();
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveTime((prevTime) => prevTime + 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   if (!auth.user) {
     return <div>Loading...</div>;
@@ -39,12 +29,6 @@ function ProfilePage() {
               <span className="label">Role:</span>
               <span className="value">
                 {auth.user.admin ? "Admin" : "User"}
-              </span>
-            </div>
-            <div className="info-item">
-              <span className="label">Active Time:</span>
-              <span className="value">
-                {Math.floor(activeTime / 60)} minutes
               </span>
             </div>
           </div>

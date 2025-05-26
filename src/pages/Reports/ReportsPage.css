@@ -111,6 +111,61 @@
 
 .menu-options {
   margin-top: auto;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.reports-content {
+  overflow-x: auto;
+}
+
+/* New table styles */
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #383838;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.reports-table thead {
+  background-color: #f9ba08;
+}
+
+.reports-table th,
+.reports-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #555;
+}
+
+.reports-table th {
+  font-weight: 600;
+  color: #000000;
+}
+
+.reports-table td {
+  color: #dddddd;
+}
+
+.view-report-button {
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  color: #242527;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.view-report-button:hover {
+  background-color: #f9ba08;
 }
 
 /* Responsive design */
@@ -131,4 +186,23 @@
   .view-details-button {
     width: 100%;
   }
+}
+
+.menu-options {
+  margin-top: auto;
+}
+
+/* Optional: Style scrollbars for dark theme */
+.reports-content::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.reports-content::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 4px;
+}
+
+.reports-content::-webkit-scrollbar-track {
+  background-color: transparent;
 }

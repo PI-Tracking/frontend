@@ -34,13 +34,14 @@
 .profile-avatar {
   width: 100px;
   height: 100px;
-  background-color: #777;
+  background-color: #f9ba08;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-weight: 600;
   font-size: 2.5rem;
-  color: white;
+  color: rgb(0, 0, 0);
   margin-bottom: 1rem;
 }
 

@@ -55,7 +55,7 @@
 .menu-option svg {
   width: 24px;
   height: 24px;
-  color: white;
+  color: #f9ba08;
   pointer-events: none;
   z-index: 2;
 }

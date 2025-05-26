@@ -21,6 +21,7 @@ function AdminLogs() {
       try {
         const response = await getAllLogs();
         setLogs(response.data);
+        console.log("Logs response:", response);
       } catch (error) {
         console.error("Error fetching logs:", error);
       }
