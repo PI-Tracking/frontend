@@ -1,4 +1,3 @@
-import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
 import useReportStore from "@hooks/useReportStore";
 import { UUID } from "@Types/Base";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
@@ -8,11 +7,12 @@ import { useParams } from "react-router-dom";
 /* MOCK DATA */
 import { requestReanalysis } from "@api/analysis";
 import SelectedSuspectDTO from "@Types/SelectedSuspectDTO";
+import { useAuth } from "@hooks/useAuth";
 
 export default function useVideoAnalysis() {
   const { id: paramReportId } = useParams();
-  const websocket = useDetectionWebSocket();
   const { report, setInitialAnalysisId } = useReportStore();
+  const websocket = useAuth().websocket;
   const [suspectImg, setSuspectImg] = useState<string | undefined>(undefined);
   const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis | null>(
     null
@@ -104,8 +104,8 @@ export default function useVideoAnalysis() {
     websocket.connect(data.analysisId);
 
     // Find the segmentation at the clicked timestamp
-    const segmentation = selectedCamera?.segmentations.find(s => 
-      Math.abs(s.timestamp - timestamp * 1000) < 200
+    const segmentation = selectedCamera?.segmentations.find(
+      (s) => Math.abs(s.timestamp - timestamp * 1000) < 200
     );
     if (segmentation) {
       setSuspectImg(`data:image/png;base64,${segmentation.polygon}`);

@@ -27,6 +27,7 @@ import CamerasPageMap from "@pages/Cameras2";
 import ResetPasswordPage from "@pages/Reset password";
 import MapTrackingPage from "@pages/MapTrack/MapTrackingPage";
 import ReportDetails from "@pages/ReportDetails";
+import ProfilePage from "@pages/Profile";
 
 function RequireAuth({ admin }: { admin: boolean }) {
   const auth: IAuthContext = useAuth();
@@ -46,8 +47,6 @@ function RequireAuth({ admin }: { admin: boolean }) {
   return <Outlet />;
 }
 
-import ProfilePage from "@pages/Profile";
-
 function App() {
   return (
     <AuthProvider>
@@ -66,7 +65,10 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/report/:id" element={<VideoAnalysisPage />} />
-            <Route path="/report-details/:reportId" element={<ReportDetails />} />
+            <Route
+              path="/report-details/:reportId"
+              element={<ReportDetails />}
+            />
             <Route path="/map-tracking" element={<MapTrackingPage />} />
           </Route>
 
