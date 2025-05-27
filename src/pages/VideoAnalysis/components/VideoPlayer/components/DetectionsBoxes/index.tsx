@@ -45,21 +45,28 @@ export default function DetectionBoxes({
     normalizeDetection(detection, width, height, video_width, video_height)
   );
 
-  return normalizedDetections.map((detection, index) => {
-    if (Math.abs(detection.timestamp - currentTimestamp * 1000) < DT) {
-      return (
-        <div
-          key={index}
-          className={styles.detectionBox}
-          style={{
-            left: `${detection.coordinates[0].x}px`,
-            top: `${detection.coordinates[0].y}px`,
-            width: `${detection.coordinates[1].x - detection.coordinates[0].x}px`,
-            height: `${detection.coordinates[1].y - detection.coordinates[0].y}px`,
-            borderColor: "red",
-          }}
-        ></div>
-      );
+  let detectionToShow = undefined;
+  for (const detection of normalizedDetections) {
+    const diff = currentTimestamp * 1000 - detection.timestamp;
+    if (0 < diff && diff < DT) {
+      detectionToShow = detection;
     }
-  });
+  }
+
+  if (detectionToShow === undefined) {
+    return <></>;
+  }
+
+  return (
+    <div
+      className={styles.detectionBox}
+      style={{
+        left: `${detectionToShow.coordinates[0].x}px`,
+        top: `${detectionToShow.coordinates[0].y}px`,
+        width: `${detectionToShow.coordinates[1].x - detectionToShow.coordinates[0].x}px`,
+        height: `${detectionToShow.coordinates[1].y - detectionToShow.coordinates[0].y}px`,
+        borderColor: "red",
+      }}
+    ></div>
+  );
 }

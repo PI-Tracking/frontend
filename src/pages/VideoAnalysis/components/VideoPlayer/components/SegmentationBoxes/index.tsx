@@ -32,24 +32,28 @@ export default function SegmentationBoxes({
     })),
   }));
 
-  return normalizedSegmentations.map((segmentation, index) => {
-    if (Math.abs(segmentation.timestamp - currentTimestamp * 1000) < DT) {
-      return (
-        <div
-          key={index}
-          className={styles.segmentationBox}
-          style={{
-            left: `${Math.min(...segmentation.polygon.map((p) => p.x))}px`,
-            top: `${Math.min(...segmentation.polygon.map((p) => p.y))}px`,
-            width: `${Math.max(...segmentation.polygon.map((p) => p.x)) - Math.min(...segmentation.polygon.map((p) => p.x))}px`,
-            height: `${Math.max(...segmentation.polygon.map((p) => p.y)) - Math.min(...segmentation.polygon.map((p) => p.y))}px`,
-            borderColor: "blue",
-          }}
-        >
-          {segmentation.id}
-        </div>
-      );
+  let segmentationToShow = undefined;
+  for (const segmentation of normalizedSegmentations) {
+    const diff = currentTimestamp * 1000 - segmentation.timestamp;
+    if (0 < diff && diff < DT) {
+      segmentationToShow = segmentation;
     }
-    return null;
-  });
+  }
+
+  if (segmentationToShow === undefined) {
+    return <></>;
+  }
+
+  return (
+    <div
+      className={styles.detectionBox}
+      style={{
+        left: `${segmentationToShow.coordinates[0].x}px`,
+        top: `${segmentationToShow.coordinates[0].y}px`,
+        width: `${segmentationToShow.coordinates[1].x - segmentationToShow.coordinates[0].x}px`,
+        height: `${segmentationToShow.coordinates[1].y - segmentationToShow.coordinates[0].y}px`,
+        borderColor: "red",
+      }}
+    ></div>
+  );
 }
