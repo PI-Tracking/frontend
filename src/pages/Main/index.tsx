@@ -29,7 +29,7 @@ function MainPage() {
             </p>
           </div>
         </section>
-        <section className="detect-weapons-section">
+        <section className="detect-weapons-section section-wave-bottom">
           <div className="weapons-content">
             <h1>Weapon Detection</h1>
             <p className="weapons-description">
@@ -65,7 +65,7 @@ function MainPage() {
           </div>
           <div className="detect-weapons"></div>
         </section>
-        <section className="track-subject">
+        <section className="track-subject section-wave-top section-wave-bottom">
           <div className="track-content">
             <h1>Track Subject</h1>
             <p className="track-description">
@@ -104,7 +104,7 @@ function MainPage() {
           </div>
           <div className="track-subject-image"></div>
         </section>
-        <section className="draw-path">
+        <section className="draw-path section-wave-top">
           <div className="path-content">
             <h1>Draw Path</h1>
             <p className="path-description">

@@ -51,8 +51,8 @@
 
 .footer-divider {
   border: 0;
-  height: 1px;
-  background-color: rgba(0, 0, 0, 0.2);
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.3);
   margin: 10px 0;
 }
 
@@ -92,6 +92,10 @@
 .social-icon {
   color: rgb(0, 0, 0);
   font-size: 16px;
+}
+
+.social-icon:hover {
+  color: white;
 }
 
 /* Responsive adjustments */

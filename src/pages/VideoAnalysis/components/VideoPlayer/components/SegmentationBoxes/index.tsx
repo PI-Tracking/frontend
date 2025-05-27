@@ -22,8 +22,7 @@ export default function SegmentationBoxes({
     return;
   }
 
-  const DT = 200;
-
+  const DT = 500;
   const normalizedSegmentations = segmentations.map((segmentation) => ({
     ...segmentation,
     polygon: segmentation.polygon.map((coords) => ({
@@ -33,27 +32,30 @@ export default function SegmentationBoxes({
   }));
 
   let segmentationToShow = undefined;
+  // Could be optimized with binary search
   for (const segmentation of normalizedSegmentations) {
-    const diff = currentTimestamp * 1000 - segmentation.timestamp;
-    if (0 < diff && diff < DT) {
+    const diff = currentTimestamp*1000 - segmentation.timestamp;
+    if (0 <= diff && diff < DT) {
       segmentationToShow = segmentation;
     }
   }
-
+  console.log("segmentationToShow", segmentationToShow);
   if (segmentationToShow === undefined) {
     return <></>;
   }
-
+  
+  const pointsString = segmentationToShow.polygon.map(p => `${p.x},${p.y}`).join(' ');
   return (
-    <div
-      className={styles.detectionBox}
-      style={{
-        left: `${segmentationToShow.coordinates[0].x}px`,
-        top: `${segmentationToShow.coordinates[0].y}px`,
-        width: `${segmentationToShow.coordinates[1].x - segmentationToShow.coordinates[0].x}px`,
-        height: `${segmentationToShow.coordinates[1].y - segmentationToShow.coordinates[0].y}px`,
-        borderColor: "red",
-      }}
-    ></div>
+    <div className={styles.segmentationBox}>
+      <svg width={width} height={height} className={styles.svgContainer}>
+        <polygon 
+          points={pointsString}
+          fill="lightblue"
+          fill-opacity=".25"
+          stroke="#0000FF"
+          strokeWidth="2"
+        />
+      </svg>
+    </div>
   );
 }

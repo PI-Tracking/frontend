@@ -42,14 +42,10 @@ function Footer() {
           </div>
 
           <div className="footer-social">
-            <a href="#" className="social-icon">
-              <FaFacebookF />
-            </a>
-            <a href="#" className="social-icon">
-              <AiFillLinkedin />
-            </a>
-            <a href="#" className="social-icon">
-              <BsTwitterX />
+            <a>
+            <p className="footer-social-text">
+              Follow us on:
+            </p>
             </a>
             <a
               href="https://github.com/PI-Tracking"
@@ -58,9 +54,6 @@ function Footer() {
               rel="noopener noreferrer"
             >
               <FaGithub />
-            </a>
-            <a href="#" className="social-icon">
-              <SiInstagram />
             </a>
           </div>
         </div>

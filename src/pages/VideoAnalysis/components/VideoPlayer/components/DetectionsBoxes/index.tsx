@@ -27,6 +27,8 @@ interface IDetectionBoxes {
   video_height: number;
 }
 
+
+
 export default function DetectionBoxes({
   detections,
   width,
@@ -38,20 +40,22 @@ export default function DetectionBoxes({
   if (!detections) {
     return;
   }
-
-  const DT = 200;
+  const DT = 500;
 
   const normalizedDetections = detections.map((detection) =>
     normalizeDetection(detection, width, height, video_width, video_height)
   );
-
+  
   let detectionToShow = undefined;
+  // Could be optimized with binary search
+  // but for now, we just iterate through the detections
   for (const detection of normalizedDetections) {
-    const diff = currentTimestamp * 1000 - detection.timestamp;
-    if (0 < diff && diff < DT) {
+    const diff = currentTimestamp*1000 - detection.timestamp;
+    if (0 <= diff && diff < DT) {
       detectionToShow = detection;
     }
   }
+  console.log("detectionToShow", detectionToShow);
 
   if (detectionToShow === undefined) {
     return <></>;
