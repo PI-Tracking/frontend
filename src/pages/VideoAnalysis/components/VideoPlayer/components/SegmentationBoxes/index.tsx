@@ -34,7 +34,7 @@ export default function SegmentationBoxes({
   let segmentationToShow = undefined;
   // Could be optimized with binary search
   for (const segmentation of normalizedSegmentations) {
-    const diff = currentTimestamp*1000 - segmentation.timestamp;
+    const diff = currentTimestamp * 1000 - segmentation.timestamp;
     if (0 <= diff && diff < DT) {
       segmentationToShow = segmentation;
     }
@@ -43,16 +43,19 @@ export default function SegmentationBoxes({
   if (segmentationToShow === undefined) {
     return <></>;
   }
-  
-  const pointsString = segmentationToShow.polygon.map(p => `${p.x},${p.y}`).join(' ');
+
+  const pointsString = segmentationToShow.polygon
+    .map((p) => `${p.x},${p.y}`)
+    .join(" ");
   return (
     <div className={styles.segmentationBox}>
       <svg width={width} height={height} className={styles.svgContainer}>
-        <polygon 
+        <polygon
           points={pointsString}
           fill="lightblue"
           fill-opacity=".25"
           stroke="#0000FF"
+          stroke-opacity=".75"
           strokeWidth="2"
         />
       </svg>
