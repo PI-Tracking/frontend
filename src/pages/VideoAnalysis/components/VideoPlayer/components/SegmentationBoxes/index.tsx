@@ -75,7 +75,7 @@ export default function SegmentationBoxes({
   let segmentationToShow = undefined;
   // Could be optimized with binary search
   for (const segmentation of normalizedSegmentations) {
-    const diff = currentTimestamp * 1000 - segmentation.timestamp;
+    const diff = currentTimestamp * 1000 - segmentation.timestamp + 100;
     if (0 <= diff && diff < DT) {
       segmentationToShow = segmentation;
     }

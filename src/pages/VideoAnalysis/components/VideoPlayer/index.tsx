@@ -48,16 +48,19 @@ function VideoPlayer({
     const containerAspectRatio = 16 / 9; // certo
 
     const rect = videoElement.getBoundingClientRect();
-    const scale_width = videoElement.videoWidth / containerWidth;
-    const scale_height = videoElement.videoHeight / containerHeight;
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
 
+    let scale_width = videoElement.videoWidth / containerWidth;
+    let scale_height = videoElement.videoHeight / containerHeight;
+
     if (videoAspectRatio > containerAspectRatio) {
       const displayHeight = containerWidth / videoAspectRatio;
+      scale_height = videoElement.videoHeight / displayHeight;
       y = y - (containerHeight - displayHeight) / 2;
     } else {
       const displayWidth = containerHeight * videoAspectRatio;
+      scale_width = videoElement.videoWidth / displayWidth;
       x = x - (containerWidth - displayWidth) / 2;
     }
 
