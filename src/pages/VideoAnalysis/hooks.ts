@@ -108,7 +108,7 @@ export default function useVideoAnalysis() {
       (s) => Math.abs(s.timestamp - timestamp * 1000) < 200
     );
     if (segmentation) {
-      setSuspectImg(`data:image/png;base64,${segmentation.polygon}`);
+      setSuspectImg(``);
     }
   };
 

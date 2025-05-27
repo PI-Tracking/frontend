@@ -13,9 +13,7 @@ function Footer() {
 
           <div className="footer-brand">Tracking</div>
 
-          <div className="footer-link-button">
-            <button className="link-btn">Link</button>
-          </div>
+          <div className="footer-link-button"></div>
         </div>
 
         <hr className="footer-divider" />
@@ -25,29 +23,37 @@ function Footer() {
             <a href="/" className="footer-nav-link">
               Home
             </a>
-            <a href="/about" className="footer-nav-link">
+            <a
+              href="https://pi-tracking.github.io/microsite/"
+              className="footer-nav-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               About
             </a>
-            <a href="/contact" className="footer-nav-link">
+            <a
+              href="https://github.com/PI-Tracking"
+              className="footer-nav-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Contact
             </a>
           </div>
 
           <div className="footer-social">
-            <a href="#" className="social-icon">
-              <FaFacebookF />
+            <a>
+            <p className="footer-social-text">
+              Follow us on:
+            </p>
             </a>
-            <a href="#" className="social-icon">
-              <AiFillLinkedin />
-            </a>
-            <a href="#" className="social-icon">
-              <BsTwitterX />
-            </a>
-            <a href="#" className="social-icon">
+            <a
+              href="https://github.com/PI-Tracking"
+              className="social-icon"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FaGithub />
-            </a>
-            <a href="#" className="social-icon">
-              <SiInstagram />
             </a>
           </div>
         </div>

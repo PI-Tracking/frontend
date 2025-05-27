@@ -3,13 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { LoginDTO } from "@Types/LoginDTO";
-import logo from "@assets/logo.png";
+import logo from "@assets/logo_white.png";
 import styles from "./styles.module.css";
 
 import Curve from "./assets/Curve.svg";
 import Circles from "./assets/Circles.svg";
 import { useAuth } from "@hooks/useAuth";
 import { ResetDTO } from "@Types/ResetDTO";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+
+// import fontawesome
 
 const isEmptyString = (string: string) => !string || string.trim() === "";
 
@@ -148,35 +153,47 @@ function LoginPage() {
       </div>
       <section>
         <div className={styles.loginContainer}>
-          <img src={logo} alt="Logo" className={styles.loginLogo} />
+          <img
+            src={logo}
+            onClick={() => navigate("/")}
+            alt="Logo"
+            className={styles.loginLogo}
+          />
           <div className={styles.loginBox}>
-            <h2>Dashboard Login</h2>
+            <h2>DASHBOARD LOGIN</h2>
             <form onSubmit={handleLogin}>
               <div className={styles.inputGroup}>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  required
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  required
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                />
+                <div className={styles.iconInputWrapper}>
+                  <FontAwesomeIcon icon={faUser} className={styles.inputIcon} />
+                  <input
+                    type="text"
+                    placeholder="USERNAME"
+                    required
+                    value={formData.username}
+                    onChange={(e) =>
+                      setFormData({ ...formData, username: e.target.value })
+                    }
+                  />
+                </div>
+                <div className={styles.iconInputWrapper}>
+                  <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
+                  <input
+                    type="password"
+                    placeholder="PASSWORD"
+                    required
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                  />
+                </div>
               </div>
               {error && <span className={styles.errorMessage}>{error}</span>}
               <button type="submit" className={styles.loginBtn}>
-                Login
+                LOGIN
               </button>
             </form>
+
             <a
               href="#"
               className={styles.forgotPassword}

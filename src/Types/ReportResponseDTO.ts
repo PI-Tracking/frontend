@@ -10,6 +10,8 @@ export interface UploadData {
 export interface ReportResponseDTO {
   id: UUID;
   name: string;
+  date: string;
   uploads: UploadData[];
   creator: User;
+  createdAt: Date;
 }

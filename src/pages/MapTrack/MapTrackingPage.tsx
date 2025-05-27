@@ -19,8 +19,11 @@ import { ApiError } from "@api/ApiError";
 import { Camera } from "@Types/Camera";
 import { Popup } from "react-leaflet";
 import Routing from "../MapTrack/components/Routing";
+import { useParams } from "react-router-dom";
 
 function MapTrackingPage() {
+  const { analysisId } = useParams();
+
   const [cameras, setCameras] = useState<Camera[]>([]);
   const { report } = useReportStore();
   const [realDetections, setRealDetections] = useState<CameraTimeIntervalDTO[]>(
@@ -71,17 +74,24 @@ function MapTrackingPage() {
       try {
         const analysis = await getAnalysisByReportId(report.id);
         console.log("Analysis response:", analysis);
-        if ("data" in analysis && Array.isArray(analysis.data.analysisIds)) {
-          const last =
-            analysis.data.analysisIds[analysis.data.analysisIds.length - 1];
-          console.log("Last analysis ID:", last);
-          const response = await getAnalysisDetections(last);
-          const detections = response.data as CameraTimeIntervalDTO[];
-          setRealDetections(detections);
-          console.log("Detections response:", detections);
-        } else {
+
+        if (
+          !("data" in analysis) ||
+          !Array.isArray(analysis.data.analysisIds)
+        ) {
           console.error("Invalid response format:", analysis);
         }
+
+        const selectedAnalysisId =
+          analysisId ??
+          analysis.data.analysisIds[analysis.data.analysisIds.length - 1];
+        console.log("Selected analysis ID:", selectedAnalysisId);
+
+        const response = await getAnalysisDetections(selectedAnalysisId);
+        const detections = response.data as CameraTimeIntervalDTO[];
+
+        setRealDetections(detections);
+        console.log("Detections response:", detections);
       } catch (error) {
         console.error("Error fetching detections:", error);
       }
@@ -89,7 +99,7 @@ function MapTrackingPage() {
 
     fetchCameras();
     fetchDetections();
-  }, [report]);
+  }, [report]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (realDetections.length > 0 && cameras.length > 0) {
@@ -188,7 +198,7 @@ function MapTrackingPage() {
               //   positions={coordinates}
               //   pathOptions={{ color: "blue" }}
               // />
-              <Routing positions={coordinates}/>
+              <Routing positions={coordinates} />
             )}
           </MapContainer>
         </section>

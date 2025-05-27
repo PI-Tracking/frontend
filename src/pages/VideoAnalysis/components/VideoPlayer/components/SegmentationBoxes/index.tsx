@@ -1,6 +1,45 @@
 import { Segmentation } from "@Types/Segmentation";
 import styles from "./styles.module.css";
 
+function normalizeSegmentation(
+  segmentation: Segmentation,
+  containerWidth: number,
+  containerHeight: number,
+  video_width: number,
+  video_height: number
+): Segmentation {
+  // Calculate actual displayed video dimensions
+  const videoAspectRatio = video_width / video_height;
+  const containerAspectRatio = containerWidth / containerHeight;
+
+  let displayWidth,
+    displayHeight,
+    offsetX = 0,
+    offsetY = 0;
+
+  if (videoAspectRatio > containerAspectRatio) {
+    // Video is wider - letterboxed (black bars top/bottom)
+    displayWidth = containerWidth;
+    displayHeight = containerWidth / videoAspectRatio;
+    offsetY = (containerHeight - displayHeight) / 2;
+  } else {
+    // Video is taller - pillarboxed (black bars left/right)
+    displayHeight = containerHeight;
+    displayWidth = containerHeight * videoAspectRatio;
+    offsetX = (containerWidth - displayWidth) / 2;
+  }
+
+  const normalizedPolygon = segmentation.polygon.map((coords) => [
+    (coords[0] / video_width) * displayWidth + offsetX,
+    (coords[1] / video_height) * displayHeight + offsetY,
+  ]);
+
+  return {
+    ...segmentation,
+    polygon: normalizedPolygon,
+  };
+}
+
 interface ISegmentationBoxes {
   segmentations: Segmentation[];
   width: number;
@@ -22,34 +61,46 @@ export default function SegmentationBoxes({
     return;
   }
 
-  const DT = 200;
+  const DT = 500;
+  const normalizedSegmentations = segmentations.map((segmentation) =>
+    normalizeSegmentation(
+      segmentation,
+      width,
+      height,
+      video_width,
+      video_height
+    )
+  );
 
-  const normalizedSegmentations = segmentations.map((segmentation) => ({
-    ...segmentation,
-    polygon: segmentation.polygon.map((coords) => ({
-      x: (coords[0] / video_width) * width,
-      y: (coords[1] / video_height) * height,
-    })),
-  }));
-
-  return normalizedSegmentations.map((segmentation, index) => {
-    if (Math.abs(segmentation.timestamp - currentTimestamp * 1000) < DT) {
-      return (
-        <div
-          key={index}
-          className={styles.segmentationBox}
-          style={{
-            left: `${Math.min(...segmentation.polygon.map((p) => p.x))}px`,
-            top: `${Math.min(...segmentation.polygon.map((p) => p.y))}px`,
-            width: `${Math.max(...segmentation.polygon.map((p) => p.x)) - Math.min(...segmentation.polygon.map((p) => p.x))}px`,
-            height: `${Math.max(...segmentation.polygon.map((p) => p.y)) - Math.min(...segmentation.polygon.map((p) => p.y))}px`,
-            borderColor: "blue",
-          }}
-        >
-          {segmentation.id}
-        </div>
-      );
+  let segmentationToShow = undefined;
+  // Could be optimized with binary search
+  for (const segmentation of normalizedSegmentations) {
+    const diff = currentTimestamp * 1000 - segmentation.timestamp + 100;
+    if (0 <= diff && diff < DT) {
+      segmentationToShow = segmentation;
     }
-    return null;
-  });
+  }
+
+  if (segmentationToShow === undefined) {
+    return <></>;
+  }
+
+  const pointsString = segmentationToShow.polygon
+    .map((coords) => `${coords[0]},${coords[1]}`)
+    .join(" ");
+
+  return (
+    <div className={styles.segmentationBox}>
+      <svg width={width} height={height} className={styles.svgContainer}>
+        <polygon
+          points={pointsString}
+          fill="lightblue"
+          fillOpacity=".25"
+          stroke="#0000FF"
+          strokeOpacity=".75"
+          strokeWidth="2"
+        />
+      </svg>
+    </div>
+  );
 }

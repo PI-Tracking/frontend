@@ -5,6 +5,7 @@ import useReport from "@hooks/useReportStore";
 import { useNavigate } from "react-router-dom";
 import { Report } from "@Types/Report";
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
 import { getAllReports, getReport } from "@api/report";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
 //To surpass error of reportData being ApiError or ReportResponseDTO
@@ -29,24 +30,13 @@ function ReportsPage() {
   const selectReport = (report: ReportResponseDTO) => {
     if (!report) return;
     console.log("Selected report ID:", report.id);
+
     //Transform the report to match the Report type
     const transformedReport: Report = {
       id: report.id,
       name: report.name,
-      creator: {
-        badgeId: "",
-        username: "",
-        email: "",
-        active: false,
-        reports: [],
-        admin: false,
-        credentialsNonExpired: false,
-        accountNonExpired: false,
-        accountNonLocked: false,
-        authorities: [],
-        enabled: false,
-      },
-      createdAt: new Date(),
+      creator: report.creator,
+      createdAt: report.createdAt,
       uploads: [],
     };
     setReport(transformedReport);
@@ -134,6 +124,9 @@ function ReportsPage() {
             {reports.map((report) => (
               <div key={report.id} className="report-card">
                 <h2 className="report-name">{report.name}</h2>
+                <p className="report-date">
+                  Created: {format(new Date(report.createdAt), "PPpp")}
+                </p>
                 <p className="report-creator">
                   Creator: {report.creator.username}
                 </p>
