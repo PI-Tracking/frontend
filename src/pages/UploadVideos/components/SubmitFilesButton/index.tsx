@@ -114,6 +114,7 @@ function SubmitFilesButton({
       setInitialAnalysisId(
         (requestAnalysisResponse.data as { analysisId: string }).analysisId
       );
+      auth.websocket.setAnalysing(true);
       navigate(`/report/${id}`);
     } catch (error) {
       console.log(error);

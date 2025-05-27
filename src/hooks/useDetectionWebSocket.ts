@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 interface UseDetectionWebSocketResult {
   isConnected: boolean;
   analysing: boolean;
+  setAnalysing: (value: boolean) => void;
   currentAnalysisId: UUID;
   connect: (analysis_id: UUID) => void;
   disconnect: () => void;
@@ -33,16 +34,16 @@ function useDetectionWebSocket(): UseDetectionWebSocketResult {
 
     checkConnection();
     const interval = setInterval(checkConnection, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
-  const connect = useCallback((analysis_id: UUID) => {
-    setCurrentAnalysisId(analysis_id);
-    detectionWebSocket.connect(analysis_id);
-
-    setAnalysing(true);
-  }, []);
+  const connect = useCallback(
+    (analysis_id: UUID) => {
+      setCurrentAnalysisId(analysis_id);
+      detectionWebSocket.connect(analysis_id);
+    },
+    [setCurrentAnalysisId]
+  );
 
   const disconnect = useCallback(() => {
     detectionWebSocket.disconnect();
@@ -162,6 +163,7 @@ function useDetectionWebSocket(): UseDetectionWebSocketResult {
 
   return {
     isConnected,
+    setAnalysing,
     analysing,
     currentAnalysisId,
     connect,

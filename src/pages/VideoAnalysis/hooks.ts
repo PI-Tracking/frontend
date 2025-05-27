@@ -102,7 +102,7 @@ export default function useVideoAnalysis() {
 
     const data = response.data as { analysisId: string };
     websocket.connect(data.analysisId);
-
+    websocket.setAnalysing(true);
     // Find the segmentation at the clicked timestamp
     const segmentation = selectedCamera?.segmentations.find(
       (s) => Math.abs(s.timestamp - timestamp * 1000) < 200
