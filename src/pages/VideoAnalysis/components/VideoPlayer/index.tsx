@@ -5,12 +5,14 @@ import DetectionsBoxes from "./components/DetectionsBoxes";
 import styles from "./styles.module.css";
 import useReportStore from "@hooks/useReportStore";
 import SegmentationBoxes from "./components/SegmentationBoxes";
+import apiClient from "@api/api";
 
 interface IVideoPlayer {
   videoAnalysis: VideoAnalysis;
   controls: boolean;
   extractingSuspect: boolean;
   requestNewReanalysis: (x: number, y: number, timestamp: number) => void;
+  reportId: string;
 }
 
 function VideoPlayer({
@@ -18,6 +20,7 @@ function VideoPlayer({
   controls,
   extractingSuspect,
   requestNewReanalysis,
+  reportId,
 }: IVideoPlayer) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -42,10 +45,10 @@ function VideoPlayer({
     const videoElement = videoRef.current!;
     if (!extractingSuspect) return;
 
-    const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight; // certo
-    const containerWidth = videoElement.clientWidth; // certo
-    const containerHeight = videoElement.clientHeight; // certo
-    const containerAspectRatio = 16 / 9; // certo
+    const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+    const containerWidth = videoElement.clientWidth;
+    const containerHeight = videoElement.clientHeight;
+    const containerAspectRatio = 16 / 9;
 
     const rect = videoElement.getBoundingClientRect();
     let x = event.clientX - rect.left;
@@ -70,11 +73,63 @@ function VideoPlayer({
       return;
     }
 
-    requestNewReanalysis(
-      Math.trunc(x),
-      Math.trunc(y),
-      videoElement.currentTime
-    );
+    // Create a canvas to capture the frame
+    const canvas = document.createElement("canvas");
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      // Draw the current video frame
+      ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+      // Convert canvas to blob
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          // Create a file from the blob
+          const file = new File([blob], "suspect.png", {
+            type: "image/png",
+          });
+
+          // Create form data
+          const formData = new FormData();
+          formData.append("suspectImage", file);
+
+          // Save the suspect image
+          const response = await apiClient.post(
+            `/reports/${reportId}/suspect-image`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            // Get the suspect image from the backend
+            const imageResponse = await apiClient.get(
+              `/reports/${reportId}/suspect-image`
+            );
+            if (imageResponse.status === 200) {
+              const base64Image = imageResponse.data;
+              // The parent component will handle setting the image
+              requestNewReanalysis(
+                Math.trunc(x),
+                Math.trunc(y),
+                videoElement.currentTime
+              );
+            }
+          }
+        }
+      }, "image/png");
+    } else {
+      // If we couldn't create the canvas context, still try to reanalyze
+      requestNewReanalysis(
+        Math.trunc(x),
+        Math.trunc(y),
+        videoElement.currentTime
+      );
+    }
   };
 
   const updateVideoCurrentTS = (time: number) => {

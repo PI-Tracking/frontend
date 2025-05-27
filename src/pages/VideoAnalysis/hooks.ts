@@ -3,16 +3,17 @@ import { UUID } from "@Types/Base";
 import { VideoAnalysis } from "@Types/VideoAnalysis";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-/* MOCK DATA */
+import { useMinIO } from "@hooks/useMinIO";
 import { requestReanalysis } from "@api/analysis";
 import SelectedSuspectDTO from "@Types/SelectedSuspectDTO";
 import { useAuth } from "@hooks/useAuth";
+import apiClient from "@api/api";
 
 export default function useVideoAnalysis() {
   const { id: paramReportId } = useParams();
   const { report, setInitialAnalysisId } = useReportStore();
   const websocket = useAuth().websocket;
+  const minio = useMinIO();
   const [suspectImg, setSuspectImg] = useState<string | undefined>(undefined);
   const [selectedCamera, setSelectedCamera] = useState<VideoAnalysis | null>(
     null
@@ -103,12 +104,80 @@ export default function useVideoAnalysis() {
     const data = response.data as { analysisId: string };
     websocket.connect(data.analysisId);
     websocket.setAnalysing(true);
+    
     // Find the segmentation at the clicked timestamp
     const segmentation = selectedCamera?.segmentations.find(
       (s) => Math.abs(s.timestamp - timestamp * 1000) < 200
     );
     if (segmentation) {
-      setSuspectImg(``);
+      // Create a canvas to draw the segmentation
+      const canvas = document.createElement('canvas');
+      const video = document.querySelector('video');
+      if (video) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          // Draw the video frame
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          
+          // Create a path for the segmentation polygon
+          ctx.beginPath();
+          ctx.moveTo(segmentation.polygon[0][0], segmentation.polygon[0][1]);
+          for (let i = 1; i < segmentation.polygon.length; i++) {
+            ctx.lineTo(segmentation.polygon[i][0], segmentation.polygon[i][1]);
+          }
+          ctx.closePath();
+          
+          // Clip to the polygon
+          ctx.clip();
+          
+          // Draw the clipped image
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          
+          // Convert to blob
+          canvas.toBlob(async (blob) => {
+            if (blob) {
+              // Create a file from the blob
+              const file = new File([blob], "suspect.png", {
+                type: "image/png",
+              });
+
+              // Create form data
+              const formData = new FormData();
+              formData.append("suspectImage", file);
+
+              try {
+                // Save the suspect image
+                const response = await apiClient.post(
+                  `/reports/${report.id}/suspect-image`,
+                  formData,
+                  {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                );
+
+                if (response.status === 200) {
+                  // Get the suspect image from the backend
+                  const imageResponse = await apiClient.get(
+                    `/reports/${report.id}/suspect-image`
+                  );
+                  if (imageResponse.status === 200) {
+                    const base64Image = imageResponse.data;
+                    // Set the suspect image in both places to ensure consistency
+                    setSuspectImg(`data:image/png;base64,${base64Image}`);
+                    websocket.setSuspectImg(`data:image/png;base64,${base64Image}`);
+                  }
+                }
+              } catch (error) {
+                console.error("Error saving suspect image:", error);
+              }
+            }
+          }, "image/png");
+        }
+      }
     }
   };
 

@@ -129,6 +129,7 @@ function VideoAnalysisPage() {
             controls={true}
             extractingSuspect={extractingSuspect}
             requestNewReanalysis={requestNewReanalysis}
+            reportId={report.id}
           />
         </div>
 
