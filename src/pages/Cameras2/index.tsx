@@ -130,7 +130,11 @@ function CamerasPageMap() {
 
       <div className="viewer-wrapper">
         {selectedCameras.map((camera) => (
-          <VideoViewer key={camera.id} frame={frames[camera.id]} />
+          <VideoViewer
+            key={camera.id}
+            frame={frames[camera.id]}
+            cameraId={camera.id}
+          />
         ))}
       </div>
 
