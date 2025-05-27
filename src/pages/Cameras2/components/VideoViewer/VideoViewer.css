@@ -1,4 +1,9 @@
-.camera-view {
-  width: 90%;
-  height: 400px;
+.camera-view p:first-child {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.camera-view p:last-child {
+  font-size: 16px;
+  cursor: text;
 }

@@ -16,10 +16,12 @@ import { AuthContext } from "./AuthContext";
 import { AxiosError } from "axios";
 import { ResetDTO } from "@Types/ResetDTO";
 import { IResetPassword } from "./IResetPassword";
+import { useDetectionWebSocket } from "@hooks/useDetectionWebSocket";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const websocket = useDetectionWebSocket();
 
   const login = async (user: LoginDTO): Promise<ILogin> => {
     try {
@@ -104,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading: loading,
     login: login,
     logout: logout,
+    websocket,
     resetPassword: resetPassword,
     isAdmin: isAdmin,
     isAuthenticated: !!user,

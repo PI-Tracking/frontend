@@ -42,6 +42,7 @@
 .player {
   min-width: 480px;
   flex-grow: 100;
+  position: relative;
 }
 
 .suspectImage {
@@ -63,16 +64,46 @@
     transform 0.3s ease;
 
   font-size: 1.2rem;
-  background-color: rgba(0, 34, 255, 0.75);
-  color: white;
+  background-color: #f9ba08;
+  color: rgb(0, 0, 0);
   cursor: pointer;
+  margin-top: 20px;
+  font-weight: 600;
 }
 
 .actionButton:hover {
-  background-color: rgba(0, 34, 255, 0.8);
+  background-color: #f9ba08;
   transform: translateY(-1px);
 }
 
 .padding {
   padding: 7px;
+}
+
+.overlay {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+  height: 50%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.overlay2 {
+  position: absolute;
+  top: 90%;
+  left: 25%;
+  width: 50%;
+  height: 10%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
 }

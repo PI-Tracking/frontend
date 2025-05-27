@@ -5,10 +5,9 @@ import useReport from "@hooks/useReportStore";
 import { useNavigate } from "react-router-dom";
 import { Report } from "@Types/Report";
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
 import { getAllReports, getReport } from "@api/report";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
-import { format } from "date-fns";
-
 //To surpass error of reportData being ApiError or ReportResponseDTO
 function isReportResponseDTO(data: unknown): data is ReportResponseDTO {
   if (!data || typeof data !== "object") return false;
@@ -130,6 +129,9 @@ function ReportsPage() {
                 </p>
                 <p className="report-creator">
                   Creator: {report.creator.username}
+                </p>
+                <p className="report-creator">
+                  Badge ID: {report.creator.badgeId}
                 </p>
                 <p className="report-uploads">
                   Uploads: {report.uploads.length}
