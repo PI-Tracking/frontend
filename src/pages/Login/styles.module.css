@@ -9,7 +9,11 @@
 }
 
 .background {
-  background: #f9ba08;
+  background: #4a4a4a;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 
 html,
@@ -57,13 +61,21 @@ body {
 }
 
 .loginLogo {
-  width: 150px;
+  width: 200px;
   margin-bottom: 140px;
+  margin-top: 100px;
+}
+
+.loginLogo:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
+  cursor: grab;
 }
 
 .loginBox {
-  background: rgba(58, 58, 58, 0.9);
+  background: rgba(64, 58, 58, 0.9);
   padding: 20px;
+  bottom: 70px;
   border-radius: 10px;
   text-align: center;
   color: white;
@@ -71,23 +83,51 @@ body {
   width: 100%;
   max-width: 400px;
   position: relative;
+  font-family: "Montserrat", sans-serif;
+  font-size: px;
+}
+
+.loginBox:hover {
+  box-shadow: 0px 0px 15px rgba(175, 161, 0, 0.2);
 }
 
 .inputGroup {
-  margin: 10px 10px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 40px;
+  gap: 1rem;
 }
 
-.inputGroup > input {
+/* === NEW: Wrapper for inputs with icons === */
+.iconInputWrapper {
+  position: relative;
   width: 100%;
-  padding: 10px;
-  margin: 5px 0px;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ccc;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+/* === Adjust input padding to make room for icon === */
+.iconInputWrapper input {
+  width: 100%;
+  padding: 16px 20px 16px 50px;
+  margin: 0;
   border: 1px solid white;
+  opacity: 0.9;
   border-radius: 5px;
   background-color: transparent;
   color: white;
+  font-family: "Montserrat", sans-serif;
+  font-size: 15px;
 }
 
 .loginBtn {
@@ -98,34 +138,46 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  height: 50px;
+  box-shadow:
+    0 8px 16px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .loginBtn:hover {
   background-color: #f9ba08;
+  box-shadow:
+    0 12px 16px 0 rgba(0, 0, 0, 0.24),
+    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.loginBtn:disabled {
+  background-color: grey;
+  cursor: not-allowed;
 }
 
 .forgotPassword {
   display: block;
   margin-top: 10px;
   color: whitesmoke;
+  text-decoration: none;
+  position: relative;
+  text-align: right;
 }
 
-.background {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
+.forgotPassword:hover {
+  color: #f9ba08;
 }
 
-/* Circulo */
 .background > img:nth-child(1) {
   position: absolute;
   left: 0px;
   bottom: 0px;
 }
 
-/* Curva */
 .background > img:nth-child(2) {
   position: absolute;
   right: 0px;
@@ -134,6 +186,7 @@ body {
 
 .errorMessage {
   color: red;
+  margin-top: 8px;
 }
 
 .modal {
@@ -168,21 +221,7 @@ body {
   border-radius: 5px;
   background-color: #333 !important;
   color: white !important;
-}
-
-.loginBtn {
-  width: 100%;
-  padding: 10px;
-  background-color: white;
-  color: #2d2d2d;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.loginBtn:disabled {
-  background-color: grey;
-  cursor: not-allowed;
+  font-family: "Montserrat", sans-serif;
 }
 
 .closeBtn {
@@ -197,4 +236,7 @@ body {
 
 .closeBtn:hover {
   background: #777;
+}
+.modalContent h2 {
+  margin: 0 0 10px;
 }

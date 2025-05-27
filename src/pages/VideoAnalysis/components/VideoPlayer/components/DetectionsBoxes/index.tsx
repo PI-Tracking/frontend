@@ -3,15 +3,37 @@ import styles from "./styles.module.css";
 
 function normalizeDetection(
   detection: Detection,
-  width: number,
-  height: number,
+  containerWidth: number,
+  containerHeight: number,
   video_width: number,
   video_height: number
 ): Detection {
+  // Calculate actual displayed video dimensions
+  const videoAspectRatio = video_width / video_height;
+  const containerAspectRatio = containerWidth / containerHeight;
+
+  let displayWidth,
+    displayHeight,
+    offsetX = 0,
+    offsetY = 0;
+
+  if (videoAspectRatio > containerAspectRatio) {
+    // Video is wider - letterboxed (black bars top/bottom)
+    displayWidth = containerWidth;
+    displayHeight = containerWidth / videoAspectRatio;
+    offsetY = (containerHeight - displayHeight) / 2;
+  } else {
+    // Video is taller - pillarboxed (black bars left/right)
+    displayHeight = containerHeight;
+    displayWidth = containerHeight * videoAspectRatio;
+    offsetX = (containerWidth - displayWidth) / 2;
+  }
+
   const norm_points = detection.coordinates.map((coords) => ({
-    x: (coords.x / video_width) * width,
-    y: (coords.y / video_height) * height,
+    x: (coords.x / video_width) * displayWidth + offsetX,
+    y: (coords.y / video_height) * displayHeight + offsetY,
   }));
+
   return {
     ...detection,
     coordinates: norm_points,
@@ -26,8 +48,6 @@ interface IDetectionBoxes {
   video_width: number;
   video_height: number;
 }
-
-
 
 export default function DetectionBoxes({
   detections,
@@ -45,17 +65,16 @@ export default function DetectionBoxes({
   const normalizedDetections = detections.map((detection) =>
     normalizeDetection(detection, width, height, video_width, video_height)
   );
-  
+
   let detectionToShow = undefined;
   // Could be optimized with binary search
   // but for now, we just iterate through the detections
   for (const detection of normalizedDetections) {
-    const diff = currentTimestamp*1000 - detection.timestamp;
+    const diff = currentTimestamp * 1000 - detection.timestamp;
     if (0 <= diff && diff < DT) {
       detectionToShow = detection;
     }
   }
-  console.log("detectionToShow", detectionToShow);
 
   if (detectionToShow === undefined) {
     return <></>;

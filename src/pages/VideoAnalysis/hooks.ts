@@ -104,11 +104,11 @@ export default function useVideoAnalysis() {
     websocket.connect(data.analysisId);
 
     // Find the segmentation at the clicked timestamp
-    const segmentation = selectedCamera?.segmentations.find(s => 
-      Math.abs(s.timestamp - timestamp * 1000) < 200
+    const segmentation = selectedCamera?.segmentations.find(
+      (s) => Math.abs(s.timestamp - timestamp * 1000) < 200
     );
     if (segmentation) {
-      setSuspectImg(`data:image/png;base64,${segmentation.polygon}`);
+      setSuspectImg(``);
     }
   };
 

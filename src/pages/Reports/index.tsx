@@ -31,24 +31,13 @@ function ReportsPage() {
   const selectReport = (report: ReportResponseDTO) => {
     if (!report) return;
     console.log("Selected report ID:", report.id);
+
     //Transform the report to match the Report type
     const transformedReport: Report = {
       id: report.id,
       name: report.name,
-      creator: {
-        badgeId: "",
-        username: "",
-        email: "",
-        active: false,
-        reports: [],
-        admin: false,
-        credentialsNonExpired: false,
-        accountNonExpired: false,
-        accountNonLocked: false,
-        authorities: [],
-        enabled: false,
-      },
-      createdAt: new Date(),
+      creator: report.creator,
+      createdAt: report.createdAt,
       uploads: [],
     };
     setReport(transformedReport);
@@ -137,7 +126,7 @@ function ReportsPage() {
               <div key={report.id} className="report-card">
                 <h2 className="report-name">{report.name}</h2>
                 <p className="report-date">
-                  Created: {format(new Date(report.name), "PPpp")}
+                  Created: {format(new Date(report.createdAt), "PPpp")}
                 </p>
                 <p className="report-creator">
                   Creator: {report.creator.username}

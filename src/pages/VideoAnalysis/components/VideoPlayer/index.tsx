@@ -42,11 +42,30 @@ function VideoPlayer({
     const videoElement = videoRef.current!;
     if (!extractingSuspect) return;
 
+    const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight; // certo
+    const containerWidth = videoElement.clientWidth; // certo
+    const containerHeight = videoElement.clientHeight; // certo
+    const containerAspectRatio = 16 / 9; // certo
+
     const rect = videoElement.getBoundingClientRect();
-    const scale_width = videoElement.videoWidth / rect.width;
-    const scale_height = videoElement.videoHeight / rect.height;
-    const x = (event.clientX - rect.left) * scale_width;
-    const y = (event.clientY - rect.top) * scale_height;
+    const scale_width = videoElement.videoWidth / containerWidth;
+    const scale_height = videoElement.videoHeight / containerHeight;
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+
+    if (videoAspectRatio > containerAspectRatio) {
+      const displayHeight = containerWidth / videoAspectRatio;
+      y = y - (containerHeight - displayHeight) / 2;
+    } else {
+      const displayWidth = containerHeight * videoAspectRatio;
+      x = x - (containerWidth - displayWidth) / 2;
+    }
+
+    x *= scale_width;
+    y *= scale_height;
+    if (x < 0 || y < 0) {
+      return;
+    }
 
     requestNewReanalysis(
       Math.trunc(x),
