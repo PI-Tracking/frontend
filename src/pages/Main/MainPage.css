@@ -6,14 +6,14 @@
   min-height: 100vh;
   max-width: 100vw;
   overflow-x: hidden;
-  background-color: rgb(255, 255, 255);
+  background-color: #282828;
 }
 
 .product-introduction {
   position: relative;
   width: 100%;
   height: 100vh;
-  background-color: #ffffff;
+  background-color: #282828;
   color: rgb(0, 0, 0);
   text-align: left;
   padding: 100px 50px 20px;
@@ -31,7 +31,7 @@
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #2d2d2d;
+  color: #ffffff;
   position: relative;
 }
 
@@ -39,7 +39,7 @@
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 2rem;
-  color: #444;
+  color: #ffffff;
 }
 
 .feature-list {
@@ -53,14 +53,14 @@
   margin-bottom: 1rem;
   padding-left: 2rem;
   position: relative;
-  color: #333;
+  color: #ffffff;
 }
 
 .feature-list li::before {
   content: "•";
   position: absolute;
   left: 0;
-  color: #666;
+  color: #ffffff;
   font-size: 1.5rem;
 }
 
@@ -123,14 +123,14 @@
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #2d2d2d;
+  color: #ffffff;
 }
 
 .weapons-description {
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 3rem;
-  color: #444;
+  color: #ffffff;
 }
 
 .weapons-features {
@@ -201,7 +201,7 @@
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #2d2d2d;
+  color: #ffffff;
   text-align: right;
 }
 
@@ -209,7 +209,7 @@
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 3rem;
-  color: #444;
+  color: #ffffff;
   text-align: right;
 }
 
@@ -256,14 +256,14 @@
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #2d2d2d;
+  color: #ffffff;
 }
 
 .path-description {
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 3rem;
-  color: #444;
+  color: #ffffff;
 }
 
 .path-features {
@@ -274,7 +274,7 @@
 }
 
 .draw-path-image {
-  background: url("./components/path.svg") no-repeat right;
+  background: url("./components/map.jpeg") no-repeat right;
   background-size: 40%;
   position: absolute;
   right: 50px;

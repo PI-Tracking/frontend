@@ -86,7 +86,10 @@ function VideoAnalysisPage() {
             {websocket.suspectImg === undefined && suspectImg === undefined ? (
               <span>Not following a suspect</span>
             ) : (
-              <img src={websocket.suspectImg || suspectImg} className={styles.suspectImage} />
+              <img
+                src={websocket.suspectImg || suspectImg}
+                className={styles.suspectImage}
+              />
             )}
             <button
               className={styles.actionButton}
@@ -103,17 +106,21 @@ function VideoAnalysisPage() {
         </div>
 
         <div className={styles.player}>
-          {websocket.analysing ? (
-            <h1 style={{ color: "white", textAlign: "center" }}>
-              Video is being analysed...
-            </h1>
+          {websocket.analysing && !extractingSuspect ? (
+            <div className={styles.overlay}>
+              <h1 style={{ color: "white", textAlign: "center" }}>
+                Video is being analysed...
+              </h1>
+            </div>
           ) : (
             <></>
           )}
           {extractingSuspect ? (
-            <h1 style={{ color: "white", textAlign: "center" }}>
-              Select on the suspect to request analysis
-            </h1>
+            <div className={styles.overlay2}>
+              <h1 style={{ color: "white", textAlign: "center" }}>
+                Select a suspect on current frame
+              </h1>
+            </div>
           ) : (
             <></>
           )}

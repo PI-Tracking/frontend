@@ -2,7 +2,7 @@
   min-height: 100vh;
   background-color: #282828;
   color: #fff;
-  padding: 1rem;    
+  padding: 1rem;
 }
 
 .report-detail-content {
@@ -249,11 +249,13 @@
 .back-button {
   background-color: #6c757d;
   color: white;
+  font-weight: 600;
+  font-style: bold;
 }
 
 .view-map-button {
-  background-color: #007bff;
-  color: white;
+  background-color: #f9ba08;
+  color: rgb(0, 0, 0);
 }
 
 .back-button:hover {
@@ -261,7 +263,8 @@
 }
 
 .view-map-button:hover {
-  background-color: #0056b3;
+  background-color: #f9ba08;
+  color: white;
 }
 
 .loading-spinner {
@@ -312,4 +315,4 @@
 .detection-info p:first-child {
   color: #fff;
   font-weight: 500;
-} 
+}

@@ -7,8 +7,6 @@ import { Report } from "@Types/Report";
 import { useState, useEffect } from "react";
 import { getAllReports, getReport } from "@api/report";
 import { ReportResponseDTO } from "@Types/ReportResponseDTO";
-import { format } from "date-fns";
-
 //To surpass error of reportData being ApiError or ReportResponseDTO
 function isReportResponseDTO(data: unknown): data is ReportResponseDTO {
   if (!data || typeof data !== "object") return false;
@@ -136,11 +134,11 @@ function ReportsPage() {
             {reports.map((report) => (
               <div key={report.id} className="report-card">
                 <h2 className="report-name">{report.name}</h2>
-                <p className="report-date">
-                  Created: {format(new Date(report.name), "PPpp")}
-                </p>
                 <p className="report-creator">
                   Creator: {report.creator.username}
+                </p>
+                <p className="report-creator">
+                  Badge ID: {report.creator.badgeId}
                 </p>
                 <p className="report-uploads">
                   Uploads: {report.uploads.length}

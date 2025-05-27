@@ -19,11 +19,13 @@ import { detectFaceInVideo } from "@api/faceDetection";
 interface SubmitFilesButtonProps {
   files: CamerasVideo[];
   suspect: File | undefined;
+  reportName: string;
   setError: Dispatch<SetStateAction<string>>;
 }
 function SubmitFilesButton({
   files,
   suspect,
+  reportName,
   setError,
 }: SubmitFilesButtonProps) {
   const minio = useMinIO();
@@ -49,7 +51,7 @@ function SubmitFilesButton({
       /* Create a new Report Request */
       const request: NewReportDTO = {
         cameras: files.map((file) => file.camera.id),
-        name: new Date().toUTCString(),
+        name: reportName,
       };
       const response = await createNewReport(request);
 
@@ -80,7 +82,7 @@ function SubmitFilesButton({
         suspectImg:
           suspect !== undefined ? URL.createObjectURL(suspect) : undefined,
         creator: auth.user || ({} as User),
-        createdAt: new Date(request.name), // TODO if this changes, this HAS to change
+        createdAt: new Date(),
         uploads: files.map((video) => {
           return {
             analysis_id: "",
@@ -112,6 +114,7 @@ function SubmitFilesButton({
       setInitialAnalysisId(
         (requestAnalysisResponse.data as { analysisId: string }).analysisId
       );
+      auth.websocket.setAnalysing(true);
       navigate(`/report/${id}`);
     } catch (error) {
       console.log(error);
