@@ -8,6 +8,7 @@ import { getAllCameras } from "@api/camera";
 import { Camera } from "@Types/Camera";
 import VideoViewer from "./components/VideoViewer";
 import { requestNewAnalysis, stopAnalysis } from "@api/analysis";
+import { UUID } from "@Types/Base";
 
 const COIMBRA: [number, number] = [40.202852, -8.410192];
 
@@ -88,6 +89,21 @@ function CamerasPageMap() {
     await stopAnalysis(liveAnalysisId);
   };
 
+  const handleClose = (cameraId: UUID) => {
+    setSelectedCameras((prev) => {
+      return prev.filter((camera) => camera.id !== cameraId);
+    });
+
+    async function restartLiveAnalysis() {
+      if (selectedCameras.length === 0) {
+        return;
+      }
+      await handleStopLiveAnalysis();
+      await handleStartLiveAnalysis();
+    }
+    restartLiveAnalysis();
+  };
+
   return (
     <div className="container">
       <Navbar />
@@ -130,11 +146,19 @@ function CamerasPageMap() {
 
       <div className="viewer-wrapper">
         {selectedCameras.map((camera) => (
-          <VideoViewer
-            key={camera.id}
-            frame={frames[camera.id]}
-            cameraId={camera.id}
-          />
+          <div className="all-wrapper" key={camera.id}>
+            <button
+              className="close-button"
+              onClick={() => handleClose(camera.id)}
+            >
+              &times;
+            </button>
+            <VideoViewer
+              key={camera.id}
+              frame={frames[camera.id]}
+              cameraId={camera.id}
+            />
+          </div>
         ))}
       </div>
 
