@@ -127,7 +127,7 @@ function MapTrackingPage() {
         map.flyTo(center, map.getZoom());
         console.log("Map flying to new center:", center);
       }
-    }, [center]);
+    }, [center, map]);
 
     return null;
   }

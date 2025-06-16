@@ -1,15 +1,13 @@
-import "./footer.css";
-import { SiInstagram } from "react-icons/si";
-import { BsTwitterX } from "react-icons/bs";
-import { AiFillLinkedin } from "react-icons/ai";
 import { FaGithub } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
+
+import "./footer.css";
+
 function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-row">
-          <div className="footer-copyright">©2025 Tracking</div>
+          <div className="footer-copyright">&copy; 2025 Tracking</div>
 
           <div className="footer-brand">Tracking</div>
 
@@ -43,9 +41,7 @@ function Footer() {
 
           <div className="footer-social">
             <a>
-            <p className="footer-social-text">
-              Follow us on:
-            </p>
+              <p className="footer-social-text">Follow us on:</p>
             </a>
             <a
               href="https://github.com/PI-Tracking"
