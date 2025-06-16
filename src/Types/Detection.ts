@@ -14,6 +14,7 @@ type Point = {
 interface Detection {
   timestamp: number;
   className: string;
+  class_name: string;
   confidence: number;
   coordinates: Point[];
   videoId: string;

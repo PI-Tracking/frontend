@@ -1,5 +1,12 @@
 import { AxiosError } from "axios";
-import { useCallback, useState, useRef, useEffect, ReactNode } from "react";
+import {
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+  ReactNode,
+  ChangeEvent,
+} from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { useDropzone } from "react-dropzone";
 import { MdUpload } from "react-icons/md";
@@ -48,7 +55,7 @@ function UploadVideosPage() {
   const [showMap, setShowMap] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string>("");
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setReportName(e.target.value);
   };
 
