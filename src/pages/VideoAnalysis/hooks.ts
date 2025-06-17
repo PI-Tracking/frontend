@@ -49,6 +49,20 @@ export default function useVideoAnalysis() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    for (const upload of report.uploads) {
+      if (upload.segmentations.length === 0) {
+        continue;
+      }
+      const suspectId = upload.segmentations[0].id;
+
+      setSuspectImg(
+        `http://localhost:9000/videos/${report.id}/suspect_${suspectId}.jpg`
+      )
+      break;
+    }
+  },[report])
+
+  useEffect(() => {
     if (!websocket.analysing && selectedCamera) {
       changeCamera(selectedCamera.camera.id);
     }

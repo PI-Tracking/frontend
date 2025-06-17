@@ -22,8 +22,8 @@ function ListDetections(props: IListDetections) {
   return (
     <div className={styles.list}>
       {props.detections.map((detection) => (
-        <div className={styles.listElement}>
-          {detection.class_name} - {formatTime(detection.timestamp / 1000)}
+        <div className={styles.listElement} key={detection.timestamp}>
+          {detection.className} - {formatTime(detection.timestamp / 1000)}
         </div>
       ))}
     </div>

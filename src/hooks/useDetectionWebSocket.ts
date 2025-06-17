@@ -17,6 +17,7 @@ interface UseDetectionWebSocketResult {
   connect: (analysis_id: UUID) => void;
   disconnect: () => void;
   suspectImg?: string;
+  setSuspectImg: (value: string | undefined) => void;
 }
 
 function useDetectionWebSocket(): UseDetectionWebSocketResult {
@@ -169,6 +170,7 @@ function useDetectionWebSocket(): UseDetectionWebSocketResult {
     connect,
     disconnect,
     suspectImg,
+    setSuspectImg,
   };
 }
 export { useDetectionWebSocket, type UseDetectionWebSocketResult };

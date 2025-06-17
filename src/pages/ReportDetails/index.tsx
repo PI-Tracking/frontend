@@ -222,7 +222,6 @@ function ReportDetails() {
       </div>
     );
   }
-
   return (
     <div className="report-detail-container">
       <Navbar />
@@ -369,15 +368,10 @@ function ReportDetails() {
                               <div
                                 key={index}
                                 className="segmentation-item"
-                                onClick={() =>
-                                  setSelectedDetection(segmentation)
-                                }
+                                // onClick={() =>
+                                //   setSelectedDetection(segmentation)
+                                // }
                               >
-                                <img
-                                  src={`data:image/png;base64,${segmentation.polygon}`}
-                                  alt={`Segmentation ${index + 1}`}
-                                  className="segmentation-image"
-                                />
                                 <div className="segmentation-info">
                                   <p>
                                     Time:{" "}
@@ -424,34 +418,24 @@ function ReportDetails() {
           <section className="report-section">
             <h2>Selected Person</h2>
             <div className="suspect-image-container">
-              {selectedDetection ? (
                 <div>
-                  <img
-                    src={`data:image/png;base64,${"polygon" in selectedDetection ? selectedDetection.polygon : ""}`}
+                  {
+                    [... new Set(currentAnalysisResults?.segmentations.map(s => s.id))].map(id => (
+                      <img
+                        src={`http://localhost:9000/videos/${reportId}/suspect_${id}.jpg`}
+                        alt="Selected Person"
+                        className="suspect-image"
+                      /> 
+                    ))
+                    
+                  /* <img
+                    src={`data:image/png;base64,${selectedDetection.image}`}
                     alt="Selected Person"
                     className="suspect-image"
-                  />
-                  <div className="detection-info">
-                    <p>Time: {formatVideoTime(selectedDetection.timestamp)}</p>
-                    <p>
-                      Camera:{" "}
-                      {(() => {
-                        const upload = report.uploads.find(
-                          (u) => u.id === selectedDetection.videoId
-                        );
-                        return (
-                          cameras.find((c) => c.id === upload?.cameraId)
-                            ?.name || "Unknown"
-                        );
-                      })()}
-                    </p>
-                  </div>
+                  /> */
+                  }
                 </div>
-              ) : (
-                <div className="no-suspect-image">
-                  Click on a segmentation to view person
-                </div>
-              )}
+              
             </div>
           </section>
 

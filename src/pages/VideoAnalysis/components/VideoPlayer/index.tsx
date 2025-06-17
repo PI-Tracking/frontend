@@ -11,6 +11,7 @@ interface IVideoPlayer {
   controls: boolean;
   extractingSuspect: boolean;
   requestNewReanalysis: (x: number, y: number, timestamp: number) => void;
+  reportId?: string;
 }
 
 function VideoPlayer({
@@ -42,10 +43,10 @@ function VideoPlayer({
     const videoElement = videoRef.current!;
     if (!extractingSuspect) return;
 
-    const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight; // certo
-    const containerWidth = videoElement.clientWidth; // certo
-    const containerHeight = videoElement.clientHeight; // certo
-    const containerAspectRatio = 16 / 9; // certo
+    const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+    const containerWidth = videoElement.clientWidth;
+    const containerHeight = videoElement.clientHeight;
+    const containerAspectRatio = 16 / 9;
 
     const rect = videoElement.getBoundingClientRect();
     let x = event.clientX - rect.left;
@@ -69,7 +70,6 @@ function VideoPlayer({
     if (x < 0 || y < 0) {
       return;
     }
-
     requestNewReanalysis(
       Math.trunc(x),
       Math.trunc(y),
