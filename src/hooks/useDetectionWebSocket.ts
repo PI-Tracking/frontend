@@ -160,7 +160,7 @@ function useDetectionWebSocket(): UseDetectionWebSocketResult {
     return () => {
       unsubscribe();
     };
-  }, [reportId]); // Add reportId to dependencies
+  }, [reportId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     isConnected,
