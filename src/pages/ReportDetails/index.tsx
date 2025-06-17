@@ -78,6 +78,9 @@ function ReportDetails() {
   // Function to check for new analyses
   const checkForNewAnalyses = async () => {
     if (!reportId) return;
+    if (selectedDetection) {
+      console.debug("");
+    }
 
     try {
       const analysisResponse = await getAnalysisByReportId(reportId);
@@ -418,24 +421,27 @@ function ReportDetails() {
           <section className="report-section">
             <h2>Selected Person</h2>
             <div className="suspect-image-container">
-                <div>
-                  {
-                    [... new Set(currentAnalysisResults?.segmentations.map(s => s.id))].map(id => (
-                      <img
-                        src={`http://localhost:9000/videos/${reportId}/suspect_${id}.jpg`}
-                        alt="Selected Person"
-                        className="suspect-image"
-                      /> 
-                    ))
-                    
+              <div>
+                {
+                  [
+                    ...new Set(
+                      currentAnalysisResults?.segmentations.map((s) => s.id)
+                    ),
+                  ].map((id) => (
+                    <img
+                      src={`http://localhost:9000/videos/${reportId}/suspect_${id}.jpg`}
+                      alt="Selected Person"
+                      className="suspect-image"
+                    />
+                  ))
+
                   /* <img
                     src={`data:image/png;base64,${selectedDetection.image}`}
                     alt="Selected Person"
                     className="suspect-image"
                   /> */
-                  }
-                </div>
-              
+                }
+              </div>
             </div>
           </section>
 
